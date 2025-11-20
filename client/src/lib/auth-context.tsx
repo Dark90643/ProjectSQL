@@ -1,9 +1,40 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { 
-  User, Case, Log, Role, 
-  INITIAL_USERS, INITIAL_CASES, INITIAL_LOGS, INVITE_CODES 
-} from "./mock-data";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "./api";
+
+type Role = "Agent" | "Management" | "Overseer";
+
+interface User {
+  id: string;
+  username: string;
+  role: Role;
+  isSuspended: boolean;
+  ip: string;
+  isOnline: boolean;
+}
+
+interface Case {
+  id: string;
+  title: string;
+  description: string;
+  status: "Active" | "Closed" | "Redacted";
+  priority: "Low" | "Medium" | "High" | "Critical";
+  assignedAgent: string;
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
+  content: string;
+  isPublic: boolean;
+}
+
+interface Log {
+  id: string;
+  action: string;
+  userId: string;
+  targetId?: string;
+  timestamp: string;
+  details: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -12,208 +43,227 @@ interface AuthContextType {
   logs: Log[];
   clientIp: string;
   isIpBanned: boolean;
-  login: (username: string) => Promise<boolean>;
-  register: (username: string, inviteCode: string) => Promise<boolean>;
-  logout: () => void;
-  createCase: (newCase: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => void;
-  updateCase: (id: string, updates: Partial<Case>) => void;
-  deleteCase: (id: string) => void;
-  suspendUser: (id: string) => void;
-  unsuspendUser: (id: string) => void;
-  toggleCasePublic: (id: string) => void;
+  loading: boolean;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, password: string, inviteCode: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  createCase: (newCase: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => Promise<void>;
+  updateCase: (id: string, updates: Partial<Case>) => Promise<void>;
+  deleteCase: (id: string) => Promise<void>;
+  suspendUser: (id: string) => Promise<void>;
+  unsuspendUser: (id: string) => Promise<void>;
+  toggleCasePublic: (id: string) => Promise<void>;
+  refreshData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const generateRandomIp = () => {
-  return `192.168.1.${Math.floor(Math.random() * 150) + 10}`;
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(INITIAL_USERS);
-  const [cases, setCases] = useState<Case[]>(INITIAL_CASES);
-  const [logs, setLogs] = useState<Log[]>(INITIAL_LOGS);
-  const [availableCodes, setAvailableCodes] = useState<string[]>(INVITE_CODES);
+  const [users, setUsers] = useState<User[]>([]);
+  const [cases, setCases] = useState<Case[]>([]);
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [clientIp, setClientIp] = useState("");
+  const [isIpBanned, setIsIpBanned] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  
-  // Simulate Client IP
-  const [clientIp] = useState(() => {
-    const stored = localStorage.getItem("mock_client_ip");
-    if (stored) return stored;
-    const newIp = generateRandomIp();
-    localStorage.setItem("mock_client_ip", newIp);
-    return newIp;
-  });
 
-  // Check if current IP belongs to ANY suspended user
-  const isIpBanned = users.some(u => u.isSuspended && u.ip === clientIp);
-
-  // Helper to add logs
-  const addLog = (action: string, details: string, targetId?: string) => {
-    if (!user) return;
-    const newLog: Log = {
-      id: `log-${Date.now()}`,
-      action,
-      userId: user.id,
-      targetId,
-      timestamp: new Date().toISOString(),
-      details
-    };
-    setLogs(prev => [newLog, ...prev]);
-  };
-
-  const login = async (username: string) => {
-    if (isIpBanned) {
-      toast({ variant: "destructive", title: "CONNECTION REFUSED", description: `IP ADDRESS ${clientIp} IS BLACKLISTED.` });
-      return false;
-    }
-
-    const foundUser = users.find(u => u.username === username);
-    if (foundUser) {
-      if (foundUser.isSuspended) {
-        toast({ variant: "destructive", title: "Access Denied", description: "Account has been suspended by Overseer." });
-        return false;
-      }
-      
-      // Set user online and update IP
-      const updatedUser = { ...foundUser, isOnline: true, ip: clientIp };
-      setUsers(prev => prev.map(u => u.id === foundUser.id ? updatedUser : u));
-      setUser(updatedUser);
-      return true;
-    }
-    return false;
-  };
-
-  const register = async (username: string, inviteCode: string) => {
-    if (isIpBanned) {
-      toast({ variant: "destructive", title: "CONNECTION REFUSED", description: `IP ADDRESS ${clientIp} IS BLACKLISTED.` });
-      return false;
-    }
-
-    if (!availableCodes.includes(inviteCode)) {
-      toast({ variant: "destructive", title: "Invalid Code", description: "The invite code is invalid or already used." });
-      return false;
-    }
-
-    if (users.some(u => u.username === username)) {
-      toast({ variant: "destructive", title: "Username Taken", description: "This Agent ID is already in use." });
-      return false;
-    }
-
-    const newUser: User = {
-      id: `u-${Date.now()}`,
-      username,
-      role: "Agent", // Default role
-      isSuspended: false,
-      ip: clientIp,
-      isOnline: true
-    };
-
-    setUsers([...users, newUser]);
-    setAvailableCodes(prev => prev.filter(c => c !== inviteCode));
-    setUser(newUser);
-    
-    const newLog: Log = {
-      id: `log-${Date.now()}`,
-      action: "REGISTER",
-      userId: newUser.id,
-      timestamp: new Date().toISOString(),
-      details: `New Agent registered with code ${inviteCode} from IP ${clientIp}`
-    };
-    setLogs(prev => [newLog, ...prev]);
-
-    return true;
-  };
-
-  const logout = () => {
-    if (user) {
-      // Set user offline
-      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, isOnline: false } : u));
-      setUser(null);
-    }
-  };
-
-  const createCase = (newCaseData: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => {
-    if (!user) return;
-    const newCase: Case = {
-      ...newCaseData,
-      id: `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      assignedAgent: user.username,
-      isPublic: false // Default to private
-    };
-    setCases([newCase, ...cases]);
-    addLog("CASE_CREATE", `Created case ${newCase.title}`, newCase.id);
-    toast({ title: "Case Created", description: `Case ${newCase.id} initiated successfully.` });
-  };
-
-  const updateCase = (id: string, updates: Partial<Case>) => {
-    setCases(prev => prev.map(c => c.id === id ? { ...c, ...updates, updatedAt: new Date().toISOString() } : c));
-    addLog("CASE_UPDATE", `Updated case details`, id);
-    toast({ title: "Case Updated", description: `Case ${id} modified.` });
-  };
-
-  const deleteCase = (id: string) => {
-    if (!user || (user.role !== "Management" && user.role !== "Overseer")) {
-      toast({ variant: "destructive", title: "Unauthorized", description: "Insufficient clearance level." });
-      return;
-    }
-    setCases(prev => prev.filter(c => c.id !== id));
-    addLog("CASE_DELETE", `Deleted case`, id);
-    toast({ title: "Case Deleted", description: `Case ${id} removed from database.` });
-  };
-
-  const suspendUser = (id: string) => {
-    if (!user || user.role !== "Overseer") return;
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, isSuspended: true } : u));
-    addLog("USER_SUSPEND", `Suspended user access`, id);
-    toast({ title: "User Suspended", description: "Agent access revoked." });
-  };
-  
-  const unsuspendUser = (id: string) => {
-    if (!user || user.role !== "Overseer") return;
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, isSuspended: false } : u));
-    addLog("USER_UNSUSPEND", `Restored user access`, id);
-    toast({ title: "User Restored", description: "Agent access restored." });
-  };
-
-  const toggleCasePublic = (id: string) => {
-    if (!user || user.role !== "Overseer") {
-        toast({ variant: "destructive", title: "Unauthorized", description: "Only Overseers can change public visibility." });
-        return;
-    }
-    const targetCase = cases.find(c => c.id === id);
-    if (targetCase) {
-        const newStatus = !targetCase.isPublic;
-        setCases(prev => prev.map(c => c.id === id ? { ...c, isPublic: newStatus } : c));
-        addLog("CASE_PUBLIC_TOGGLE", `Changed public visibility to ${newStatus}`, id);
-        toast({ title: newStatus ? "Case Published" : "Case Hidden", description: `Case ${id} is now ${newStatus ? "PUBLIC" : "PRIVATE"}.` });
-    }
-  };
-
-  // Check for suspension status on every user update or role change
+  // Check auth status on mount
   useEffect(() => {
-    if (user) {
-      const currentUserState = users.find(u => u.id === user.id);
-      if (currentUserState && currentUserState.isSuspended) {
-        logout();
-        toast({ 
-          variant: "destructive", 
-          title: "Connection Terminated", 
-          description: "Your clearance has been revoked by Overseer. IP Address logged and blacklisted." 
-        });
+    async function checkAuth() {
+      try {
+        // Check IP status
+        const ipData = await api.auth.checkIp();
+        setClientIp(ipData.ip);
+        setIsIpBanned(ipData.isBanned);
+
+        if (ipData.isBanned) {
+          setLoading(false);
+          return;
+        }
+
+        // Check if user is logged in
+        const userData = await api.auth.me();
+        setUser(userData);
+        await loadUserData();
+      } catch (error) {
+        // Not logged in
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
     }
-  }, [users, user, toast]);
+    checkAuth();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      const [casesData, usersData, logsData] = await Promise.all([
+        api.cases.getAll(),
+        api.users.getAll().catch(() => []), // May not have permission
+        api.logs.getAll().catch(() => []), // May not have permission
+      ]);
+      
+      setCases(casesData);
+      setUsers(usersData);
+      setLogs(logsData);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    }
+  };
+
+  const refreshData = async () => {
+    if (user) {
+      await loadUserData();
+    }
+  };
+
+  const login = async (username: string, password: string = "password"): Promise<boolean> => {
+    try {
+      const userData = await api.auth.login(username, password);
+      setUser(userData);
+      await loadUserData();
+      return true;
+    } catch (error: any) {
+      if (error.message === "IP_BANNED") {
+        setIsIpBanned(true);
+        toast({ variant: "destructive", title: "CONNECTION REFUSED", description: `IP ADDRESS ${clientIp} IS BLACKLISTED.` });
+      } else {
+        toast({ variant: "destructive", title: "Access Denied", description: error.message || "Login failed" });
+      }
+      return false;
+    }
+  };
+
+  const register = async (username: string, password: string, inviteCode: string): Promise<boolean> => {
+    try {
+      const userData = await api.auth.register(username, password, inviteCode);
+      setUser(userData);
+      await loadUserData();
+      return true;
+    } catch (error: any) {
+      if (error.message === "IP_BANNED") {
+        setIsIpBanned(true);
+        toast({ variant: "destructive", title: "CONNECTION REFUSED", description: `IP ADDRESS ${clientIp} IS BLACKLISTED.` });
+      } else {
+        toast({ variant: "destructive", title: "Registration Failed", description: error.message || "Registration failed" });
+      }
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await api.auth.logout();
+      setUser(null);
+      setUsers([]);
+      setCases([]);
+      setLogs([]);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const createCase = async (newCaseData: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => {
+    try {
+      const newCase = await api.cases.create(newCaseData);
+      setCases([newCase, ...cases]);
+      toast({ title: "Case Created", description: `Case ${newCase.id} initiated successfully.` });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to create case" });
+    }
+  };
+
+  const updateCase = async (id: string, updates: Partial<Case>) => {
+    try {
+      const updatedCase = await api.cases.update(id, updates);
+      setCases(prev => prev.map(c => c.id === id ? updatedCase : c));
+      toast({ title: "Case Updated", description: `Case ${id} modified.` });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to update case" });
+    }
+  };
+
+  const deleteCase = async (id: string) => {
+    try {
+      await api.cases.delete(id);
+      setCases(prev => prev.filter(c => c.id !== id));
+      toast({ title: "Case Deleted", description: `Case ${id} removed from database.` });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to delete case" });
+    }
+  };
+
+  const suspendUser = async (id: string) => {
+    try {
+      const updatedUser = await api.users.suspend(id);
+      setUsers(prev => prev.map(u => u.id === id ? updatedUser : u));
+      toast({ title: "User Suspended", description: "Agent access revoked." });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to suspend user" });
+    }
+  };
+
+  const unsuspendUser = async (id: string) => {
+    try {
+      const updatedUser = await api.users.unsuspend(id);
+      setUsers(prev => prev.map(u => u.id === id ? updatedUser : u));
+      toast({ title: "User Restored", description: "Agent access restored." });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to restore user" });
+    }
+  };
+
+  const toggleCasePublic = async (id: string) => {
+    try {
+      const updatedCase = await api.cases.togglePublic(id);
+      setCases(prev => prev.map(c => c.id === id ? updatedCase : c));
+      toast({ 
+        title: updatedCase.isPublic ? "Case Published" : "Case Hidden", 
+        description: `Case ${id} is now ${updatedCase.isPublic ? "PUBLIC" : "PRIVATE"}.` 
+      });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to toggle visibility" });
+    }
+  };
+
+  // Monitor for suspension (kicked out)
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (user) {
+        try {
+          await api.auth.me();
+        } catch (error) {
+          // Session expired or user was suspended
+          setUser(null);
+          toast({ 
+            variant: "destructive", 
+            title: "Connection Terminated", 
+            description: "Your session has expired or your clearance has been revoked." 
+          });
+        }
+      }
+    }, 30000); // Check every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [user, toast]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-background text-foreground font-mono">
+      <div className="text-center">
+        <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p className="text-sm text-muted-foreground">INITIALIZING SECURE CONNECTION...</p>
+      </div>
+    </div>;
+  }
 
   return (
     <AuthContext.Provider value={{ 
-      user, users, cases, logs, clientIp, isIpBanned,
+      user, users, cases, logs, clientIp, isIpBanned, loading,
       login, register, logout, 
       createCase, updateCase, deleteCase, 
-      suspendUser, unsuspendUser, toggleCasePublic
+      suspendUser, unsuspendUser, toggleCasePublic,
+      refreshData
     }}>
       {children}
     </AuthContext.Provider>

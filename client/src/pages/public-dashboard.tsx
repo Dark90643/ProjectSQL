@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/auth-context";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,29 +13,55 @@ import {
   Eye,
   RefreshCcw
 } from "lucide-react";
+import { api } from "@/lib/api";
+
+interface Case {
+  id: string;
+  title: string;
+  description: string;
+  status: "Active" | "Closed" | "Redacted";
+  priority: "Low" | "Medium" | "High" | "Critical";
+  assignedAgent: string;
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
+  content: string;
+  isPublic: boolean;
+}
 
 export default function PublicDashboard() {
-  const { cases } = useAuth();
+  const [cases, setCases] = useState<Case[]>([]);
   const [search, setSearch] = useState("");
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [loading, setLoading] = useState(true);
 
-  // Simulate "Live Updates"
-  useEffect(() => {
-    const interval = setInterval(() => {
+  const loadCases = async () => {
+    try {
       setIsSyncing(true);
-      setTimeout(() => {
-        setIsSyncing(false);
-        setLastUpdated(new Date());
-      }, 800);
-    }, 10000); // Sync every 10 seconds
+      const data = await api.cases.getPublic();
+      setCases(data);
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error("Error loading public cases:", error);
+    } finally {
+      setIsSyncing(false);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCases();
+    
+    // Sync every 10 seconds
+    const interval = setInterval(() => {
+      loadCases();
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const publicCases = cases.filter(c => c.isPublic);
-
-  const filteredCases = publicCases.filter(c => {
+  const filteredCases = cases.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || 
                           c.description.toLowerCase().includes(search.toLowerCase());
     return matchesSearch;
@@ -50,6 +75,15 @@ export default function PublicDashboard() {
       default: return "text-blue-500 border-blue-500/50 bg-blue-500/10";
     }
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+      <div className="text-center font-mono">
+        <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p className="text-sm text-muted-foreground">LOADING PUBLIC RECORDS...</p>
+      </div>
+    </div>;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">

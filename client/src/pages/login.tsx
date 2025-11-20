@@ -43,9 +43,8 @@ export default function Login() {
     if (isIpBanned) return;
     setIsLoading(true);
     setAuthError("");
-    await new Promise(resolve => setTimeout(resolve, 800));
     
-    const success = await login(values.username);
+    const success = await login(values.username, values.password);
     if (success) {
       setLocation("/dashboard");
     } else {
@@ -58,9 +57,8 @@ export default function Login() {
     if (isIpBanned) return;
     setIsLoading(true);
     setAuthError("");
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const success = await register(values.username, values.inviteCode);
+    const success = await register(values.username, values.password, values.inviteCode);
     if (success) {
       setLocation("/dashboard");
     } else {
@@ -141,7 +139,7 @@ export default function Login() {
                             <FormControl>
                               <div className="relative">
                                 <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="ENTER ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                                <Input placeholder="ENTER ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" data-testid="input-username" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -157,7 +155,7 @@ export default function Login() {
                             <FormControl>
                               <div className="relative">
                                 <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                                <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" data-testid="input-password" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -172,7 +170,7 @@ export default function Login() {
                         </div>
                       )}
 
-                      <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                      <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading} data-testid="button-login">
                         {isLoading ? "VERIFYING..." : "ACCESS TERMINAL"}
                       </Button>
                     </form>
@@ -191,7 +189,7 @@ export default function Login() {
                             <FormControl>
                               <div className="relative">
                                 <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="NEW ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                                <Input placeholder="NEW ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" data-testid="input-register-username" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -207,7 +205,7 @@ export default function Login() {
                             <FormControl>
                               <div className="relative">
                                 <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                                <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" data-testid="input-register-password" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -223,7 +221,7 @@ export default function Login() {
                             <FormControl>
                               <div className="relative">
                                 <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="XXXXX-XXX" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                                <Input placeholder="XXXXX-XXX" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" data-testid="input-invite-code" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -238,7 +236,7 @@ export default function Login() {
                         </div>
                       )}
 
-                      <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                      <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading} data-testid="button-register">
                         {isLoading ? "PROCESSING..." : "INITIALIZE ACCOUNT"}
                       </Button>
                     </form>
