@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, KeyRound, Lock, Terminal } from "lucide-react";
+import { Shield, KeyRound, Lock, Terminal, AlertOctagon } from "lucide-react";
 import generatedImage from '@assets/generated_images/dark_abstract_data_visualization_background_with_grid_lines_and_world_map_elements.png';
 
 const loginSchema = z.object({
@@ -24,7 +24,7 @@ const registerSchema = z.object({
 });
 
 export default function Login() {
-  const { login, register } = useAuth();
+  const { login, register, isIpBanned, clientIp } = useAuth();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -40,9 +40,9 @@ export default function Login() {
   });
 
   async function onLogin(values: z.infer<typeof loginSchema>) {
+    if (isIpBanned) return;
     setIsLoading(true);
     setAuthError("");
-    // Simulate network delay for realism
     await new Promise(resolve => setTimeout(resolve, 800));
     
     const success = await login(values.username);
@@ -55,6 +55,7 @@ export default function Login() {
   }
 
   async function onRegister(values: z.infer<typeof registerSchema>) {
+    if (isIpBanned) return;
     setIsLoading(true);
     setAuthError("");
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -63,7 +64,6 @@ export default function Login() {
     if (success) {
       setLocation("/dashboard");
     } else {
-      // Toast handles specific errors in context, but general fallback:
       setAuthError("Registration failed. Check clearance code.");
     }
     setIsLoading(false);
@@ -89,147 +89,163 @@ export default function Login() {
 
       <div className="relative z-30 w-full max-w-md p-4">
         <div className="text-center mb-8 space-y-2">
-          <div className="mx-auto w-16 h-16 bg-primary/10 border border-primary/50 rounded-full flex items-center justify-center text-primary animate-pulse">
-            <Shield size={32} />
+          <div className={`mx-auto w-16 h-16 border rounded-full flex items-center justify-center animate-pulse ${
+            isIpBanned ? "bg-destructive/10 border-destructive text-destructive" : "bg-primary/10 border-primary/50 text-primary"
+          }`}>
+            {isIpBanned ? <AlertOctagon size={32} /> : <Shield size={32} />}
           </div>
-          <h1 className="font-mono text-3xl font-bold tracking-tighter text-white glow-text">
-            AEGIS_NET
+          <h1 className={`font-mono text-3xl font-bold tracking-tighter glow-text ${isIpBanned ? "text-destructive" : "text-white"}`}>
+            {isIpBanned ? "ACCESS_DENIED" : "AEGIS_NET"}
           </h1>
           <p className="text-primary/60 font-mono text-sm tracking-widest uppercase">
-            Secure Intelligence Terminal
+            {isIpBanned ? "TERMINAL LOCKDOWN INITIATED" : "Secure Intelligence Terminal"}
           </p>
         </div>
 
-        <Card className="glass-panel border-primary/20 shadow-2xl shadow-primary/5">
+        <Card className={`glass-panel shadow-2xl ${isIpBanned ? "border-destructive/50 shadow-destructive/10" : "border-primary/20 shadow-primary/5"}`}>
           <CardHeader className="pb-2">
-            <CardTitle className="font-mono text-center text-xl">AUTHENTICATE</CardTitle>
+            <CardTitle className={`font-mono text-center text-xl ${isIpBanned ? "text-destructive" : ""}`}>
+              {isIpBanned ? "CONNECTION REFUSED" : "AUTHENTICATE"}
+            </CardTitle>
             <CardDescription className="text-center font-mono text-xs">
-              ENTER CREDENTIALS TO ACCESS CLASSIFIED DATA
+              {isIpBanned ? `IP ADDRESS ${clientIp} HAS BEEN BLACKLISTED` : "ENTER CREDENTIALS TO ACCESS CLASSIFIED DATA"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-black/40 border border-white/10">
-                <TabsTrigger value="login" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">LOGIN</TabsTrigger>
-                <TabsTrigger value="register" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">REGISTER</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="login">
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4 mt-4">
-                    <FormField
-                      control={loginForm.control}
-                      name="username"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Agent ID</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="ENTER ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+            {isIpBanned ? (
+               <div className="p-6 border border-destructive/20 bg-destructive/5 rounded text-center space-y-4">
+                 <p className="font-mono text-xs text-destructive">
+                   Your workstation has been flagged for suspicious activity or clearance revocation. All access attempts are being logged.
+                 </p>
+                 <div className="font-mono text-[10px] text-muted-foreground">
+                   ERROR_CODE: 0x99_IP_BAN<br/>
+                   REF: {clientIp}
+                 </div>
+               </div>
+            ) : (
+              <Tabs defaultValue="login" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-black/40 border border-white/10">
+                  <TabsTrigger value="login" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">LOGIN</TabsTrigger>
+                  <TabsTrigger value="register" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">REGISTER</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="login">
+                  <Form {...loginForm}>
+                    <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4 mt-4">
+                      <FormField
+                        control={loginForm.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Agent ID</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input placeholder="ENTER ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={loginForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Passcode</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      {authError && (
+                        <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
+                          <ShieldAlert className="h-4 w-4" />
+                          {authError}
+                        </div>
                       )}
-                    />
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Passcode</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    {authError && (
-                      <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
-                        <ShieldAlert className="h-4 w-4" />
-                        {authError}
-                      </div>
-                    )}
 
-                    <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
-                      {isLoading ? "VERIFYING..." : "ACCESS TERMINAL"}
-                    </Button>
-                  </form>
-                </Form>
-              </TabsContent>
-              
-              <TabsContent value="register">
-                <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4 mt-4">
-                    <FormField
-                      control={registerForm.control}
-                      name="username"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Create Agent ID</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="NEW ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Create Passcode</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="inviteCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Clearance Code</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="XXXXX-XXX" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                        {isLoading ? "VERIFYING..." : "ACCESS TERMINAL"}
+                      </Button>
+                    </form>
+                  </Form>
+                </TabsContent>
+                
+                <TabsContent value="register">
+                  <Form {...registerForm}>
+                    <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4 mt-4">
+                      <FormField
+                        control={registerForm.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Create Agent ID</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input placeholder="NEW ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={registerForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Create Passcode</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={registerForm.control}
+                        name="inviteCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Clearance Code</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input placeholder="XXXXX-XXX" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    {authError && (
-                      <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
-                        <ShieldAlert className="h-4 w-4" />
-                        {authError}
-                      </div>
-                    )}
+                      {authError && (
+                        <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
+                          <ShieldAlert className="h-4 w-4" />
+                          {authError}
+                        </div>
+                      )}
 
-                    <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
-                      {isLoading ? "PROCESSING..." : "INITIALIZE ACCOUNT"}
-                    </Button>
-                  </form>
-                </Form>
-              </TabsContent>
-            </Tabs>
+                      <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                        {isLoading ? "PROCESSING..." : "INITIALIZE ACCOUNT"}
+                      </Button>
+                    </form>
+                  </Form>
+                </TabsContent>
+              </Tabs>
+            )}
           </CardContent>
         </Card>
         

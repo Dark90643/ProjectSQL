@@ -10,6 +10,8 @@ interface AuthContextType {
   users: User[];
   cases: Case[];
   logs: Log[];
+  clientIp: string;
+  isIpBanned: boolean;
   login: (username: string) => Promise<boolean>;
   register: (username: string, inviteCode: string) => Promise<boolean>;
   logout: () => void;
@@ -22,6 +24,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const generateRandomIp = () => {
+  return `192.168.1.${Math.floor(Math.random() * 150) + 10}`;
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>(INITIAL_USERS);
@@ -29,6 +35,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<Log[]>(INITIAL_LOGS);
   const [availableCodes, setAvailableCodes] = useState<string[]>(INVITE_CODES);
   const { toast } = useToast();
+  
+  // Simulate Client IP
+  const [clientIp] = useState(() => {
+    const stored = localStorage.getItem("mock_client_ip");
+    if (stored) return stored;
+    const newIp = generateRandomIp();
+    localStorage.setItem("mock_client_ip", newIp);
+    return newIp;
+  });
+
+  // Check if current IP belongs to ANY suspended user
+  const isIpBanned = users.some(u => u.isSuspended && u.ip === clientIp);
 
   // Helper to add logs
   const addLog = (action: string, details: string, targetId?: string) => {
@@ -45,21 +63,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (username: string) => {
+    if (isIpBanned) {
+      toast({ variant: "destructive", title: "CONNECTION REFUSED", description: `IP ADDRESS ${clientIp} IS BLACKLISTED.` });
+      return false;
+    }
+
     const foundUser = users.find(u => u.username === username);
     if (foundUser) {
       if (foundUser.isSuspended) {
         toast({ variant: "destructive", title: "Access Denied", description: "Account has been suspended by Overseer." });
         return false;
       }
+      
+      // Update user IP to current client IP on login
+      if (foundUser.ip !== clientIp) {
+        setUsers(prev => prev.map(u => u.id === foundUser.id ? { ...u, ip: clientIp } : u));
+      }
+      
       setUser(foundUser);
-      // Log login is tricky because state update is async, but for mock it's fine to assume success
-      // We won't log the login here to avoid complexity with state, but we could.
       return true;
     }
     return false;
   };
 
   const register = async (username: string, inviteCode: string) => {
+    if (isIpBanned) {
+      toast({ variant: "destructive", title: "CONNECTION REFUSED", description: `IP ADDRESS ${clientIp} IS BLACKLISTED.` });
+      return false;
+    }
+
     if (!availableCodes.includes(inviteCode)) {
       toast({ variant: "destructive", title: "Invalid Code", description: "The invite code is invalid or already used." });
       return false;
@@ -74,20 +106,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       id: `u-${Date.now()}`,
       username,
       role: "Agent", // Default role
-      isSuspended: false
+      isSuspended: false,
+      ip: clientIp
     };
 
     setUsers([...users, newUser]);
     setAvailableCodes(prev => prev.filter(c => c !== inviteCode));
     setUser(newUser);
     
-    // Add log for registration (manually creating log entry since user isn't set in state yet fully)
     const newLog: Log = {
       id: `log-${Date.now()}`,
       action: "REGISTER",
       userId: newUser.id,
       timestamp: new Date().toISOString(),
-      details: `New Agent registered with code ${inviteCode}`
+      details: `New Agent registered with code ${inviteCode} from IP ${clientIp}`
     };
     setLogs(prev => [newLog, ...prev]);
 
@@ -148,10 +180,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const currentUserState = users.find(u => u.id === user.id);
       if (currentUserState && currentUserState.isSuspended) {
         logout();
+        // We don't toast here anymore because the IP ban toast will likely trigger on next interaction or we want a specific message
+        // But actually, let's keep a specific message for the moment of suspension
         toast({ 
           variant: "destructive", 
           title: "Connection Terminated", 
-          description: "Your clearance has been revoked by Overseer." 
+          description: "Your clearance has been revoked by Overseer. IP Address logged and blacklisted." 
         });
       }
     }
@@ -159,7 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ 
-      user, users, cases, logs, 
+      user, users, cases, logs, clientIp, isIpBanned,
       login, register, logout, 
       createCase, updateCase, deleteCase, 
       suspendUser, unsuspendUser 

@@ -8,6 +8,7 @@ export interface User {
   username: string; // Custom User ID
   role: Role;
   isSuspended: boolean;
+  ip: string; // New field for IP simulation
 }
 
 export interface Case {
@@ -40,10 +41,10 @@ export const INVITE_CODES = [
 
 // Initial Mock Data
 export const INITIAL_USERS: User[] = [
-  { id: "u1", username: "OVERSEER_01", role: "Overseer", isSuspended: false },
-  { id: "u2", username: "MGM_DIRECTOR", role: "Management", isSuspended: false },
-  { id: "u3", username: "AGENT_FOX", role: "Agent", isSuspended: false },
-  { id: "u4", username: "AGENT_WOLF", role: "Agent", isSuspended: false },
+  { id: "u1", username: "OVERSEER_01", role: "Overseer", isSuspended: false, ip: "192.168.1.101" },
+  { id: "u2", username: "MGM_DIRECTOR", role: "Management", isSuspended: false, ip: "192.168.1.102" },
+  { id: "u3", username: "AGENT_FOX", role: "Agent", isSuspended: false, ip: "192.168.1.103" },
+  { id: "u4", username: "AGENT_WOLF", role: "Agent", isSuspended: false, ip: "192.168.1.104" },
 ];
 
 export const INITIAL_CASES: Case[] = [
