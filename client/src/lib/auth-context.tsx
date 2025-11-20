@@ -142,6 +142,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     toast({ title: "User Restored", description: "Agent access restored." });
   };
 
+  // Check for suspension status on every user update or role change
+  useEffect(() => {
+    if (user) {
+      const currentUserState = users.find(u => u.id === user.id);
+      if (currentUserState && currentUserState.isSuspended) {
+        logout();
+        toast({ 
+          variant: "destructive", 
+          title: "Connection Terminated", 
+          description: "Your clearance has been revoked by Overseer." 
+        });
+      }
+    }
+  }, [users, user, toast]);
+
   return (
     <AuthContext.Provider value={{ 
       user, users, cases, logs, 
