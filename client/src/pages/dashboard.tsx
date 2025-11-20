@@ -15,7 +15,8 @@ import {
   MoreHorizontal,
   Eye,
   Globe,
-  Lock
+  Lock,
+  Shield
 } from "lucide-react";
 import {
   DropdownMenu,
