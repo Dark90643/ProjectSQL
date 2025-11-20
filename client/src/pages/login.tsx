@@ -1,0 +1,266 @@
+import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useLocation } from "wouter";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Shield, KeyRound, Lock, Terminal } from "lucide-react";
+import generatedImage from '@assets/generated_images/dark_abstract_data_visualization_background_with_grid_lines_and_world_map_elements.png';
+
+const loginSchema = z.object({
+  username: z.string().min(1, "Identity required"),
+  password: z.string().min(1, "Passcode required"),
+});
+
+const registerSchema = z.object({
+  username: z.string().min(3, "Identity must be at least 3 characters"),
+  password: z.string().min(6, "Passcode must be at least 6 characters"),
+  inviteCode: z.string().min(1, "Clearance code required"),
+});
+
+export default function Login() {
+  const { login, register } = useAuth();
+  const [, setLocation] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { username: "", password: "" },
+  });
+
+  const registerForm = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { username: "", password: "", inviteCode: "" },
+  });
+
+  async function onLogin(values: z.infer<typeof loginSchema>) {
+    setIsLoading(true);
+    setAuthError("");
+    // Simulate network delay for realism
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    const success = await login(values.username);
+    if (success) {
+      setLocation("/dashboard");
+    } else {
+      setAuthError("Identity verification failed. Access denied.");
+    }
+    setIsLoading(false);
+  }
+
+  async function onRegister(values: z.infer<typeof registerSchema>) {
+    setIsLoading(true);
+    setAuthError("");
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const success = await register(values.username, values.inviteCode);
+    if (success) {
+      setLocation("/dashboard");
+    } else {
+      // Toast handles specific errors in context, but general fallback:
+      setAuthError("Registration failed. Check clearance code.");
+    }
+    setIsLoading(false);
+  }
+
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-black">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0 opacity-40"
+        style={{
+          backgroundImage: `url(${generatedImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      
+      {/* Overlay Gradient */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/80 to-transparent" />
+      
+      {/* Scanlines */}
+      <div className="scanline z-20" />
+
+      <div className="relative z-30 w-full max-w-md p-4">
+        <div className="text-center mb-8 space-y-2">
+          <div className="mx-auto w-16 h-16 bg-primary/10 border border-primary/50 rounded-full flex items-center justify-center text-primary animate-pulse">
+            <Shield size={32} />
+          </div>
+          <h1 className="font-mono text-3xl font-bold tracking-tighter text-white glow-text">
+            AEGIS_NET
+          </h1>
+          <p className="text-primary/60 font-mono text-sm tracking-widest uppercase">
+            Secure Intelligence Terminal
+          </p>
+        </div>
+
+        <Card className="glass-panel border-primary/20 shadow-2xl shadow-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="font-mono text-center text-xl">AUTHENTICATE</CardTitle>
+            <CardDescription className="text-center font-mono text-xs">
+              ENTER CREDENTIALS TO ACCESS CLASSIFIED DATA
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-black/40 border border-white/10">
+                <TabsTrigger value="login" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">LOGIN</TabsTrigger>
+                <TabsTrigger value="register" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">REGISTER</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="login">
+                <Form {...loginForm}>
+                  <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4 mt-4">
+                    <FormField
+                      control={loginForm.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Agent ID</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="ENTER ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={loginForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Passcode</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    {authError && (
+                      <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
+                        <ShieldAlert className="h-4 w-4" />
+                        {authError}
+                      </div>
+                    )}
+
+                    <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                      {isLoading ? "VERIFYING..." : "ACCESS TERMINAL"}
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+              
+              <TabsContent value="register">
+                <Form {...registerForm}>
+                  <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4 mt-4">
+                    <FormField
+                      control={registerForm.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Create Agent ID</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Terminal className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="NEW ID" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={registerForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Create Passcode</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input type="password" placeholder="••••••••" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={registerForm.control}
+                      name="inviteCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-mono text-xs uppercase text-muted-foreground">Clearance Code</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="XXXXX-XXX" {...field} className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {authError && (
+                      <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
+                        <ShieldAlert className="h-4 w-4" />
+                        {authError}
+                      </div>
+                    )}
+
+                    <Button type="submit" className="w-full font-mono bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                      {isLoading ? "PROCESSING..." : "INITIALIZE ACCOUNT"}
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+        
+        <div className="mt-8 text-center">
+          <p className="text-[10px] text-muted-foreground font-mono opacity-50">
+            UNAUTHORIZED ACCESS IS A CLASS A FELONY. <br/>
+            ALL ACTIONS ARE LOGGED AND MONITORED BY OVERSEER.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShieldAlert(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="M12 8v4" />
+      <path d="M12 16h.01" />
+    </svg>
+  )
+}
