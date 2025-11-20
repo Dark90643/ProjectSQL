@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, KeyRound, Lock, Terminal, AlertOctagon } from "lucide-react";
+import { Shield, KeyRound, Lock, Terminal, AlertOctagon, Globe } from "lucide-react";
 import generatedImage from '@assets/generated_images/dark_abstract_data_visualization_background_with_grid_lines_and_world_map_elements.png';
 
 const loginSchema = z.object({
@@ -246,6 +246,14 @@ export default function Login() {
                 </TabsContent>
               </Tabs>
             )}
+            
+            <div className="mt-4 pt-4 border-t border-white/10 flex justify-center">
+              <Link href="/public">
+                <Button variant="link" className="text-xs font-mono text-muted-foreground hover:text-primary gap-2">
+                  <Globe size={12} /> ACCESS PUBLIC DISCLOSURE TERMINAL
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
         

@@ -13,7 +13,9 @@ import {
   AlertTriangle,
   FileText,
   MoreHorizontal,
-  Eye
+  Eye,
+  Globe,
+  Lock
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,7 +26,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard() {
-  const { cases, user, deleteCase } = useAuth();
+  const { cases, user, deleteCase, toggleCasePublic } = useAuth();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
@@ -79,7 +81,7 @@ export default function Dashboard() {
                 {user.role === "Overseer" ? "L-5" : user.role === "Management" ? "L-4" : "L-3"}
               </p>
             </div>
-            <ShieldCheck className="text-foreground/20 h-8 w-8" />
+            <Shield className="text-foreground/20 h-8 w-8" />
           </CardContent>
         </Card>
         <Card className="bg-sidebar/50 border-sidebar-border">
@@ -138,7 +140,12 @@ export default function Dashboard() {
           </div>
         ) : (
           filteredCases.map(c => (
-            <Card key={c.id} className="group bg-card/50 border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-card/80">
+            <Card key={c.id} className="group bg-card/50 border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-card/80 relative overflow-hidden">
+              {c.isPublic && (
+                <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-mono px-2 py-1 rounded-bl">
+                  PUBLIC
+                </div>
+              )}
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <Badge variant="outline" className={`font-mono rounded-sm ${getPriorityColor(c.priority)}`}>
@@ -184,6 +191,19 @@ export default function Dashboard() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      {user.role === "Overseer" && (
+                        <DropdownMenuItem className="font-mono text-xs" onClick={() => toggleCasePublic(c.id)}>
+                          {c.isPublic ? (
+                            <>
+                              <Lock size={12} className="mr-2" /> MAKE PRIVATE
+                            </>
+                          ) : (
+                            <>
+                              <Globe size={12} className="mr-2" /> MAKE PUBLIC
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem className="text-destructive focus:text-destructive font-mono text-xs" onClick={() => deleteCase(c.id)}>
                         DELETE RECORD
                       </DropdownMenuItem>
@@ -197,24 +217,4 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}
-
-function ShieldCheck(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
 }

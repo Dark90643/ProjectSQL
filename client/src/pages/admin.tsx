@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, UserX, UserCheck, Activity } from "lucide-react";
+import { AlertTriangle, UserX, UserCheck, Activity, Wifi } from "lucide-react";
 
 export default function AdminPanel() {
   const { user, users, logs, suspendUser, unsuspendUser } = useAuth();
@@ -90,6 +90,7 @@ export default function AdminPanel() {
                       <TableHead className="font-mono text-xs">IDENTITY</TableHead>
                       <TableHead className="font-mono text-xs">CLEARANCE</TableHead>
                       <TableHead className="font-mono text-xs">STATUS</TableHead>
+                      <TableHead className="font-mono text-xs">CONNECTION</TableHead>
                       <TableHead className="font-mono text-xs text-right">ACTIONS</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -111,6 +112,16 @@ export default function AdminPanel() {
                              </span>
                            ) : (
                              <span className="text-green-500 text-xs font-mono">ACTIVE</span>
+                           )}
+                        </TableCell>
+                        <TableCell>
+                           {u.isOnline ? (
+                             <span className="flex items-center gap-1 text-green-400 text-xs font-mono animate-pulse">
+                               <div className="w-2 h-2 rounded-full bg-green-500" />
+                               ONLINE
+                             </span>
+                           ) : (
+                             <span className="text-muted-foreground text-xs font-mono opacity-50">OFFLINE</span>
                            )}
                         </TableCell>
                         <TableCell className="text-right">

@@ -15,11 +15,12 @@ interface AuthContextType {
   login: (username: string) => Promise<boolean>;
   register: (username: string, inviteCode: string) => Promise<boolean>;
   logout: () => void;
-  createCase: (newCase: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent">) => void;
+  createCase: (newCase: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => void;
   updateCase: (id: string, updates: Partial<Case>) => void;
   deleteCase: (id: string) => void;
   suspendUser: (id: string) => void;
   unsuspendUser: (id: string) => void;
+  toggleCasePublic: (id: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -75,12 +76,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return false;
       }
       
-      // Update user IP to current client IP on login
-      if (foundUser.ip !== clientIp) {
-        setUsers(prev => prev.map(u => u.id === foundUser.id ? { ...u, ip: clientIp } : u));
-      }
-      
-      setUser(foundUser);
+      // Set user online and update IP
+      const updatedUser = { ...foundUser, isOnline: true, ip: clientIp };
+      setUsers(prev => prev.map(u => u.id === foundUser.id ? updatedUser : u));
+      setUser(updatedUser);
       return true;
     }
     return false;
@@ -107,7 +106,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       username,
       role: "Agent", // Default role
       isSuspended: false,
-      ip: clientIp
+      ip: clientIp,
+      isOnline: true
     };
 
     setUsers([...users, newUser]);
@@ -127,17 +127,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    setUser(null);
+    if (user) {
+      // Set user offline
+      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, isOnline: false } : u));
+      setUser(null);
+    }
   };
 
-  const createCase = (newCaseData: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent">) => {
+  const createCase = (newCaseData: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => {
     if (!user) return;
     const newCase: Case = {
       ...newCaseData,
       id: `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      assignedAgent: user.username
+      assignedAgent: user.username,
+      isPublic: false // Default to private
     };
     setCases([newCase, ...cases]);
     addLog("CASE_CREATE", `Created case ${newCase.title}`, newCase.id);
@@ -174,14 +179,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     toast({ title: "User Restored", description: "Agent access restored." });
   };
 
+  const toggleCasePublic = (id: string) => {
+    if (!user || user.role !== "Overseer") {
+        toast({ variant: "destructive", title: "Unauthorized", description: "Only Overseers can change public visibility." });
+        return;
+    }
+    const targetCase = cases.find(c => c.id === id);
+    if (targetCase) {
+        const newStatus = !targetCase.isPublic;
+        setCases(prev => prev.map(c => c.id === id ? { ...c, isPublic: newStatus } : c));
+        addLog("CASE_PUBLIC_TOGGLE", `Changed public visibility to ${newStatus}`, id);
+        toast({ title: newStatus ? "Case Published" : "Case Hidden", description: `Case ${id} is now ${newStatus ? "PUBLIC" : "PRIVATE"}.` });
+    }
+  };
+
   // Check for suspension status on every user update or role change
   useEffect(() => {
     if (user) {
       const currentUserState = users.find(u => u.id === user.id);
       if (currentUserState && currentUserState.isSuspended) {
         logout();
-        // We don't toast here anymore because the IP ban toast will likely trigger on next interaction or we want a specific message
-        // But actually, let's keep a specific message for the moment of suspension
         toast({ 
           variant: "destructive", 
           title: "Connection Terminated", 
@@ -196,7 +213,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user, users, cases, logs, clientIp, isIpBanned,
       login, register, logout, 
       createCase, updateCase, deleteCase, 
-      suspendUser, unsuspendUser 
+      suspendUser, unsuspendUser, toggleCasePublic
     }}>
       {children}
     </AuthContext.Provider>

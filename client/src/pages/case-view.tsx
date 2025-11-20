@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, Save, Trash2, Lock, FileWarning } from "lucide-react";
+import { ChevronLeft, Save, Trash2, Lock, FileWarning, Globe } from "lucide-react";
 
 const caseSchema = z.object({
   title: z.string().min(1, "Title required"),
@@ -36,7 +36,7 @@ const caseSchema = z.object({
 export default function CaseView() {
   const [, params] = useRoute("/cases/:id");
   const [, setLocation] = useLocation();
-  const { cases, user, createCase, updateCase, deleteCase } = useAuth();
+  const { cases, user, createCase, updateCase, deleteCase, toggleCasePublic } = useAuth();
   
   const isNew = params?.id === "new";
   const existingCase = cases.find(c => c.id === params?.id);
@@ -46,6 +46,7 @@ export default function CaseView() {
   // Permission Checks
   const canEdit = user?.role === "Management" || user?.role === "Overseer" || (user?.role === "Agent" && existingCase?.assignedAgent === user?.username) || isNew;
   const canDelete = user?.role === "Management" || user?.role === "Overseer";
+  const isOverseer = user?.role === "Overseer";
 
   const form = useForm<z.infer<typeof caseSchema>>({
     resolver: zodResolver(caseSchema),
@@ -100,9 +101,16 @@ export default function CaseView() {
             <ChevronLeft />
           </Button>
           <div>
-            <h1 className="font-mono text-2xl font-bold tracking-tight">
-              {isNew ? "NEW_CASE_FILE" : existingCase?.id}
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-mono text-2xl font-bold tracking-tight">
+                {isNew ? "NEW_CASE_FILE" : existingCase?.id}
+              </h1>
+              {!isNew && existingCase?.isPublic && (
+                 <div className="flex items-center gap-1 text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-mono">
+                   <Globe size={10} /> PUBLIC
+                 </div>
+              )}
+            </div>
             {!isNew && (
               <p className="font-mono text-xs text-muted-foreground">
                 LAST UPDATE: {new Date(existingCase!.updatedAt).toLocaleString()}
@@ -112,6 +120,17 @@ export default function CaseView() {
         </div>
 
         <div className="flex gap-2">
+          {!isNew && isOverseer && (
+             <Button 
+               variant="outline" 
+               className={`font-mono gap-2 ${existingCase?.isPublic ? "text-primary border-primary" : ""}`}
+               onClick={() => toggleCasePublic(existingCase!.id)}
+             >
+               {existingCase?.isPublic ? <Lock size={14} /> : <Globe size={14} />}
+               {existingCase?.isPublic ? "MAKE PRIVATE" : "MAKE PUBLIC"}
+             </Button>
+          )}
+
           {!isNew && !isEditing && canEdit && (
             <Button variant="outline" className="font-mono" onClick={() => setIsEditing(true)}>
               EDIT RECORD
@@ -129,9 +148,11 @@ export default function CaseView() {
       {/* Content */}
       <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
         <CardHeader>
-           <div className="flex items-center gap-2 mb-2">
-             <Lock className="h-4 w-4 text-primary" />
-             <span className="font-mono text-xs text-primary tracking-widest uppercase">Classified Document</span>
+           <div className="flex items-center justify-between mb-2">
+             <div className="flex items-center gap-2">
+               <Lock className="h-4 w-4 text-primary" />
+               <span className="font-mono text-xs text-primary tracking-widest uppercase">Classified Document</span>
+             </div>
            </div>
            <div className="h-px w-full bg-gradient-to-r from-primary/50 to-transparent" />
         </CardHeader>

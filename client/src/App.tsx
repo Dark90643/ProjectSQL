@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
+import PublicDashboard from "@/pages/public-dashboard";
 import CaseView from "@/pages/case-view";
 import AdminPanel from "@/pages/admin";
 import Layout from "@/components/layout";
@@ -36,21 +37,23 @@ function Router() {
   }, [user, location, setLocation]);
 
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Login} />
-        <Route path="/dashboard">
-          <ProtectedRoute component={Dashboard} path="/dashboard" />
-        </Route>
-        <Route path="/cases/:id">
-          <ProtectedRoute component={CaseView} path="/cases/:id" />
-        </Route>
-        <Route path="/admin">
-          <ProtectedRoute component={AdminPanel} path="/admin" />
-        </Route>
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      <Route path="/public" component={PublicDashboard} />
+      <Route path="/" component={Login} />
+      
+      {/* Protected Routes need Layout */}
+      <Route path="/dashboard">
+        <Layout><ProtectedRoute component={Dashboard} path="/dashboard" /></Layout>
+      </Route>
+      <Route path="/cases/:id">
+        <Layout><ProtectedRoute component={CaseView} path="/cases/:id" /></Layout>
+      </Route>
+      <Route path="/admin">
+        <Layout><ProtectedRoute component={AdminPanel} path="/admin" /></Layout>
+      </Route>
+      
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 

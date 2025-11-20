@@ -9,6 +9,7 @@ export interface User {
   role: Role;
   isSuspended: boolean;
   ip: string; // New field for IP simulation
+  isOnline: boolean; // New field for Online Status
 }
 
 export interface Case {
@@ -22,6 +23,7 @@ export interface Case {
   updatedAt: string;
   tags: string[];
   content: string;
+  isPublic: boolean; // New field for Public visibility
 }
 
 export interface Log {
@@ -41,10 +43,10 @@ export const INVITE_CODES = [
 
 // Initial Mock Data
 export const INITIAL_USERS: User[] = [
-  { id: "u1", username: "OVERSEER_01", role: "Overseer", isSuspended: false, ip: "192.168.1.101" },
-  { id: "u2", username: "MGM_DIRECTOR", role: "Management", isSuspended: false, ip: "192.168.1.102" },
-  { id: "u3", username: "AGENT_FOX", role: "Agent", isSuspended: false, ip: "192.168.1.103" },
-  { id: "u4", username: "AGENT_WOLF", role: "Agent", isSuspended: false, ip: "192.168.1.104" },
+  { id: "u1", username: "OVERSEER_01", role: "Overseer", isSuspended: false, ip: "192.168.1.101", isOnline: true },
+  { id: "u2", username: "MGM_DIRECTOR", role: "Management", isSuspended: false, ip: "192.168.1.102", isOnline: false },
+  { id: "u3", username: "AGENT_FOX", role: "Agent", isSuspended: false, ip: "192.168.1.103", isOnline: false },
+  { id: "u4", username: "AGENT_WOLF", role: "Agent", isSuspended: false, ip: "192.168.1.104", isOnline: false },
 ];
 
 export const INITIAL_CASES: Case[] = [
@@ -58,7 +60,8 @@ export const INITIAL_CASES: Case[] = [
     createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
     updatedAt: new Date(Date.now() - 3600000).toISOString(),
     tags: ["Internal", "Data Breach"],
-    content: "Subject was observed accessing terminal 442 at 0300 hours. Logs indicate a transfer of 4TB of encrypted data. Surveillance footage is corrupted for the time window."
+    content: "Subject was observed accessing terminal 442 at 0300 hours. Logs indicate a transfer of 4TB of encrypted data. Surveillance footage is corrupted for the time window.",
+    isPublic: false
   },
   {
     id: "CASE-2024-002",
@@ -70,7 +73,8 @@ export const INITIAL_CASES: Case[] = [
     createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
     updatedAt: new Date(Date.now() - 86400000).toISOString(),
     tags: ["Signals", "Encryption"],
-    content: "Signals originate from coordinates [REDACTED]. Pattern analysis suggests a new cipher variation of the standard 256-bit protocol."
+    content: "Signals originate from coordinates [REDACTED]. Pattern analysis suggests a new cipher variation of the standard 256-bit protocol.",
+    isPublic: true
   },
   {
     id: "CASE-2023-884",
@@ -82,7 +86,8 @@ export const INITIAL_CASES: Case[] = [
     createdAt: "2023-11-15T10:00:00Z",
     updatedAt: "2023-12-01T14:30:00Z",
     tags: ["Infrastructure", "Classified"],
-    content: "[THIS FILE HAS BEEN REDACTED BY OVERSEER ORDER 772]"
+    content: "[THIS FILE HAS BEEN REDACTED BY OVERSEER ORDER 772]",
+    isPublic: false
   }
 ];
 
