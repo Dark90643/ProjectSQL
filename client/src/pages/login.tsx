@@ -28,6 +28,10 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [loggedInUsername, setLoggedInUsername] = useState("");
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -44,13 +48,68 @@ export default function Login() {
     setIsLoading(true);
     setAuthError("");
     
-    const success = await login(values.username, values.password);
-    if (success) {
-      setLocation("/dashboard");
-    } else {
-      setAuthError("Identity verification failed. Access denied.");
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setAuthError(error.error || "Identity verification failed. Access denied.");
+        setIsLoading(false);
+        return;
+      }
+
+      const user = await response.json();
+      
+      if (user.requiresInviteVerification) {
+        setNeedsVerification(true);
+        setLoggedInUsername(values.username);
+        setVerificationCode("");
+        loginForm.reset();
+      } else {
+        setLocation("/dashboard");
+      }
+    } catch (error: any) {
+      setAuthError("Authentication error. Please try again.");
     }
     setIsLoading(false);
+  }
+
+  async function onVerifyInvite() {
+    if (!verificationCode.trim()) {
+      setAuthError("Verification code required");
+      return;
+    }
+
+    setVerifying(true);
+    setAuthError("");
+
+    try {
+      const response = await fetch("/api/invites/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ code: verificationCode }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setAuthError(error.error || "Verification failed");
+        setVerifying(false);
+        return;
+      }
+
+      setNeedsVerification(false);
+      setVerificationCode("");
+      setLocation("/dashboard");
+    } catch (error: any) {
+      setAuthError("Verification error. Please try again.");
+    }
+    setVerifying(false);
   }
 
   async function onRegister(values: z.infer<typeof registerSchema>) {
@@ -120,6 +179,60 @@ export default function Login() {
                    REF: {clientIp}
                  </div>
                </div>
+            ) : needsVerification ? (
+              <div className="space-y-4 mt-4">
+                <div className="p-4 bg-primary/10 border border-primary/30 rounded space-y-2">
+                  <p className="font-mono text-sm text-primary font-bold">ACCOUNT VERIFICATION REQUIRED</p>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    Your account has been provisioned by an Overseer. Enter your clearance verification code to complete activation.
+                  </p>
+                </div>
+                <div>
+                  <label className="font-mono text-xs uppercase text-muted-foreground mb-2 block">Clearance Verification Code</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      value={verificationCode}
+                      onChange={(e) => setVerificationCode(e.target.value)}
+                      placeholder="ENTER CODE"
+                      className="pl-9 bg-black/40 border-white/10 font-mono focus-visible:ring-primary/50"
+                      data-testid="input-verification-code"
+                    />
+                  </div>
+                </div>
+
+                {authError && (
+                  <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs font-mono text-destructive flex items-center gap-2">
+                    <ShieldAlert className="h-4 w-4" />
+                    {authError}
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 font-mono"
+                    onClick={() => {
+                      setNeedsVerification(false);
+                      setVerificationCode("");
+                      setAuthError("");
+                    }}
+                    data-testid="button-cancel-verify"
+                  >
+                    CANCEL
+                  </Button>
+                  <Button
+                    type="button"
+                    className="flex-1 font-mono bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={onVerifyInvite}
+                    disabled={verifying}
+                    data-testid="button-verify-code"
+                  >
+                    {verifying ? "VERIFYING..." : "VERIFY ACCOUNT"}
+                  </Button>
+                </div>
+              </div>
             ) : (
               <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-black/40 border border-white/10">

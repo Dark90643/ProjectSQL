@@ -191,9 +191,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Update user to online
         const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+        const fullUser = await storage.getUser(user.id);
         await storage.updateUser(user.id, { isOnline: true, ip: clientIp });
 
-        res.json(user);
+        res.json({
+          ...user,
+          requiresInviteVerification: fullUser?.requiresInviteVerification || false,
+        });
       });
     })(req, res, next);
   });

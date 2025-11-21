@@ -26,7 +26,7 @@ function ProtectedRoute({ component: Component, path }: { component: React.Compo
   return <Component />;
 }
 
-function Router() {
+function RouterContent() {
   const { user } = useAuth();
   const [location, setLocation] = useLocation();
 
@@ -61,7 +61,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router />
+        <RouterContent />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

@@ -11,6 +11,7 @@ interface User {
   isSuspended: boolean;
   ip: string;
   isOnline: boolean;
+  requiresInviteVerification?: boolean;
 }
 
 interface Case {
