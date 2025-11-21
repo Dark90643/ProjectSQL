@@ -159,6 +159,52 @@ export default function CaseView() {
     }
   };
 
+  const handleEncryptCase = async () => {
+    if (!existingCase) return;
+    try {
+      const response = await fetch(`/api/cases/${existingCase.id}/encrypt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        toast({ variant: "destructive", title: "Error", description: error.error });
+        return;
+      }
+
+      const { caseCode } = await response.json();
+      toast({ title: "Success", description: `Case encrypted with code: ${caseCode}` });
+      setLiveCase({ ...existingCase, caseCode });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to encrypt case" });
+    }
+  };
+
+  const handleDecryptCase = async () => {
+    if (!existingCase) return;
+    try {
+      const response = await fetch(`/api/cases/${existingCase.id}/decrypt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        toast({ variant: "destructive", title: "Error", description: error.error });
+        return;
+      }
+
+      toast({ title: "Success", description: "Case encryption removed" });
+      setLiveCase({ ...existingCase, caseCode: null });
+      setNeedsPassword(false);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to decrypt case" });
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
@@ -196,6 +242,22 @@ export default function CaseView() {
                {existingCase?.isPublic ? <Lock size={14} /> : <Globe size={14} />}
                {existingCase?.isPublic ? "MAKE PRIVATE" : "MAKE PUBLIC"}
              </Button>
+          )}
+
+          {!isNew && (user?.role === "Management" || user?.role === "Overseer") && (
+            <>
+              {(existingCase as any)?.caseCode ? (
+                <Button variant="outline" className="font-mono gap-2 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={handleDecryptCase}>
+                  <Lock size={14} />
+                  DECRYPT
+                </Button>
+              ) : (
+                <Button variant="outline" className="font-mono gap-2 text-primary border-primary/30 hover:bg-primary/10" onClick={handleEncryptCase}>
+                  <Lock size={14} />
+                  ENCRYPT
+                </Button>
+              )}
+            </>
           )}
 
           {!isNew && !isEditing && canEdit && (
