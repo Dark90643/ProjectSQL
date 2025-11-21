@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Trash2, RotateCcw, Clock } from "lucide-react";
 
+let restorationInProgress = false;
+
 interface DeletedCaseLog {
   id: string;
   action: string;
@@ -46,7 +48,11 @@ export default function Recovery() {
   }, [toast]);
 
   const handleRestore = async (log: DeletedCaseLog) => {
+    if (restorationInProgress) return;
+    
+    restorationInProgress = true;
     setRestoringId(log.targetId);
+    
     try {
       const response = await fetch("/api/recovery/restore", {
         method: "POST",
@@ -62,14 +68,25 @@ export default function Recovery() {
         return;
       }
 
-      toast({ title: "Success", description: "Case restored successfully. It will now appear in your dashboard." });
-      setDeletedCases(deletedCases.filter(c => c.targetId !== log.targetId));
+      toast({ title: "Success", description: "Case restored successfully. Refreshing dashboard..." });
       
-      // Refresh cases by making a request to sync with backend
-      await fetch("/api/cases", { credentials: "include" });
+      // Remove from deleted cases list
+      setDeletedCases(prev => prev.filter(c => c.targetId !== log.targetId));
+      
+      // Refresh the entire data context
+      setTimeout(async () => {
+        try {
+          // Refresh auth context data which includes cases
+          window.location.reload();
+        } catch (e) {
+          console.error("Failed to refresh:", e);
+        }
+      }, 500);
     } catch (error) {
+      console.error("Restore error:", error);
       toast({ variant: "destructive", title: "Error", description: "Failed to restore case" });
     } finally {
+      restorationInProgress = false;
       setRestoringId(null);
     }
   };
