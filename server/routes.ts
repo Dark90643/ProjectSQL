@@ -610,6 +610,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/recovery/restore", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     try {
       const { caseId } = req.body;
+      console.log("Restore request received with:", { caseId, bodyKeys: Object.keys(req.body) });
+      
       if (!caseId) {
         return res.status(400).json({ error: "Case ID required" });
       }
@@ -624,13 +626,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const parsed = JSON.parse(deleteLog.details);
       const caseData = parsed.caseData;
       
-      const restored = await storage.createCase(caseData);
+      // Remove timestamp fields since they're auto-generated on insert
+      const { createdAt, updatedAt, ...caseDataToRestore } = caseData;
+      
+      const restored = await storage.createCase(caseDataToRestore);
 
       await storage.createLog({
         action: "CASE_RESTORE",
         userId: req.user!.id,
         targetId: caseId,
-        details: `Restored deleted case ${caseData.title}`,
+        details: `Restored deleted case ${restored.title}`,
       });
 
       res.json({ success: true, case: restored });
