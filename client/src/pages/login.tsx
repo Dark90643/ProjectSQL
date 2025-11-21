@@ -67,14 +67,12 @@ export default function Login() {
       
       if (user.requiresInviteVerification) {
         // Clear form and show verification screen
+        setIsLoading(false);
         setVerificationCode("");
         setAuthError("");
         loginForm.reset();
-        // Use setTimeout to ensure state is set before changing needsVerification
-        setTimeout(() => {
-          setNeedsVerification(true);
-          setLoggedInUsername(values.username);
-        }, 0);
+        setNeedsVerification(true);
+        setLoggedInUsername(values.username);
       } else {
         setIsLoading(false);
         setLocation("/dashboard");
