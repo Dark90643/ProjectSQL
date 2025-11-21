@@ -231,11 +231,6 @@ export default function Dashboard() {
                           )}
                         </DropdownMenuItem>
                       )}
-                      {(user.role === "Management" || user.role === "Overseer") && (
-                        <DropdownMenuItem className="font-mono text-xs text-primary" onClick={() => handleEncryptCase(c.id)} data-testid={`menu-encrypt-case-${c.id}`}>
-                          <Lock size={12} className="mr-2" /> ENCRYPT CASE
-                        </DropdownMenuItem>
-                      )}
                       <DropdownMenuItem className="text-destructive focus:text-destructive font-mono text-xs" onClick={() => deleteCase(c.id)}>
                         DELETE RECORD
                       </DropdownMenuItem>

@@ -24,13 +24,41 @@ export default function AdminPanel() {
   const [encryptedCases, setEncryptedCases] = useState<Case[]>([]);
 
   useEffect(() => {
-    if (user?.role === "Management") {
+    if (user?.role === "Management" || user?.role === "Overseer") {
       fetch("/api/cases/encrypted/list", { credentials: "include" })
         .then(res => res.json())
         .then(data => setEncryptedCases(data))
         .catch(err => console.error("Error fetching encrypted cases:", err));
     }
   }, [user]);
+
+  const loadEncryptedCases = () => {
+    fetch("/api/cases/encrypted/list", { credentials: "include" })
+      .then(res => res.json())
+      .then(data => setEncryptedCases(data))
+      .catch(err => console.error("Error fetching encrypted cases:", err));
+  };
+
+  const handleDecryptCase = async (caseId: string) => {
+    try {
+      const response = await fetch(`/api/cases/${caseId}/decrypt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        toast({ variant: "destructive", title: "Error", description: error.error });
+        return;
+      }
+
+      toast({ title: "Success", description: "Case encryption removed" });
+      loadEncryptedCases();
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to decrypt case" });
+    }
+  };
 
   if (!user || (user.role !== "Management" && user.role !== "Overseer")) {
     return (
@@ -58,13 +86,7 @@ export default function AdminPanel() {
 
       const { caseCode } = await response.json();
       toast({ title: "Success", description: `Case encrypted with code: ${caseCode}` });
-      const updatedCaseData = cases.find(c => c.id === caseId);
-      if (updatedCaseData) {
-        setEncryptedCases(prev => {
-          const exists = prev.some(c => c.id === caseId);
-          return exists ? prev.map(c => c.id === caseId ? { ...c, caseCode } : c) : [...prev, { ...updatedCaseData, caseCode }];
-        });
-      }
+      loadEncryptedCases();
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to encrypt case" });
     }
@@ -156,22 +178,33 @@ export default function AdminPanel() {
                           <TableRow key={encCase.id} className="hover:bg-muted/50 border-border/50">
                             <TableCell className="font-mono text-xs font-bold text-primary">{encCase.id}</TableCell>
                             <TableCell className="font-mono text-xs">{encCase.title}</TableCell>
-                            <TableCell className="font-mono text-xs text-green-500">{encCase.caseCode || "N/A"}</TableCell>
-                            <TableCell className="text-right">
-                              {encCase.caseCode && (
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="font-mono text-[10px] h-6"
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(encCase.caseCode!);
-                                    toast({ title: "Copied", description: "Code copied to clipboard" });
-                                  }}
-                                  data-testid={`button-copy-case-code-${encCase.id}`}
-                                >
-                                  <Copy className="h-3 w-3 mr-1" />
-                                  COPY
-                                </Button>
+                            <TableCell className="font-mono text-xs text-green-500">{(encCase as any).caseCode || "N/A"}</TableCell>
+                            <TableCell className="text-right flex gap-1">
+                              {(encCase as any).caseCode && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="font-mono text-[10px] h-6"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText((encCase as any).caseCode);
+                                      toast({ title: "Copied", description: "Code copied to clipboard" });
+                                    }}
+                                    data-testid={`button-copy-case-code-${encCase.id}`}
+                                  >
+                                    <Copy className="h-3 w-3 mr-1" />
+                                    COPY
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    className="font-mono text-[10px] h-6"
+                                    onClick={() => handleDecryptCase(encCase.id)}
+                                    data-testid={`button-decrypt-case-${encCase.id}`}
+                                  >
+                                    DECRYPT
+                                  </Button>
+                                </>
                               )}
                             </TableCell>
                           </TableRow>

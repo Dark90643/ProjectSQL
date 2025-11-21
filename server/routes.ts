@@ -450,13 +450,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(cases);
   });
 
-  app.get("/api/cases/encrypted/list", requireAuth, requireRole("Management"), async (req: Request, res: Response) => {
+  app.get("/api/cases/encrypted/list", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     try {
-      const cases = await storage.getCasesWithCodes();
-      res.json(cases);
+      const allCases = await storage.getCasesWithCodes();
+      const encryptedCases = allCases.filter(c => c.caseCode);
+      res.json(encryptedCases);
     } catch (error) {
       console.error("Error fetching encrypted cases:", error);
       res.status(500).json({ error: "Failed to fetch encrypted cases" });
+    }
+  });
+
+  app.post("/api/cases/:id/decrypt", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const caseData = await storage.getCase(id);
+      
+      if (!caseData) {
+        return res.status(404).json({ error: "Case not found" });
+      }
+
+      const updatedCase = await storage.updateCase(id, { caseCode: null });
+
+      await storage.createLog({
+        action: "CASE_DECRYPT",
+        userId: req.user!.id,
+        targetId: id,
+        details: `Removed encryption from case ${caseData.title}`,
+      });
+
+      res.json({ success: true, updatedCase });
+    } catch (error) {
+      console.error("Case decryption error:", error);
+      res.status(500).json({ error: "Failed to decrypt case" });
     }
   });
 
