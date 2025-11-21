@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronLeft, Trash2, RotateCcw, Clock } from "lucide-react";
+import { ChevronLeft, Trash2, RotateCcw, Clock, FileX } from "lucide-react";
 
 let restorationInProgress = false;
 
@@ -99,6 +99,35 @@ export default function Recovery() {
     return Math.max(0, days);
   };
 
+  const handleRemoveEmbed = async (log: DeletedCaseLog) => {
+    try {
+      const response = await fetch(`/api/recovery/${log.targetId}/remove-embed`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({ variant: "destructive", title: "Error", description: data.error });
+        return;
+      }
+
+      // Update local state to remove the embed
+      setDeletedCases(prev => prev.map(c => 
+        c.targetId === log.targetId 
+          ? { ...c, caseData: { ...c.caseData, googleDocUrl: undefined } }
+          : c
+      ));
+
+      toast({ title: "Success", description: "File embed removed from case" });
+    } catch (error) {
+      console.error("Error removing embed:", error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to remove file embed" });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -153,11 +182,29 @@ export default function Recovery() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  {caseData?.googleDocUrl && (
+                    <div className="space-y-2">
+                      <p className="font-mono text-xs text-muted-foreground uppercase">File Embed Attached</p>
+                      <div className="text-xs font-mono text-primary/80 truncate">{caseData.googleDocUrl}</div>
+                      {user?.role === "Overseer" && (
+                        <Button
+                          onClick={() => handleRemoveEmbed(log)}
+                          size="sm"
+                          variant="outline"
+                          className="font-mono gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 w-full"
+                          data-testid={`button-remove-embed-${log.targetId}`}
+                        >
+                          <FileX size={12} />
+                          REMOVE EMBED
+                        </Button>
+                      )}
+                    </div>
+                  )}
                   <Button
                     onClick={() => handleRestore(log)}
                     disabled={restoringId === log.targetId}
-                    className="font-mono gap-2"
+                    className="font-mono gap-2 w-full"
                     variant="outline"
                     data-testid={`button-restore-case-${log.targetId}`}
                   >

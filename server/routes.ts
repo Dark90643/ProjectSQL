@@ -656,6 +656,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/recovery/:caseId/remove-embed", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { caseId } = req.params;
+      
+      if (!caseId) {
+        return res.status(400).json({ error: "Case ID required" });
+      }
+
+      const allLogs = await storage.getAllLogs();
+      const deleteLog = allLogs.find(log => log.action === "CASE_DELETE" && log.targetId === caseId);
+      
+      if (!deleteLog) {
+        return res.status(404).json({ error: "Deleted case not found" });
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(deleteLog.details);
+      } catch (e) {
+        return res.status(400).json({ error: "Invalid deletion log format" });
+      }
+
+      const caseData = parsed.caseData;
+      if (!caseData.googleDocUrl) {
+        return res.status(400).json({ error: "No file embed to remove" });
+      }
+
+      // Remove the googleDocUrl from case data
+      const { googleDocUrl, ...updatedCaseData } = caseData;
+      
+      // Update the audit log with the modified case data
+      const updatedDetails = JSON.stringify({ caseData: updatedCaseData });
+      await storage.updateLog(deleteLog.id, { details: updatedDetails });
+
+      await storage.createLog({
+        action: "CASE_EMBED_REMOVED",
+        userId: req.user!.id,
+        targetId: caseId,
+        details: `Removed file embed from deleted case ${caseData.title}`,
+      });
+
+      res.json({ success: true, message: "File embed removed" });
+    } catch (error) {
+      console.error("Error removing embed:", error);
+      res.status(500).json({ error: "Failed to remove file embed" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
