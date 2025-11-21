@@ -610,10 +610,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/recovery/restore", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     try {
       const { caseId } = req.body;
-      console.log("Restore request received with:", { caseId, bodyKeys: Object.keys(req.body) });
       
       if (!caseId) {
         return res.status(400).json({ error: "Case ID required" });
+      }
+
+      // Check if case already exists
+      const existingCase = await storage.getCase(caseId);
+      if (existingCase) {
+        return res.json({ success: true, case: existingCase, message: "Case already restored" });
       }
 
       const allLogs = await storage.getAllLogs();
@@ -623,8 +628,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Deleted case not found" });
       }
 
-      const parsed = JSON.parse(deleteLog.details);
-      const caseData = parsed.caseData;
+      let caseData;
+      try {
+        const parsed = JSON.parse(deleteLog.details);
+        caseData = parsed.caseData;
+      } catch (e) {
+        // Handle old format where details was just a string
+        return res.status(400).json({ error: "Invalid deletion log format - cannot restore this case" });
+      }
       
       // Remove timestamp fields since they're auto-generated on insert
       const { createdAt, updatedAt, ...caseDataToRestore } = caseData;

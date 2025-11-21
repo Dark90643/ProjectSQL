@@ -55,14 +55,18 @@ export default function Recovery() {
         body: JSON.stringify({ caseId: log.targetId }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        toast({ variant: "destructive", title: "Error", description: error.error });
+        toast({ variant: "destructive", title: "Error", description: data.error });
         return;
       }
 
-      toast({ title: "Success", description: "Case restored successfully" });
+      toast({ title: "Success", description: "Case restored successfully. It will now appear in your dashboard." });
       setDeletedCases(deletedCases.filter(c => c.targetId !== log.targetId));
+      
+      // Refresh cases by making a request to sync with backend
+      await fetch("/api/cases", { credentials: "include" });
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to restore case" });
     } finally {
