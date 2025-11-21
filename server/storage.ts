@@ -30,6 +30,7 @@ export interface IStorage {
   createCase(caseData: InsertCase): Promise<Case>;
   updateCase(id: string, updates: Partial<Case>): Promise<Case | undefined>;
   deleteCase(id: string): Promise<boolean>;
+  getCasesWithCodes(): Promise<Case[]>;
   
   // Log operations
   createLog(log: InsertLog): Promise<Log>;
@@ -103,6 +104,10 @@ export class DatabaseStorage implements IStorage {
   async deleteCase(id: string): Promise<boolean> {
     const result = await db.delete(cases).where(eq(cases.id, id));
     return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  async getCasesWithCodes(): Promise<Case[]> {
+    return await db.select().from(cases).where(and(cases.caseCode !== null)).orderBy(desc(cases.updatedAt));
   }
 
   // Log operations

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,18 +8,29 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, UserX, UserCheck, Activity, Wifi, Edit2, Plus, Copy } from "lucide-react";
+import { AlertTriangle, UserX, UserCheck, Activity, Wifi, Edit2, Plus, Copy, Lock } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { Case } from "@shared/schema";
 
 export default function AdminPanel() {
-  const { user, users, logs, suspendUser, unsuspendUser, editUser, createUserWithInvite } = useAuth();
+  const { user, users, logs, cases, suspendUser, unsuspendUser, editUser, createUserWithInvite } = useAuth();
   const { toast } = useToast();
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ username: "", password: "", role: "Agent" });
   const [creatingAccount, setCreatingAccount] = useState(false);
   const [newAccountForm, setNewAccountForm] = useState({ username: "", inviteCode: "" });
   const [generatedInvites, setGeneratedInvites] = useState<{ code: string; created: string }[]>([]);
+  const [encryptedCases, setEncryptedCases] = useState<Case[]>([]);
+
+  useEffect(() => {
+    if (user?.role === "Management") {
+      fetch("/api/cases/encrypted/list", { credentials: "include" })
+        .then(res => res.json())
+        .then(data => setEncryptedCases(data))
+        .catch(err => console.error("Error fetching encrypted cases:", err));
+    }
+  }, [user]);
 
   if (!user || (user.role !== "Management" && user.role !== "Overseer")) {
     return (
@@ -31,6 +42,28 @@ export default function AdminPanel() {
 
   const sortedLogs = [...logs].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
+  const handleEncryptCase = async (caseId: string) => {
+    try {
+      const response = await fetch(`/api/cases/${caseId}/encrypt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        toast({ variant: "destructive", title: "Error", description: error.error });
+        return;
+      }
+
+      const { caseCode } = await response.json();
+      toast({ title: "Success", description: `Case encrypted with code: ${caseCode}` });
+      setEncryptedCases(prev => [...prev, cases.find(c => c.id === caseId)!]);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to encrypt case" });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
@@ -39,9 +72,10 @@ export default function AdminPanel() {
       </div>
 
       <Tabs defaultValue="logs" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-3 bg-black/40 border border-white/10">
+        <TabsList className="grid w-full bg-black/40 border border-white/10" style={{ gridTemplateColumns: `repeat(${user.role === "Management" ? 4 : 3}, minmax(0, 1fr))` }}>
           <TabsTrigger value="logs" className="font-mono">SYSTEM LOGS</TabsTrigger>
           <TabsTrigger value="users" className="font-mono">AGENT ROSTER</TabsTrigger>
+          {user.role === "Management" && <TabsTrigger value="codes" className="font-mono">CASE CODES</TabsTrigger>}
           {user.role === "Overseer" && <TabsTrigger value="create" className="font-mono">CREATE ACCOUNT</TabsTrigger>}
         </TabsList>
 
@@ -88,6 +122,68 @@ export default function AdminPanel() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {user.role === "Management" && (
+          <TabsContent value="codes" className="mt-6">
+            <Card className="bg-card/50 border-primary/20">
+              <CardHeader>
+                <CardTitle className="font-mono text-lg flex items-center gap-2">
+                  <Lock className="h-5 w-5" />
+                  Encrypted Case Files
+                </CardTitle>
+                <CardDescription className="font-mono text-xs">View and manage case encryption codes.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border border-border/50 overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-muted/50">
+                      <TableRow>
+                        <TableHead className="font-mono text-xs w-[200px]">CASE ID</TableHead>
+                        <TableHead className="font-mono text-xs">TITLE</TableHead>
+                        <TableHead className="font-mono text-xs w-[150px]">ENCRYPTION CODE</TableHead>
+                        <TableHead className="font-mono text-xs text-right">ACTION</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {encryptedCases.length > 0 ? (
+                        encryptedCases.map((encCase) => (
+                          <TableRow key={encCase.id} className="hover:bg-muted/50 border-border/50">
+                            <TableCell className="font-mono text-xs font-bold text-primary">{encCase.id}</TableCell>
+                            <TableCell className="font-mono text-xs">{encCase.title}</TableCell>
+                            <TableCell className="font-mono text-xs text-green-500">{encCase.caseCode || "N/A"}</TableCell>
+                            <TableCell className="text-right">
+                              {encCase.caseCode && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="font-mono text-[10px] h-6"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(encCase.caseCode!);
+                                    toast({ title: "Copied", description: "Code copied to clipboard" });
+                                  }}
+                                  data-testid={`button-copy-case-code-${encCase.id}`}
+                                >
+                                  <Copy className="h-3 w-3 mr-1" />
+                                  COPY
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center py-8 text-muted-foreground font-mono text-xs">
+                            NO ENCRYPTED CASES
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         <TabsContent value="users" className="mt-6">
           <Card className="bg-card/50 border-primary/20">

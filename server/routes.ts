@@ -409,9 +409,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Case routes
+  app.post("/api/cases/:id/encrypt", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const caseData = await storage.getCase(id);
+      
+      if (!caseData) {
+        return res.status(404).json({ error: "Case not found" });
+      }
+
+      // Generate 12-character code with words, numbers, and special symbols
+      const words = ["ALPHA", "BRAVO", "CHARLIE", "DELTA", "ECHO", "FOXTROT", "GAMMA", "DELTA"];
+      const specialSymbols = ["@", "#", "$", "%", "&", "*", "+"];
+      
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      const randomSpecial = specialSymbols[Math.floor(Math.random() * specialSymbols.length)];
+      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
+      const randomCode = Math.random().toString(36).substring(2, 4).toUpperCase();
+      
+      const caseCode = `${randomWord}${randomSpecial}${randomNum}${randomCode}`.substring(0, 12);
+
+      const updatedCase = await storage.updateCase(id, { caseCode });
+
+      await storage.createLog({
+        action: "CASE_ENCRYPT",
+        userId: req.user!.id,
+        targetId: id,
+        details: `Generated encryption code for case ${caseData.title}`,
+      });
+
+      res.json({ caseCode, updatedCase });
+    } catch (error) {
+      console.error("Case encryption error:", error);
+      res.status(500).json({ error: "Failed to encrypt case" });
+    }
+  });
+
   app.get("/api/cases", requireAuth, async (req: Request, res: Response) => {
     const cases = await storage.getAllCases();
     res.json(cases);
+  });
+
+  app.get("/api/cases/encrypted/list", requireAuth, requireRole("Management"), async (req: Request, res: Response) => {
+    try {
+      const cases = await storage.getCasesWithCodes();
+      res.json(cases);
+    } catch (error) {
+      console.error("Error fetching encrypted cases:", error);
+      res.status(500).json({ error: "Failed to fetch encrypted cases" });
+    }
   });
 
   app.get("/api/cases/public", async (req: Request, res: Response) => {
