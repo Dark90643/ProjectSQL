@@ -8,15 +8,12 @@ import {
   type InsertLog,
   type InviteCode,
   type InsertInviteCode,
-  type DeletedCase,
-  type InsertDeletedCase,
   users,
   cases,
   logs,
   inviteCodes,
-  deletedCases,
 } from "@shared/schema";
-import { eq, desc, and, gte } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -32,10 +29,8 @@ export interface IStorage {
   getPublicCases(): Promise<Case[]>;
   createCase(caseData: InsertCase): Promise<Case>;
   updateCase(id: string, updates: Partial<Case>): Promise<Case | undefined>;
-  deleteCase(id: string, userId: string): Promise<{caseData: Case, success: boolean}>;
+  deleteCase(id: string, userId: string): Promise<boolean>;
   getCasesWithCodes(): Promise<Case[]>;
-  getDeletedCases(): Promise<DeletedCase[]>;
-  restoreDeletedCase(id: string): Promise<Case | undefined>;
   
   // Log operations
   createLog(log: InsertLog): Promise<Log>;
@@ -106,48 +101,13 @@ export class DatabaseStorage implements IStorage {
     return updatedCase;
   }
 
-  async deleteCase(id: string, userId: string): Promise<{caseData: Case, success: boolean}> {
-    const caseData = await this.getCase(id);
-    if (!caseData) {
-      return { caseData: null as any, success: false };
-    }
-
-    // Store in deleted_cases for 30-day recovery
-    await db.insert(deletedCases).values({
-      id,
-      caseData: JSON.stringify(caseData),
-      deletedBy: userId,
-    });
-
-    // Delete from cases
+  async deleteCase(id: string, userId: string): Promise<boolean> {
     const result = await db.delete(cases).where(eq(cases.id, id));
-    return { caseData, success: result.rowCount ? result.rowCount > 0 : false };
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 
   async getCasesWithCodes(): Promise<Case[]> {
     return await db.select().from(cases).orderBy(desc(cases.updatedAt));
-  }
-
-  async getDeletedCases(): Promise<DeletedCase[]> {
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    return await db
-      .select()
-      .from(deletedCases)
-      .where(gte(deletedCases.deletedAt, thirtyDaysAgo))
-      .orderBy(desc(deletedCases.deletedAt));
-  }
-
-  async restoreDeletedCase(id: string): Promise<Case | undefined> {
-    const deletedCase = await db.select().from(deletedCases).where(eq(deletedCases.id, id));
-    if (!deletedCase.length) return undefined;
-
-    const caseData = JSON.parse(deletedCase[0].caseData) as Case;
-    const restored = await db.insert(cases).values(caseData).onConflictDoNothing().returning();
-    
-    // Remove from deleted_cases
-    await db.delete(deletedCases).where(eq(deletedCases.id, id));
-
-    return restored.length ? restored[0] : undefined;
   }
 
   // Log operations

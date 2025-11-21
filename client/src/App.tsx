@@ -8,7 +8,6 @@ import Dashboard from "@/pages/dashboard";
 import PublicDashboard from "@/pages/public-dashboard";
 import CaseView from "@/pages/case-view";
 import AdminPanel from "@/pages/admin";
-import Recovery from "@/pages/recovery";
 import Layout from "@/components/layout";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
@@ -51,9 +50,6 @@ function RouterContent() {
       </Route>
       <Route path="/admin">
         <Layout><ProtectedRoute component={AdminPanel} path="/admin" /></Layout>
-      </Route>
-      <Route path="/recovery">
-        <Layout><ProtectedRoute component={Recovery} path="/recovery" /></Layout>
       </Route>
       
       <Route component={NotFound} />

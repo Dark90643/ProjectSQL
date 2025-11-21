@@ -10,8 +10,7 @@ import {
   LogOut,
   Lock,
   FileText,
-  Menu,
-  RotateCcw
+  Menu
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -74,26 +73,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </Link> */}
 
         {(user.role === "Management" || user.role === "Overseer") && (
-          <>
-            <Link href="/admin">
-              <Button 
-                variant={location === "/admin" ? "secondary" : "ghost"} 
-                className="w-full justify-start gap-3 font-mono"
-              >
-                <Users size={18} />
-                ADMIN PANEL
-              </Button>
-            </Link>
-            <Link href="/recovery">
-              <Button 
-                variant={location === "/recovery" ? "secondary" : "ghost"} 
-                className="w-full justify-start gap-3 font-mono"
-              >
-                <RotateCcw size={18} />
-                RECOVERY
-              </Button>
-            </Link>
-          </>
+          <Link href="/admin">
+            <Button 
+              variant={location === "/admin" ? "secondary" : "ghost"} 
+              className="w-full justify-start gap-3 font-mono"
+            >
+              <Users size={18} />
+              ADMIN PANEL
+            </Button>
+          </Link>
         )}
       </nav>
 

@@ -47,13 +47,6 @@ export const inviteCodes = pgTable("invite_codes", {
   usedAt: timestamp("used_at"),
 });
 
-export const deletedCases = pgTable("deleted_cases", {
-  id: varchar("id").primaryKey(),
-  caseData: text("case_data").notNull(),
-  deletedBy: varchar("deleted_by").notNull(),
-  deletedAt: timestamp("deleted_at").notNull().defaultNow(),
-});
-
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -76,10 +69,6 @@ export const insertInviteCodeSchema = createInsertSchema(inviteCodes).omit({
   usedAt: true,
 });
 
-export const insertDeletedCaseSchema = createInsertSchema(deletedCases).omit({
-  deletedAt: true,
-});
-
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertCase = z.infer<typeof insertCaseSchema>;
@@ -88,5 +77,3 @@ export type InsertLog = z.infer<typeof insertLogSchema>;
 export type Log = typeof logs.$inferSelect;
 export type InsertInviteCode = z.infer<typeof insertInviteCodeSchema>;
 export type InviteCode = typeof inviteCodes.$inferSelect;
-export type InsertDeletedCase = z.infer<typeof insertDeletedCaseSchema>;
-export type DeletedCase = typeof deletedCases.$inferSelect;
