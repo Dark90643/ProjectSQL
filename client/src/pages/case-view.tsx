@@ -50,6 +50,7 @@ export default function CaseView() {
   const [isEditing, setIsEditing] = useState(isNew);
   const [needsPassword, setNeedsPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Fetch fresh case data on mount and when case ID changes
   useEffect(() => {
@@ -171,8 +172,14 @@ export default function CaseView() {
     }
   };
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   const handleDelete = () => {
-    if (existingCase && confirm("CONFIRM DELETION: This action cannot be undone.")) {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    if (existingCase) {
       deleteCase(existingCase.id);
       setLocation("/dashboard");
     }
@@ -286,8 +293,30 @@ export default function CaseView() {
           )}
           
           {!isNew && canDelete && (
-            <Button variant="destructive" size="icon" onClick={handleDelete}>
-              <Trash2 size={18} />
+            <Button 
+              variant={confirmDelete ? "destructive" : "outline"} 
+              size={confirmDelete ? "default" : "icon"} 
+              onClick={handleDelete}
+              className={confirmDelete ? "font-mono gap-2 text-destructive border-destructive" : ""}
+            >
+              {confirmDelete ? (
+                <>
+                  <Trash2 size={14} />
+                  CONFIRM DELETE?
+                </>
+              ) : (
+                <Trash2 size={18} />
+              )}
+            </Button>
+          )}
+          {confirmDelete && (
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmDelete(false)}
+              className="font-mono text-xs"
+            >
+              CANCEL
             </Button>
           )}
         </div>
