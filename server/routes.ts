@@ -538,18 +538,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/cases/:id", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     const { id } = req.params;
-    const success = await storage.deleteCase(id);
+    const caseData = await storage.getCase(id);
     
-    if (success) {
+    if (!caseData) {
+      return res.status(404).json({ error: "Case not found" });
+    }
+
+    const result = await storage.deleteCase(id, req.user!.id);
+    
+    if (result.success) {
       await storage.createLog({
         action: "CASE_DELETE",
         userId: req.user!.id,
         targetId: id,
-        details: "Deleted case",
+        details: `Deleted case ${caseData.title}`,
       });
     }
     
-    res.json({ success });
+    res.json({ success: result.success });
   });
 
   app.patch("/api/cases/:id/toggle-public", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
@@ -578,6 +584,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/logs", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     const logs = await storage.getAllLogs();
     res.json(logs);
+  });
+
+  // Recovery routes
+  app.get("/api/deleted-cases", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const deletedCases = await storage.getDeletedCases();
+      res.json(deletedCases);
+    } catch (error) {
+      console.error("Error fetching deleted cases:", error);
+      res.status(500).json({ error: "Failed to fetch deleted cases" });
+    }
+  });
+
+  app.post("/api/deleted-cases/:id/restore", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const restoredCase = await storage.restoreDeletedCase(id);
+      
+      if (!restoredCase) {
+        return res.status(404).json({ error: "Deleted case not found or recovery period expired" });
+      }
+
+      await storage.createLog({
+        action: "CASE_RESTORE",
+        userId: req.user!.id,
+        targetId: id,
+        details: `Restored deleted case ${restoredCase.title}`,
+      });
+
+      res.json({ success: true, case: restoredCase });
+    } catch (error) {
+      console.error("Error restoring case:", error);
+      res.status(500).json({ error: "Failed to restore case" });
+    }
   });
 
   const httpServer = createServer(app);
