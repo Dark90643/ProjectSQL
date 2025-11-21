@@ -11,6 +11,7 @@ export const users = pgTable("users", {
   isSuspended: boolean("is_suspended").notNull().default(false),
   ip: text("ip").notNull(),
   isOnline: boolean("is_online").notNull().default(false),
+  requiresInviteVerification: boolean("requires_invite_verification").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

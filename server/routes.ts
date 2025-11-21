@@ -309,6 +309,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(user ? { ...user, password: undefined } : null);
   });
 
+  app.post("/api/users/create", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { username, inviteCode } = req.body;
+      
+      if (!username || !inviteCode) {
+        return res.status(400).json({ error: "Username and invite code required" });
+      }
+
+      const existing = await storage.getUserByUsername(username);
+      if (existing) {
+        return res.status(400).json({ error: "Username already taken" });
+      }
+
+      const code = await storage.getInviteCode(inviteCode);
+      if (!code || code.isUsed) {
+        return res.status(400).json({ error: "Invalid or already used invite code" });
+      }
+
+      const tempPassword = Math.random().toString(36).slice(-12);
+      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+      const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+
+      const user = await storage.createUser({
+        username,
+        password: hashedPassword,
+        role: "Agent",
+        isSuspended: false,
+        ip: clientIp,
+      });
+
+      await storage.updateUser(user.id, { requiresInviteVerification: true });
+
+      await storage.createLog({
+        action: "USER_CREATE",
+        userId: req.user!.id,
+        targetId: user.id,
+        details: `Created account for ${username} requiring invite verification`,
+      });
+
+      res.json({ username: user.username, inviteCode, tempPassword });
+    } catch (error) {
+      console.error("User creation error:", error);
+      res.status(500).json({ error: "Failed to create user" });
+    }
+  });
+
+  app.post("/api/invites/generate", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
+    try {
+      const code = Math.random().toString(36).slice(2, 10).toUpperCase();
+      const inviteCode = await storage.createInviteCode({ code });
+      
+      await storage.createLog({
+        action: "INVITE_GENERATE",
+        userId: req.user!.id,
+        details: `Generated invite code ${code}`,
+      });
+
+      res.json(inviteCode);
+    } catch (error) {
+      console.error("Invite generation error:", error);
+      res.status(500).json({ error: "Failed to generate invite code" });
+    }
+  });
+
+  app.post("/api/invites/verify", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { code } = req.body;
+      const userId = req.user!.id;
+
+      const inviteCode = await storage.getInviteCode(code);
+      if (!inviteCode || inviteCode.isUsed) {
+        return res.status(400).json({ error: "Invalid or already used invite code" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user || !user.requiresInviteVerification) {
+        return res.status(400).json({ error: "Account does not require verification" });
+      }
+
+      await storage.useInviteCode(code, userId);
+      await storage.updateUser(userId, { requiresInviteVerification: false });
+
+      await storage.createLog({
+        action: "INVITE_VERIFY",
+        userId: userId,
+        details: `Verified account with invite code`,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Invite verification error:", error);
+      res.status(500).json({ error: "Failed to verify invite code" });
+    }
+  });
+
   // Case routes
   app.get("/api/cases", requireAuth, async (req: Request, res: Response) => {
     const cases = await storage.getAllCases();

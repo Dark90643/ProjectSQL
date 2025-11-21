@@ -8,12 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, UserX, UserCheck, Activity, Wifi, Edit2 } from "lucide-react";
+import { AlertTriangle, UserX, UserCheck, Activity, Wifi, Edit2, Plus, Copy } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminPanel() {
-  const { user, users, logs, suspendUser, unsuspendUser, editUser } = useAuth();
+  const { user, users, logs, suspendUser, unsuspendUser, editUser, createUserWithInvite } = useAuth();
+  const { toast } = useToast();
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ username: "", password: "", role: "Agent" });
+  const [creatingAccount, setCreatingAccount] = useState(false);
+  const [newAccountForm, setNewAccountForm] = useState({ username: "", inviteCode: "" });
+  const [generatedInvites, setGeneratedInvites] = useState<{ code: string; created: string }[]>([]);
 
   if (!user || (user.role !== "Management" && user.role !== "Overseer")) {
     return (
@@ -33,9 +39,10 @@ export default function AdminPanel() {
       </div>
 
       <Tabs defaultValue="logs" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2 bg-black/40 border border-white/10">
+        <TabsList className="grid w-full max-w-md grid-cols-3 bg-black/40 border border-white/10">
           <TabsTrigger value="logs" className="font-mono">SYSTEM LOGS</TabsTrigger>
           <TabsTrigger value="users" className="font-mono">AGENT ROSTER</TabsTrigger>
+          {user.role === "Overseer" && <TabsTrigger value="create" className="font-mono">CREATE ACCOUNT</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="logs" className="mt-6">
@@ -159,6 +166,119 @@ export default function AdminPanel() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {user.role === "Overseer" && (
+          <TabsContent value="create" className="mt-6 space-y-6">
+            <Card className="bg-card/50 border-primary/20">
+              <CardHeader>
+                <CardTitle className="font-mono text-lg">Generate Invite Code</CardTitle>
+                <CardDescription className="font-mono text-xs">Create random invite codes for new accounts.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const invite = await api.invites.generate();
+                      setGeneratedInvites([{ code: invite.code, created: new Date().toLocaleString() }, ...generatedInvites]);
+                      toast({ title: "Invite Generated", description: `Code: ${invite.code}` });
+                    } catch (error: any) {
+                      toast({ variant: "destructive", title: "Error", description: error.message });
+                    }
+                  }}
+                  className="font-mono"
+                  data-testid="button-generate-invite"
+                >
+                  <Plus size={16} className="mr-2" /> GENERATE CODE
+                </Button>
+
+                {generatedInvites.length > 0 && (
+                  <div className="mt-6 rounded-md border border-border/50 overflow-hidden">
+                    <Table>
+                      <TableHeader className="bg-muted/50">
+                        <TableRow>
+                          <TableHead className="font-mono text-xs">INVITE CODE</TableHead>
+                          <TableHead className="font-mono text-xs">CREATED</TableHead>
+                          <TableHead className="font-mono text-xs text-right">ACTIONS</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {generatedInvites.map((invite) => (
+                          <TableRow key={invite.code} className="hover:bg-muted/50 border-border/50">
+                            <TableCell className="font-mono text-sm font-bold text-primary">{invite.code}</TableCell>
+                            <TableCell className="font-mono text-xs text-muted-foreground">{invite.created}</TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-xs font-mono"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(invite.code);
+                                  toast({ title: "Copied", description: "Invite code copied to clipboard" });
+                                }}
+                                data-testid={`button-copy-invite-${invite.code}`}
+                              >
+                                <Copy size={12} className="mr-1" /> COPY
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/50 border-primary/20">
+              <CardHeader>
+                <CardTitle className="font-mono text-lg">Create New Account</CardTitle>
+                <CardDescription className="font-mono text-xs">Create an account requiring invite verification.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 max-w-md">
+                  <div>
+                    <label className="font-mono text-xs text-muted-foreground mb-1 block">AGENT ID</label>
+                    <Input
+                      value={newAccountForm.username}
+                      onChange={(e) => setNewAccountForm({ ...newAccountForm, username: e.target.value })}
+                      className="font-mono bg-background/50"
+                      placeholder="New agent username"
+                      data-testid="input-new-account-username"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-mono text-xs text-muted-foreground mb-1 block">INVITE CODE</label>
+                    <Input
+                      value={newAccountForm.inviteCode}
+                      onChange={(e) => setNewAccountForm({ ...newAccountForm, inviteCode: e.target.value })}
+                      className="font-mono bg-background/50"
+                      placeholder="Invite code"
+                      data-testid="input-new-account-invite"
+                    />
+                  </div>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        setCreatingAccount(true);
+                        await createUserWithInvite(newAccountForm.username, newAccountForm.inviteCode);
+                        setNewAccountForm({ username: "", inviteCode: "" });
+                      } catch (error) {
+                        // Error is handled by toast in createUserWithInvite
+                      } finally {
+                        setCreatingAccount(false);
+                      }
+                    }}
+                    className="font-mono w-full"
+                    disabled={creatingAccount}
+                    data-testid="button-create-account"
+                  >
+                    <Plus size={16} className="mr-2" /> CREATE ACCOUNT
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
       </Tabs>
 
       <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>

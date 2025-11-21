@@ -54,6 +54,7 @@ interface AuthContextType {
   suspendUser: (id: string) => Promise<void>;
   unsuspendUser: (id: string) => Promise<void>;
   editUser: (id: string, updates: { username?: string; password?: string; role?: Role }) => Promise<void>;
+  createUserWithInvite: (username: string, inviteCode: string) => Promise<{ username: string; inviteCode: string }>;
   toggleCasePublic: (id: string) => Promise<void>;
   refreshData: () => Promise<void>;
 }
@@ -226,6 +227,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const createUserWithInvite = async (username: string, inviteCode: string) => {
+    try {
+      const result = await api.users.create({ username, inviteCode });
+      await loadUserData();
+      toast({ title: "Account Created", description: `New account ${username} created with verification required.` });
+      return result;
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to create account" });
+      throw error;
+    }
+  };
+
   const toggleCasePublic = async (id: string) => {
     try {
       const updatedCase = await api.cases.togglePublic(id);
@@ -274,7 +287,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user, users, cases, logs, clientIp, isIpBanned, loading,
       login, register, logout, 
       createCase, updateCase, deleteCase, 
-      suspendUser, unsuspendUser, editUser, toggleCasePublic,
+      suspendUser, unsuspendUser, editUser, createUserWithInvite, toggleCasePublic,
       refreshData
     }}>
       {children}

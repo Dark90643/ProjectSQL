@@ -39,6 +39,11 @@ export const api = {
     suspend: (id: string) => fetchAPI(`/users/${id}/suspend`, { method: "PATCH" }),
     unsuspend: (id: string) => fetchAPI(`/users/${id}/unsuspend`, { method: "PATCH" }),
     edit: (id: string, data: any) => fetchAPI(`/users/${id}/edit`, { method: "PATCH", body: JSON.stringify(data) }),
+    create: (data: any) => fetchAPI("/users/create", { method: "POST", body: JSON.stringify(data) }),
+  },
+  invites: {
+    generate: () => fetchAPI("/invites/generate", { method: "POST" }),
+    verify: (code: string, userId: string) => fetchAPI("/invites/verify", { method: "POST", body: JSON.stringify({ code, userId }) }),
   },
   cases: {
     getAll: () => fetchAPI("/cases"),
