@@ -55,6 +55,8 @@ export default function AdminPanel() {
 
       toast({ title: "Success", description: "Case encryption removed" });
       loadEncryptedCases();
+      // Also refresh global cases data
+      window.dispatchEvent(new Event("casesUpdated"));
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to decrypt case" });
     }

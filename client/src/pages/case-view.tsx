@@ -43,11 +43,27 @@ export default function CaseView() {
   const { toast } = useToast();
   
   const isNew = params?.id === "new";
-  const existingCase = cases.find(c => c.id === params?.id);
+  const contextCase = cases.find(c => c.id === params?.id);
+  const [liveCase, setLiveCase] = useState(contextCase);
   
   const [isEditing, setIsEditing] = useState(isNew);
-  const [needsPassword, setNeedsPassword] = useState(existingCase?.caseCode ? true : false);
+  const [needsPassword, setNeedsPassword] = useState((liveCase as any)?.caseCode ? true : false);
   const [passwordInput, setPasswordInput] = useState("");
+
+  // Fetch fresh case data on mount and when case ID changes
+  useEffect(() => {
+    if (!isNew && params?.id) {
+      fetch(`/api/cases/${params.id}`, { credentials: "include" })
+        .then(res => res.json())
+        .then(data => {
+          setLiveCase(data);
+          setNeedsPassword(data?.caseCode ? true : false);
+        })
+        .catch(err => console.error("Error fetching case:", err));
+    }
+  }, [params?.id, isNew]);
+
+  const existingCase = liveCase || contextCase;
 
   // Permission Checks
   const canEdit = user?.role === "Management" || user?.role === "Overseer" || (user?.role === "Agent" && existingCase?.assignedAgent === user?.username) || isNew;
