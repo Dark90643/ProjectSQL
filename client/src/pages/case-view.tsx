@@ -50,6 +50,7 @@ export default function CaseView() {
   const [isEditing, setIsEditing] = useState(isNew);
   const [needsPassword, setNeedsPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Fetch fresh case data on mount and when case ID changes
   useEffect(() => {
@@ -184,8 +185,6 @@ export default function CaseView() {
       setIsEditing(false);
     }
   };
-
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const handleDelete = () => {
     if (!confirmDelete) {
