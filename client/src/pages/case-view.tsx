@@ -7,6 +7,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Select, 
   SelectContent, 
@@ -38,11 +40,14 @@ export default function CaseView() {
   const [, params] = useRoute("/cases/:id");
   const [, setLocation] = useLocation();
   const { cases, user, createCase, updateCase, deleteCase, toggleCasePublic } = useAuth();
+  const { toast } = useToast();
   
   const isNew = params?.id === "new";
   const existingCase = cases.find(c => c.id === params?.id);
   
   const [isEditing, setIsEditing] = useState(isNew);
+  const [needsPassword, setNeedsPassword] = useState(existingCase?.caseCode ? true : false);
+  const [passwordInput, setPasswordInput] = useState("");
 
   // Permission Checks
   const canEdit = user?.role === "Management" || user?.role === "Overseer" || (user?.role === "Agent" && existingCase?.assignedAgent === user?.username) || isNew;
@@ -61,6 +66,22 @@ export default function CaseView() {
     },
   });
 
+  // Password verification for encrypted cases
+  const verifyPassword = () => {
+    if (!existingCase?.caseCode) {
+      setNeedsPassword(false);
+      return;
+    }
+    
+    if (passwordInput === existingCase.caseCode) {
+      setNeedsPassword(false);
+      setPasswordInput("");
+    } else {
+      toast({ variant: "destructive", title: "Access Denied", description: "Incorrect encryption code" });
+      setPasswordInput("");
+    }
+  };
+
   // Redirect if case not found and not creating new
   if (!isNew && !existingCase) {
     return (
@@ -70,6 +91,34 @@ export default function CaseView() {
         <Button onClick={() => setLocation("/dashboard")} variant="outline" className="font-mono">
           RETURN TO DASHBOARD
         </Button>
+      </div>
+    );
+  }
+
+  // Show password prompt if case is encrypted
+  if (!isNew && needsPassword && existingCase?.caseCode) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+        <Lock className="h-16 w-16 text-destructive opacity-50" />
+        <h2 className="font-mono text-xl">ENCRYPTED_FILE_ACCESS</h2>
+        <p className="font-mono text-xs text-muted-foreground">Enter encryption code to continue</p>
+        <Input 
+          type="password" 
+          placeholder="ENTER CODE" 
+          className="font-mono w-64 bg-black/40"
+          value={passwordInput}
+          onChange={(e) => setPasswordInput(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && verifyPassword()}
+          data-testid="input-case-password"
+        />
+        <div className="flex gap-2">
+          <Button onClick={() => setLocation("/dashboard")} variant="outline" className="font-mono">
+            CANCEL
+          </Button>
+          <Button onClick={verifyPassword} className="font-mono" data-testid="button-verify-case-code">
+            VERIFY ACCESS
+          </Button>
+        </div>
       </div>
     );
   }

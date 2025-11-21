@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { 
   Search, 
   Plus, 
@@ -18,6 +19,7 @@ import {
   Lock,
   Shield
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,8 +30,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard() {
   const { cases, user, deleteCase, toggleCasePublic } = useAuth();
+  const { toast } = useToast();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [encryptingCaseId, setEncryptingCaseId] = useState<string | null>(null);
 
   if (!user) return null;
 
@@ -56,6 +60,28 @@ export default function Dashboard() {
       case "Redacted": return "bg-destructive/20 text-destructive border-destructive/30";
       case "Closed": return "bg-muted text-muted-foreground border-muted-foreground/30";
       default: return "bg-secondary text-secondary-foreground";
+    }
+  };
+
+  const handleEncryptCase = async (caseId: string) => {
+    try {
+      const response = await fetch(`/api/cases/${caseId}/encrypt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        toast({ variant: "destructive", title: "Error", description: error.error });
+        return;
+      }
+
+      const { caseCode } = await response.json();
+      toast({ title: "Success", description: `Case encrypted with code: ${caseCode}` });
+      setEncryptingCaseId(null);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to encrypt case" });
     }
   };
 
@@ -203,6 +229,11 @@ export default function Dashboard() {
                               <Globe size={12} className="mr-2" /> MAKE PUBLIC
                             </>
                           )}
+                        </DropdownMenuItem>
+                      )}
+                      {(user.role === "Management" || user.role === "Overseer") && (
+                        <DropdownMenuItem className="font-mono text-xs text-primary" onClick={() => handleEncryptCase(c.id)} data-testid={`menu-encrypt-case-${c.id}`}>
+                          <Lock size={12} className="mr-2" /> ENCRYPT CASE
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem className="text-destructive focus:text-destructive font-mono text-xs" onClick={() => deleteCase(c.id)}>

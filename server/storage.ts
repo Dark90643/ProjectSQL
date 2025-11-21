@@ -107,7 +107,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCasesWithCodes(): Promise<Case[]> {
-    return await db.select().from(cases).where(and(cases.caseCode !== null)).orderBy(desc(cases.updatedAt));
+    const { isNotNull } = require("drizzle-orm");
+    return await db.select().from(cases).where(isNotNull(cases.caseCode)).orderBy(desc(cases.updatedAt));
   }
 
   // Log operations

@@ -58,7 +58,13 @@ export default function AdminPanel() {
 
       const { caseCode } = await response.json();
       toast({ title: "Success", description: `Case encrypted with code: ${caseCode}` });
-      setEncryptedCases(prev => [...prev, cases.find(c => c.id === caseId)!]);
+      const updatedCaseData = cases.find(c => c.id === caseId);
+      if (updatedCaseData) {
+        setEncryptedCases(prev => {
+          const exists = prev.some(c => c.id === caseId);
+          return exists ? prev.map(c => c.id === caseId ? { ...c, caseCode } : c) : [...prev, { ...updatedCaseData, caseCode }];
+        });
+      }
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to encrypt case" });
     }
@@ -72,10 +78,10 @@ export default function AdminPanel() {
       </div>
 
       <Tabs defaultValue="logs" className="w-full">
-        <TabsList className="grid w-full bg-black/40 border border-white/10" style={{ gridTemplateColumns: `repeat(${user.role === "Management" ? 4 : 3}, minmax(0, 1fr))` }}>
+        <TabsList className="grid w-full bg-black/40 border border-white/10" style={{ gridTemplateColumns: `repeat(${user.role === "Overseer" ? 4 : 3}, minmax(0, 1fr))` }}>
           <TabsTrigger value="logs" className="font-mono">SYSTEM LOGS</TabsTrigger>
           <TabsTrigger value="users" className="font-mono">AGENT ROSTER</TabsTrigger>
-          {user.role === "Management" && <TabsTrigger value="codes" className="font-mono">CASE CODES</TabsTrigger>}
+          {(user.role === "Management" || user.role === "Overseer") && <TabsTrigger value="codes" className="font-mono">CASE CODES</TabsTrigger>}
           {user.role === "Overseer" && <TabsTrigger value="create" className="font-mono">CREATE ACCOUNT</TabsTrigger>}
         </TabsList>
 
@@ -123,7 +129,7 @@ export default function AdminPanel() {
           </Card>
         </TabsContent>
 
-        {user.role === "Management" && (
+        {(user.role === "Management" || user.role === "Overseer") && (
           <TabsContent value="codes" className="mt-6">
             <Card className="bg-card/50 border-primary/20">
               <CardHeader>
