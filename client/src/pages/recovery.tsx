@@ -52,6 +52,7 @@ export default function Recovery() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({ caseId: log.targetId }),
       });
 
       if (!response.ok) {
