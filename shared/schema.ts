@@ -24,6 +24,7 @@ export const cases = pgTable("cases", {
   content: text("content").notNull(),
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   isPublic: boolean("is_public").notNull().default(false),
+  googleDocUrl: text("google_doc_url"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

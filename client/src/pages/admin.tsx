@@ -1,13 +1,19 @@
+import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, UserX, UserCheck, Activity, Wifi } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertTriangle, UserX, UserCheck, Activity, Wifi, Edit2 } from "lucide-react";
 
 export default function AdminPanel() {
-  const { user, users, logs, suspendUser, unsuspendUser } = useAuth();
+  const { user, users, logs, suspendUser, unsuspendUser, editUser } = useAuth();
+  const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ username: "", password: "", role: "Agent" });
 
   if (!user || (user.role !== "Management" && user.role !== "Overseer")) {
     return (
@@ -126,15 +132,23 @@ export default function AdminPanel() {
                         </TableCell>
                         <TableCell className="text-right">
                           {user.role === "Overseer" && user.id !== u.id && (
-                            u.isSuspended ? (
-                              <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => unsuspendUser(u.id)}>
-                                <UserCheck size={12} className="mr-1" /> RESTORE
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-blue-500/50 hover:bg-blue-500/10 text-blue-500" onClick={() => {
+                                setEditingUser(u.id);
+                                setEditForm({ username: u.username, password: "", role: u.role });
+                              }}>
+                                <Edit2 size={12} className="mr-1" /> EDIT
                               </Button>
-                            ) : (
-                              <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-destructive/50 hover:bg-destructive/10 text-destructive" onClick={() => suspendUser(u.id)}>
-                                <UserX size={12} className="mr-1" /> SUSPEND
-                              </Button>
-                            )
+                              {u.isSuspended ? (
+                                <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => unsuspendUser(u.id)}>
+                                  <UserCheck size={12} className="mr-1" /> RESTORE
+                                </Button>
+                              ) : (
+                                <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-destructive/50 hover:bg-destructive/10 text-destructive" onClick={() => suspendUser(u.id)}>
+                                  <UserX size={12} className="mr-1" /> SUSPEND
+                                </Button>
+                              )}
+                            </div>
                           )}
                         </TableCell>
                       </TableRow>
@@ -146,6 +160,72 @@ export default function AdminPanel() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
+        <DialogContent className="bg-card border-primary/20">
+          <DialogHeader>
+            <DialogTitle className="font-mono">EDIT AGENT PROFILE</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="font-mono text-xs text-muted-foreground mb-1 block">AGENT ID</label>
+              <Input
+                value={editForm.username}
+                onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                className="font-mono bg-background/50"
+                placeholder="New agent ID"
+                data-testid="input-edit-username"
+              />
+            </div>
+            <div>
+              <label className="font-mono text-xs text-muted-foreground mb-1 block">NEW PASSWORD (leave blank to keep current)</label>
+              <Input
+                type="password"
+                value={editForm.password}
+                onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                className="font-mono bg-background/50"
+                placeholder="New password"
+                data-testid="input-edit-password"
+              />
+            </div>
+            <div>
+              <label className="font-mono text-xs text-muted-foreground mb-1 block">CLEARANCE LEVEL</label>
+              <Select value={editForm.role} onValueChange={(role) => setEditForm({ ...editForm, role })}>
+                <SelectTrigger className="font-mono bg-background/50" data-testid="select-edit-role">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Agent">Agent</SelectItem>
+                  <SelectItem value="Management">Management</SelectItem>
+                  <SelectItem value="Overseer">Overseer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditingUser(null)} className="font-mono" data-testid="button-cancel-edit">
+              CANCEL
+            </Button>
+            <Button 
+              className="font-mono" 
+              onClick={async () => {
+                const updates: any = {};
+                if (editForm.username) updates.username = editForm.username;
+                if (editForm.password) updates.password = editForm.password;
+                if (editForm.role) updates.role = editForm.role;
+                
+                if (Object.keys(updates).length > 0) {
+                  await editUser(editingUser!, updates);
+                  setEditingUser(null);
+                }
+              }}
+              data-testid="button-save-edit"
+            >
+              SAVE CHANGES
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

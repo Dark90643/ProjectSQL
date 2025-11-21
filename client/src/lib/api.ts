@@ -38,6 +38,7 @@ export const api = {
     getAll: () => fetchAPI("/users"),
     suspend: (id: string) => fetchAPI(`/users/${id}/suspend`, { method: "PATCH" }),
     unsuspend: (id: string) => fetchAPI(`/users/${id}/unsuspend`, { method: "PATCH" }),
+    edit: (id: string, data: any) => fetchAPI(`/users/${id}/edit`, { method: "PATCH", body: JSON.stringify(data) }),
   },
   cases: {
     getAll: () => fetchAPI("/cases"),

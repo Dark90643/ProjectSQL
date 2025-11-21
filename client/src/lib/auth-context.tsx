@@ -25,6 +25,7 @@ interface Case {
   tags: string[];
   content: string;
   isPublic: boolean;
+  googleDocUrl?: string;
 }
 
 interface Log {
@@ -52,6 +53,7 @@ interface AuthContextType {
   deleteCase: (id: string) => Promise<void>;
   suspendUser: (id: string) => Promise<void>;
   unsuspendUser: (id: string) => Promise<void>;
+  editUser: (id: string, updates: { username?: string; password?: string; role?: Role }) => Promise<void>;
   toggleCasePublic: (id: string) => Promise<void>;
   refreshData: () => Promise<void>;
 }
@@ -214,6 +216,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const editUser = async (id: string, updates: { username?: string; password?: string; role?: Role }) => {
+    try {
+      const updatedUser = await api.users.edit(id, updates);
+      setUsers(prev => prev.map(u => u.id === id ? updatedUser : u));
+      toast({ title: "User Updated", description: "Agent profile updated successfully." });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to update user" });
+    }
+  };
+
   const toggleCasePublic = async (id: string) => {
     try {
       const updatedCase = await api.cases.togglePublic(id);
@@ -262,7 +274,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user, users, cases, logs, clientIp, isIpBanned, loading,
       login, register, logout, 
       createCase, updateCase, deleteCase, 
-      suspendUser, unsuspendUser, toggleCasePublic,
+      suspendUser, unsuspendUser, editUser, toggleCasePublic,
       refreshData
     }}>
       {children}

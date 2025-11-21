@@ -31,6 +31,7 @@ const caseSchema = z.object({
   status: z.enum(["Active", "Closed", "Redacted"]),
   priority: z.enum(["Low", "Medium", "High", "Critical"]),
   content: z.string(),
+  googleDocUrl: z.string().optional(),
 });
 
 export default function CaseView() {
@@ -56,6 +57,7 @@ export default function CaseView() {
       status: (existingCase?.status as any) || "Active",
       priority: (existingCase?.priority as any) || "Medium",
       content: existingCase?.content || "",
+      googleDocUrl: existingCase?.googleDocUrl || "",
     },
   });
 
@@ -240,6 +242,20 @@ export default function CaseView() {
 
                 <FormField
                   control={form.control}
+                  name="googleDocUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-mono text-xs uppercase">Google Doc URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="font-mono bg-background/50" placeholder="https://docs.google.com/document/d/..." data-testid="input-google-doc-url" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="content"
                   render={({ field }) => (
                     <FormItem>
@@ -297,6 +313,22 @@ export default function CaseView() {
               </div>
 
               <div className="border-t border-dashed border-primary/20 my-6" />
+
+              {existingCase?.googleDocUrl && (
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-mono text-xs text-muted-foreground uppercase mb-4">Case File (Google Doc)</p>
+                    <div className="rounded border border-primary/20 overflow-hidden bg-black/20" data-testid="google-doc-embed">
+                      <iframe
+                        src={existingCase.googleDocUrl.replace('/edit', '/preview')}
+                        className="w-full h-[600px] border-0"
+                        allow="fullscreen"
+                      />
+                    </div>
+                  </div>
+                  <div className="border-t border-dashed border-primary/20" />
+                </div>
+              )}
 
               <div className="prose prose-invert max-w-none">
                 <p className="font-mono text-xs text-muted-foreground uppercase mb-4">Full Report</p>
