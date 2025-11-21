@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/lib/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Trash2, RotateCcw, Clock } from "lucide-react";
 
 interface DeletedCaseRecord {
@@ -19,6 +19,7 @@ export default function Recovery() {
   const [deletedCases, setDeletedCases] = useState<DeletedCaseRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [restoringId, setRestoringId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDeletedCases = async () => {
