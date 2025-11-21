@@ -331,8 +331,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid or already used invite code" });
       }
 
-      const tempPassword = Math.random().toString(36).slice(-12);
-      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+      // Use the invite code as the password
+      const hashedPassword = await bcrypt.hash(code.code, 10);
       const clientIp = req.ip || req.socket.remoteAddress || "unknown";
 
       const user = await storage.createUser({
@@ -352,7 +352,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: `Created account for ${username} requiring invite verification`,
       });
 
-      res.json({ username: user.username, inviteCode, tempPassword });
+      res.json({ username: user.username, inviteCode, tempPassword: code.code });
     } catch (error) {
       console.error("User creation error:", error);
       res.status(500).json({ error: "Failed to create user" });

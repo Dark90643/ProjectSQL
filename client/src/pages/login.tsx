@@ -110,15 +110,15 @@ export default function Login() {
         return;
       }
 
-      // Give session time to update, then navigate
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Clear verification state
       setNeedsVerification(false);
       setVerificationCode("");
+      setAuthError("");
+      setIsLoading(false);
+      setVerifying(false);
       
-      // Small delay to ensure state updates before navigation
-      setTimeout(() => {
-        setLocation("/dashboard");
-      }, 100);
+      // Navigate - the router will handle the redirect via auth context
+      setLocation("/dashboard");
     } catch (error: any) {
       setAuthError("Verification error. Please try again.");
       setVerifying(false);
