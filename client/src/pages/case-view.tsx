@@ -44,24 +44,33 @@ export default function CaseView() {
   
   const isNew = params?.id === "new";
   const contextCase = cases.find(c => c.id === params?.id);
-  const [liveCase, setLiveCase] = useState(contextCase);
+  const [liveCase, setLiveCase] = useState<any>(null);
+  const [isLoadingCase, setIsLoadingCase] = useState(!isNew);
   
   const [isEditing, setIsEditing] = useState(isNew);
-  const [needsPassword, setNeedsPassword] = useState((liveCase as any)?.caseCode ? true : false);
+  const [needsPassword, setNeedsPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
 
   // Fetch fresh case data on mount and when case ID changes
   useEffect(() => {
     if (!isNew && params?.id) {
+      setIsLoadingCase(true);
       fetch(`/api/cases/${params.id}`, { credentials: "include" })
         .then(res => res.json())
         .then(data => {
           setLiveCase(data);
           setNeedsPassword(data?.caseCode ? true : false);
+          setIsLoadingCase(false);
         })
-        .catch(err => console.error("Error fetching case:", err));
+        .catch(err => {
+          console.error("Error fetching case:", err);
+          setIsLoadingCase(false);
+        });
+    } else {
+      setLiveCase(contextCase);
+      setIsLoadingCase(false);
     }
-  }, [params?.id, isNew]);
+  }, [params?.id, isNew, contextCase]);
 
   const existingCase = liveCase || contextCase;
 
@@ -98,6 +107,16 @@ export default function CaseView() {
     }
   };
 
+  // Show loading state while checking encryption status
+  if (isLoadingCase) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+        <div className="h-12 w-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <p className="font-mono text-xs text-muted-foreground">LOADING CASE FILE...</p>
+      </div>
+    );
+  }
+
   // Redirect if case not found and not creating new
   if (!isNew && !existingCase) {
     return (
@@ -111,8 +130,8 @@ export default function CaseView() {
     );
   }
 
-  // Show password prompt if case is encrypted
-  if (!isNew && needsPassword && existingCase?.caseCode) {
+  // Show password prompt if case is encrypted - BEFORE rendering any content
+  if (!isNew && needsPassword && (existingCase as any)?.caseCode) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
         <Lock className="h-16 w-16 text-destructive opacity-50" />
