@@ -63,20 +63,8 @@ export default function Login() {
         return;
       }
 
-      const user = await response.json();
-      
-      if (user.requiresInviteVerification) {
-        // Clear form and show verification screen
-        setIsLoading(false);
-        setVerificationCode("");
-        setAuthError("");
-        loginForm.reset();
-        setNeedsVerification(true);
-        setLoggedInUsername(values.username);
-      } else {
-        setIsLoading(false);
-        setLocation("/dashboard");
-      }
+      // Auto-refresh on successful login to establish session
+      window.location.reload();
     } catch (error: any) {
       setAuthError("Authentication error. Please try again.");
       setIsLoading(false);
