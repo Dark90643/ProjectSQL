@@ -82,14 +82,28 @@ export default function CaseView() {
   const form = useForm<z.infer<typeof caseSchema>>({
     resolver: zodResolver(caseSchema),
     defaultValues: {
-      title: existingCase?.title || "",
-      description: existingCase?.description || "",
-      status: (existingCase?.status as any) || "Active",
-      priority: (existingCase?.priority as any) || "Medium",
-      content: existingCase?.content || "",
-      googleDocUrl: existingCase?.googleDocUrl || "",
+      title: "",
+      description: "",
+      status: "Active",
+      priority: "Medium",
+      content: "",
+      googleDocUrl: "",
     },
   });
+
+  // Reset form when existingCase changes
+  useEffect(() => {
+    if (existingCase) {
+      form.reset({
+        title: existingCase.title || "",
+        description: existingCase.description || "",
+        status: (existingCase.status as any) || "Active",
+        priority: (existingCase.priority as any) || "Medium",
+        content: existingCase.content || "",
+        googleDocUrl: existingCase.googleDocUrl || "",
+      });
+    }
+  }, [existingCase?.id, form]);
 
   // Password verification for encrypted cases
   const verifyPassword = () => {
