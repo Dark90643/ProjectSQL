@@ -26,24 +26,24 @@ export default function Recovery() {
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchDeletedCases = async () => {
-      try {
-        const response = await fetch("/api/recovery/deleted-cases", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setDeletedCases(data);
-        }
-      } catch (error) {
-        console.error("Error fetching deleted cases:", error);
-        toast({ variant: "destructive", title: "Error", description: "Failed to load deleted cases" });
-      } finally {
-        setIsLoading(false);
+  const fetchDeletedCases = async () => {
+    try {
+      const response = await fetch("/api/recovery/deleted-cases", {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDeletedCases(data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching deleted cases:", error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to load deleted cases" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchDeletedCases();
   }, [toast]);
 
@@ -114,14 +114,10 @@ export default function Recovery() {
         return;
       }
 
-      // Update local state to remove the embed
-      setDeletedCases(prev => prev.map(c => 
-        c.targetId === log.targetId 
-          ? { ...c, caseData: { ...c.caseData, googleDocUrl: undefined } }
-          : c
-      ));
-
       toast({ title: "Success", description: "File embed removed from case" });
+
+      // Refetch deleted cases to ensure UI is in sync with backend
+      await fetchDeletedCases();
     } catch (error) {
       console.error("Error removing embed:", error);
       toast({ variant: "destructive", title: "Error", description: "Failed to remove file embed" });
