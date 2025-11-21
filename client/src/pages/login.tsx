@@ -66,17 +66,23 @@ export default function Login() {
       const user = await response.json();
       
       if (user.requiresInviteVerification) {
-        setNeedsVerification(true);
-        setLoggedInUsername(values.username);
+        // Clear form and show verification screen
         setVerificationCode("");
+        setAuthError("");
         loginForm.reset();
+        // Use setTimeout to ensure state is set before changing needsVerification
+        setTimeout(() => {
+          setNeedsVerification(true);
+          setLoggedInUsername(values.username);
+        }, 0);
       } else {
+        setIsLoading(false);
         setLocation("/dashboard");
       }
     } catch (error: any) {
       setAuthError("Authentication error. Please try again.");
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   async function onVerifyInvite() {
@@ -89,19 +95,7 @@ export default function Login() {
     setAuthError("");
 
     try {
-      // First verify the session is established
-      const meCheck = await fetch("/api/auth/me", {
-        credentials: "include",
-      });
-
-      if (!meCheck.ok) {
-        setAuthError("Session expired. Please login again.");
-        setNeedsVerification(false);
-        setVerifying(false);
-        return;
-      }
-
-      // Now verify the invite code
+      // Verify the invite code
       const response = await fetch("/api/invites/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -116,13 +110,19 @@ export default function Login() {
         return;
       }
 
+      // Give session time to update, then navigate
+      await new Promise(resolve => setTimeout(resolve, 500));
       setNeedsVerification(false);
       setVerificationCode("");
-      setLocation("/dashboard");
+      
+      // Small delay to ensure state updates before navigation
+      setTimeout(() => {
+        setLocation("/dashboard");
+      }, 100);
     } catch (error: any) {
       setAuthError("Verification error. Please try again.");
+      setVerifying(false);
     }
-    setVerifying(false);
   }
 
   async function onRegister(values: z.infer<typeof registerSchema>) {
