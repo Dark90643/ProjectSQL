@@ -262,6 +262,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(user ? { ...user, password: undefined } : null);
   });
 
+  app.patch("/api/users/:id/edit", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { username, password, role } = req.body;
+    
+    const updates: Partial<User> = {};
+    const changes: string[] = [];
+    
+    if (username !== undefined) {
+      const existing = await storage.getUserByUsername(username);
+      if (existing && existing.id !== id) {
+        return res.status(400).json({ error: "Username already taken" });
+      }
+      updates.username = username;
+      changes.push(`username to ${username}`);
+    }
+    
+    if (password !== undefined) {
+      updates.password = await bcrypt.hash(password, 10);
+      changes.push("password");
+    }
+    
+    if (role !== undefined) {
+      if (!["Agent", "Management", "Overseer"].includes(role)) {
+        return res.status(400).json({ error: "Invalid role" });
+      }
+      updates.role = role;
+      changes.push(`role to ${role}`);
+    }
+    
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: "No updates provided" });
+    }
+    
+    const user = await storage.updateUser(id, updates);
+    
+    if (user) {
+      await storage.createLog({
+        action: "USER_EDIT",
+        userId: req.user!.id,
+        targetId: id,
+        details: `Edited user: ${changes.join(", ")}`,
+      });
+    }
+    
+    res.json(user ? { ...user, password: undefined } : null);
+  });
+
   // Case routes
   app.get("/api/cases", requireAuth, async (req: Request, res: Response) => {
     const cases = await storage.getAllCases();
