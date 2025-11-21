@@ -590,8 +590,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/recovery/deleted-cases", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     try {
       const allLogs = await storage.getAllLogs();
+      
+      // Get all restored case IDs
+      const restoredCaseIds = new Set(
+        allLogs
+          .filter(log => log.action === "CASE_RESTORE")
+          .map(log => log.targetId)
+      );
+      
       const deletedLogs = allLogs
-        .filter(log => log.action === "CASE_DELETE")
+        .filter(log => log.action === "CASE_DELETE" && !restoredCaseIds.has(log.targetId))
         .map(log => {
           try {
             const parsed = JSON.parse(log.details);
