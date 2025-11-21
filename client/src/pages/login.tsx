@@ -89,6 +89,19 @@ export default function Login() {
     setAuthError("");
 
     try {
+      // First verify the session is established
+      const meCheck = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      if (!meCheck.ok) {
+        setAuthError("Session expired. Please login again.");
+        setNeedsVerification(false);
+        setVerifying(false);
+        return;
+      }
+
+      // Now verify the invite code
       const response = await fetch("/api/invites/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
