@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronLeft, Trash2, RotateCcw, Clock, FileX } from "lucide-react";
+import { ChevronLeft, Trash2, RotateCcw, Clock, FileX, AlertTriangle } from "lucide-react";
 
 let restorationInProgress = false;
 
@@ -24,6 +24,7 @@ export default function Recovery() {
   const [deletedCases, setDeletedCases] = useState<DeletedCaseLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [restoringId, setRestoringId] = useState<string | null>(null);
+  const [confirmPermanentDelete, setConfirmPermanentDelete] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchDeletedCases = async () => {
@@ -124,6 +125,38 @@ export default function Recovery() {
     }
   };
 
+  const handlePermanentlyDelete = async (caseId: string) => {
+    if (confirmPermanentDelete !== caseId) {
+      setConfirmPermanentDelete(caseId);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/recovery/${caseId}/permanently-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({ variant: "destructive", title: "Error", description: data.error });
+        return;
+      }
+
+      toast({ title: "Success", description: "Case permanently deleted from recovery - cannot be recovered" });
+
+      // Remove from deleted cases list
+      setDeletedCases(prev => prev.filter(c => c.targetId !== caseId));
+      setConfirmPermanentDelete(null);
+    } catch (error) {
+      console.error("Error permanently deleting case:", error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to permanently delete case" });
+      setConfirmPermanentDelete(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -197,16 +230,47 @@ export default function Recovery() {
                       )}
                     </div>
                   )}
-                  <Button
-                    onClick={() => handleRestore(log)}
-                    disabled={restoringId === log.targetId}
-                    className="font-mono gap-2 w-full"
-                    variant="outline"
-                    data-testid={`button-restore-case-${log.targetId}`}
-                  >
-                    <RotateCcw size={14} />
-                    {restoringId === log.targetId ? "RESTORING..." : "RESTORE CASE"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleRestore(log)}
+                      disabled={restoringId === log.targetId}
+                      className="font-mono gap-2 flex-1"
+                      variant="outline"
+                      data-testid={`button-restore-case-${log.targetId}`}
+                    >
+                      <RotateCcw size={14} />
+                      {restoringId === log.targetId ? "RESTORING..." : "RESTORE CASE"}
+                    </Button>
+                    {(user?.role === "Management" || user?.role === "Overseer") && (
+                      <Button
+                        onClick={() => handlePermanentlyDelete(log.targetId)}
+                        variant={confirmPermanentDelete === log.targetId ? "destructive" : "outline"}
+                        size={confirmPermanentDelete === log.targetId ? "default" : "icon"}
+                        className={confirmPermanentDelete === log.targetId ? "font-mono gap-2 text-destructive border-destructive" : ""}
+                        data-testid={`button-permanently-delete-case-${log.targetId}`}
+                      >
+                        {confirmPermanentDelete === log.targetId ? (
+                          <>
+                            <AlertTriangle size={14} />
+                            DELETE FOREVER?
+                          </>
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </Button>
+                    )}
+                    {confirmPermanentDelete === log.targetId && (
+                      <Button 
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setConfirmPermanentDelete(null)}
+                        className="font-mono text-xs"
+                        data-testid={`button-cancel-permanent-delete-${log.targetId}`}
+                      >
+                        CANCEL
+                      </Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             );

@@ -36,6 +36,7 @@ export interface IStorage {
   createLog(log: InsertLog): Promise<Log>;
   getAllLogs(): Promise<Log[]>;
   updateLog(logId: string, updates: { details?: string }): Promise<void>;
+  deleteLog(logId: string): Promise<void>;
   
   // Invite code operations
   getInviteCode(code: string): Promise<InviteCode | undefined>;
@@ -123,6 +124,10 @@ export class DatabaseStorage implements IStorage {
 
   async updateLog(logId: string, updates: { details?: string }): Promise<void> {
     await db.update(logs).set(updates).where(eq(logs.id, logId));
+  }
+
+  async deleteLog(logId: string): Promise<void> {
+    await db.delete(logs).where(eq(logs.id, logId));
   }
 
   // Invite code operations

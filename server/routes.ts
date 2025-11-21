@@ -704,6 +704,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/recovery/:caseId/permanently-delete", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { caseId } = req.params;
+      
+      if (!caseId) {
+        return res.status(400).json({ error: "Case ID required" });
+      }
+
+      const allLogs = await storage.getAllLogs();
+      const deleteLogIndex = allLogs.findIndex(log => log.action === "CASE_DELETE" && log.targetId === caseId);
+      
+      if (deleteLogIndex === -1) {
+        return res.status(404).json({ error: "Deleted case not found" });
+      }
+
+      const deleteLog = allLogs[deleteLogIndex];
+      
+      // Delete the deletion log from database
+      await storage.deleteLog(deleteLog.id);
+
+      await storage.createLog({
+        action: "CASE_PERMANENTLY_DELETED",
+        userId: req.user!.id,
+        targetId: caseId,
+        details: `Permanently deleted recovery for case ${caseId} - no longer recoverable`,
+      });
+
+      res.json({ success: true, message: "Case permanently deleted from recovery" });
+    } catch (error) {
+      console.error("Error permanently deleting case:", error);
+      res.status(500).json({ error: "Failed to permanently delete case" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
