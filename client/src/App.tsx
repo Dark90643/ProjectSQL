@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import Login from "@/pages/login";
 import ServerSelector from "@/pages/server-selector";
+import DiscordAuth from "@/pages/discord-auth";
 import Dashboard from "@/pages/dashboard";
 import PublicDashboard from "@/pages/public-dashboard";
 import CaseView from "@/pages/case-view";
@@ -46,6 +47,7 @@ function RouterContent() {
       <Route path="/public" component={PublicDashboard} />
       <Route path="/" component={Login} />
       <Route path="/server-selector" component={ServerSelector} />
+      <Route path="/discord-auth" component={DiscordAuth} />
       
       {/* Protected Routes need Layout */}
       <Route path="/dashboard">

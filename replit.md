@@ -6,6 +6,20 @@ AEGIS_NET is a multi-tenant, Discord-integrated secure case management system. I
 
 Preferred communication style: Simple, everyday language.
 
+# Discord OAuth Setup
+
+**Discord Developer Application Configuration**:
+1. Create app at https://discord.com/developers/applications
+2. Set OAuth2 Redirect URI to: `{API_URL}/api/auth/discord/callback`
+3. Copy Client ID and Client Secret to Replit secrets (DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET)
+4. Enable "Identify", "Email", and "Guilds" OAuth scopes in Discord settings
+
+**Environment Variables Required**:
+- `DISCORD_CLIENT_ID` - Discord application client ID
+- `DISCORD_CLIENT_SECRET` - Discord application client secret (should be in secrets)
+- `API_URL` - Backend API URL (defaults to http://localhost:5000)
+- `FRONTEND_URL` - Frontend URL for OAuth redirects (defaults to http://localhost:5000)
+
 # System Architecture
 
 ## Frontend Architecture
@@ -80,11 +94,15 @@ Preferred communication style: Simple, everyday language.
 - Independent data storage and access control
 
 **Discord OAuth2 Authentication**:
-- `/api/auth/discord/callback` - Handles Discord OAuth callback and account creation
+- `/api/auth/discord/login` - Returns Discord OAuth authorization URL
+- `/api/auth/discord/callback` - Discord OAuth callback endpoint that exchanges code for token, fetches user guilds, and redirects to frontend
 - `/api/auth/discord/servers` - Returns list of user's Discord servers
 - `/api/auth/discord/select-server` - Creates workspace context and logs user in
+- `/api/auth/discord/mock-callback` - Legacy endpoint for mock testing
+- Frontend routes: `/discord-auth` for handling Discord OAuth callback
 - Frontend routes: `/server-selector` for server selection after Discord login
-- Supports both Discord OAuth and traditional username/password login
+- Supports real Discord OAuth2 flow with automatic guild synchronization
+- Also supports traditional username/password login
 
 **Server Member Roles**:
 - Owner → Overseer role (full system access)

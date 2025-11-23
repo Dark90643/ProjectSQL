@@ -229,8 +229,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ ip: clientIp, isBanned });
   });
 
-  // Discord OAuth routes
-  app.post("/api/auth/discord/callback", checkIpBan, async (req: Request, res: Response) => {
+  // Discord OAuth login - start the OAuth flow
+  app.get("/api/auth/discord/login", checkIpBan, (req: Request, res: Response) => {
+    try {
+      const clientId = process.env.DISCORD_CLIENT_ID;
+      const redirectUri = `${process.env.API_URL || "http://localhost:5000"}/api/auth/discord/callback`;
+      const scopes = ["identify", "email", "guilds"];
+
+      const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes.join("%20")}`;
+      res.json({ authUrl });
+    } catch (error: any) {
+      console.error("Discord login URL error:", error);
+      res.status(500).json({ error: "Failed to generate Discord login URL" });
+    }
+  });
+
+  // Discord OAuth callback - exchange code for token
+  app.get("/api/auth/discord/callback", checkIpBan, async (req: Request, res: Response) => {
+    try {
+      const { code } = req.query;
+      if (!code) {
+        return res.status(400).json({ error: "Missing authorization code" });
+      }
+
+      const clientId = process.env.DISCORD_CLIENT_ID;
+      const clientSecret = process.env.DISCORD_CLIENT_SECRET;
+      const redirectUri = `${process.env.API_URL || "http://localhost:5000"}/api/auth/discord/callback`;
+
+      // Exchange code for access token
+      const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: clientId!,
+          client_secret: clientSecret!,
+          code: code as string,
+          grant_type: "authorization_code",
+          redirect_uri: redirectUri,
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        const text = await tokenResponse.text();
+        console.error("Discord token exchange failed:", text);
+        return res.status(400).json({ error: "Failed to exchange code for token" });
+      }
+
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.access_token;
+
+      // Get user info from Discord
+      const userResponse = await fetch("https://discord.com/api/users/@me", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (!userResponse.ok) {
+        console.error("Failed to fetch Discord user info");
+        return res.status(400).json({ error: "Failed to fetch user info" });
+      }
+
+      const discordUser = await userResponse.json();
+
+      // Get user's guilds (servers)
+      const guildsResponse = await fetch("https://discord.com/api/users/@me/guilds", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      let userGuilds = [];
+      if (guildsResponse.ok) {
+        userGuilds = await guildsResponse.json();
+      }
+
+      // Get or create Discord account
+      let discordAccount = await storage.getDiscordAccount(discordUser.id);
+      if (!discordAccount) {
+        discordAccount = await storage.createDiscordAccount({
+          discordId: discordUser.id,
+          username: discordUser.username,
+          email: discordUser.email || null,
+          avatar: discordUser.avatar || null,
+          accessToken,
+          refreshToken: tokenData.refresh_token || "",
+          expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
+        });
+      } else {
+        await storage.updateDiscordAccount(discordAccount.id, {
+          username: discordUser.username,
+          email: discordUser.email || null,
+          avatar: discordUser.avatar || null,
+          accessToken,
+          refreshToken: tokenData.refresh_token || "",
+          expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
+        });
+      }
+
+      // Create server workspaces and memberships for user's guilds
+      for (const guild of userGuilds) {
+        let workspace = await storage.getServerWorkspace(guild.id);
+        if (!workspace) {
+          workspace = await storage.createServerWorkspace({
+            serverId: guild.id,
+            serverName: guild.name,
+            ownerId: discordUser.id,
+            serverIcon: guild.icon || undefined,
+          });
+        }
+
+        let member = await storage.getServerMember(guild.id, discordUser.id);
+        if (!member) {
+          const isOwner = guild.owner === true;
+          const isAdmin = (guild.permissions & 8) !== 0; // 8 = ADMINISTRATOR permission
+          
+          await storage.createServerMember({
+            serverId: guild.id,
+            discordUserId: discordUser.id,
+            roles: guild.roles || [],
+            isOwner,
+            isAdmin,
+          });
+        }
+      }
+
+      // Redirect to frontend with user info
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+      res.redirect(`${frontendUrl}/discord-auth?discordId=${discordUser.id}&username=${encodeURIComponent(discordUser.username)}`);
+    } catch (error: any) {
+      console.error("Discord callback error:", error);
+      res.status(500).json({ error: "Discord authentication failed" });
+    }
+  });
+
+  // Legacy endpoint for mock data during testing
+  app.post("/api/auth/discord/mock-callback", checkIpBan, async (req: Request, res: Response) => {
     try {
       const { accessToken, user: discordUser } = req.body;
       
@@ -284,7 +414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Return Discord account info so frontend can show server selector
       res.json({ discordId: discordUser.id, username: discordUser.username });
     } catch (error: any) {
-      console.error("Discord callback error:", error);
+      console.error("Discord mock callback error:", error);
       res.status(500).json({ error: "Discord authentication failed" });
     }
   });

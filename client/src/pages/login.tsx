@@ -360,22 +360,18 @@ export default function Login() {
                   setIsLoading(true);
                   setAuthError("");
                   try {
-                    const mockDiscordUser = {
-                      id: `discord_${Date.now()}`,
-                      username: `discord_user_${Math.random().toString(36).substr(2, 9)}`,
-                      email: "user@discord.com",
-                      avatar: null,
-                    };
-                    const success = await discordLogin("mock_access_token", mockDiscordUser);
-                    if (success) {
-                      setLocation("/server-selector");
-                    } else {
-                      setAuthError("Discord authentication failed");
+                    // Get Discord OAuth login URL from server
+                    const response = await fetch("/api/auth/discord/login");
+                    if (!response.ok) {
+                      throw new Error("Failed to get Discord login URL");
                     }
+                    const { authUrl } = await response.json();
+                    // Redirect to Discord OAuth
+                    window.location.href = authUrl;
                   } catch (error) {
                     setAuthError("Discord login failed. Please try again.");
+                    setIsLoading(false);
                   }
-                  setIsLoading(false);
                 }}
                 data-testid="button-discord-login"
               >
