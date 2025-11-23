@@ -92,15 +92,19 @@ Preferred communication style: Simple, everyday language.
 - Server-specific case management and audit logs
 - Server members with role-based permissions
 - Independent data storage and access control
+- Server-specific Agent Roster (see Agent Roster section below)
 
 **Discord OAuth2 Authentication**:
 - `/api/auth/discord/login` - Returns Discord OAuth authorization URL
 - `/api/auth/discord/callback` - Discord OAuth callback endpoint that exchanges code for token, fetches user guilds, and redirects to frontend
 - `/api/auth/discord/servers` - Returns list of user's Discord servers
 - `/api/auth/discord/select-server` - Creates workspace context and logs user in
+- `/api/auth/discord/check-bot` - Verifies if bot is in the selected server
 - `/api/auth/discord/mock-callback` - Legacy endpoint for mock testing
+- `/api/auth/check-support-team` - Checks if user is admin/owner of official bot server
 - Frontend routes: `/discord-auth` for handling Discord OAuth callback
 - Frontend routes: `/server-selector` for server selection after Discord login
+- Frontend routes: `/bot-invite` for adding bot to servers that don't have it
 - Supports real Discord OAuth2 flow with automatic guild synchronization
 - Also supports traditional username/password login
 
@@ -108,6 +112,39 @@ Preferred communication style: Simple, everyday language.
 - Owner → Overseer role (full system access)
 - Admin → Management role (administrative functions)
 - Member → Agent role (basic case access)
+
+**Bot Verification**: When selecting a server, the system checks if the AEGIS bot is already in that server. If not, users are directed to an invitation page to add the bot before proceeding to the dashboard.
+
+## Account Management & Support Team
+
+**Account Creation Access**: 
+- Account creation (registration via "REGISTER" tab) is restricted to administrators and owners of the official AEGIS bot server (Discord server ID: `1441447050024714252`)
+- The REGISTER tab is only visible to users who are admins or owners in that server
+- All other users can only log in with existing credentials (username/password)
+- This ensures account creation is controlled by the support team
+
+**Support Team Role**:
+- Administrators and owners of the official bot server ID `1441447050024714252` are designated as the support team
+- Support team members get access to the Support Panel page (`/support-panel`)
+- Only support team can access the account creation/registration features
+
+## Agent Roster
+
+**Per-Server Agent Rosters**: In the multi-server architecture, each Discord server maintains its own Agent Roster containing:
+- All users with access to that specific server's workspace
+- User roles (Agent, Management, Overseer) scoped to that server
+- User online status tracking
+- Account suspension status per user
+
+**Access**: Agent Roster is accessible through the Admin Panel (`/admin`) when logged into a specific server workspace. Shows only agents/staff members of that particular server.
+
+**Support Panel for Cross-Server Management**: Support team members can access `/support-panel` to:
+- View all cases across all servers
+- Filter cases by server
+- Access server statistics (total cases, active cases, closed cases)
+- Search for specific cases across all servers
+- Monitor overall platform health and case distribution
+- This is separate from per-server Admin Panel access
 
 ## External Dependencies
 

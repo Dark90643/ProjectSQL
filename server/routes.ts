@@ -509,21 +509,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Server ID required" });
       }
 
-      // Check if bot is in the server by trying to fetch guild info
-      // This is a simple check - in production, you might want to verify the bot has permissions
-      // For now, we'll assume the bot is in the server if it's been added before
-      // A real implementation would call the Discord API to verify
-      
-      // Simple approach: if the server workspace exists and has been configured,
-      // we assume the bot has been added (user can verify manually)
       const workspace = await storage.getServerWorkspace(serverId as string);
-      
-      // For this implementation, we'll do a basic check
-      // You can enhance this by actually calling Discord's API if needed
       res.json({ hasBotInServer: !!workspace });
     } catch (error: any) {
       console.error("Check bot error:", error);
       res.status(500).json({ error: "Failed to check bot status" });
+    }
+  });
+
+  app.get("/api/auth/check-support-team", async (req: Request, res: Response) => {
+    try {
+      const { discordId } = req.query;
+      if (!discordId) {
+        return res.status(400).json({ error: "Discord ID required" });
+      }
+
+      const officialBotServer = "1441447050024714252";
+      const member = await storage.getServerMember(officialBotServer, discordId as string);
+      
+      const isSupportTeam = !!(member && (member.isOwner || member.isAdmin));
+      
+      res.json({ isSupportTeam });
+    } catch (error: any) {
+      console.error("Check support team error:", error);
+      res.json({ isSupportTeam: false });
+    }
+  });
+
+  app.get("/api/support/all-cases", requireAuth, async (req: Request, res: Response) => {
+    try {
+      // Check if user is support team
+      const discordId = req.user?.username;
+      if (!discordId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const officialBotServer = "1441447050024714252";
+      const member = await storage.getServerMember(officialBotServer, discordId);
+      
+      if (!member || (!member.isOwner && !member.isAdmin)) {
+        return res.status(403).json({ error: "Not authorized to access support panel" });
+      }
+
+      // Get all cases from all servers
+      const allCases = await storage.getAllCases();
+      
+      // Group by server and get statistics
+      const serverStats: any = {};
+      const casesWithServer: any[] = [];
+
+      for (const caseData of allCases) {
+        const workspace = await storage.getServerWorkspace(caseData.serverId || "");
+        const serverName = workspace?.serverName || `Server ${caseData.serverId}`;
+        
+        casesWithServer.push({
+          ...caseData,
+          serverName,
+        });
+
+        if (!serverStats[caseData.serverId]) {
+          serverStats[caseData.serverId] = {
+            serverId: caseData.serverId || "",
+            serverName,
+            totalCases: 0,
+            activeCases: 0,
+            closedCases: 0,
+          };
+        }
+
+        serverStats[caseData.serverId].totalCases++;
+        if (caseData.status === "Active") {
+          serverStats[caseData.serverId].activeCases++;
+        } else if (caseData.status === "Closed") {
+          serverStats[caseData.serverId].closedCases++;
+        }
+      }
+
+      res.json({
+        cases: casesWithServer,
+        serverStats: Object.values(serverStats),
+      });
+    } catch (error: any) {
+      console.error("Get all cases error:", error);
+      res.status(500).json({ error: "Failed to get cases" });
     }
   });
 

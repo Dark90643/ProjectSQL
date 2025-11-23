@@ -47,6 +47,8 @@ interface AuthContextType {
   isIpBanned: boolean;
   loading: boolean;
   discordUser: { discordId: string; username: string } | null;
+  canCreateAccounts: boolean;
+  isSupportTeam: boolean;
   login: (username: string, password: string) => Promise<boolean>;
   discordLogin: (accessToken: string, user: any) => Promise<boolean>;
   selectServer: (serverId: string) => Promise<boolean>;
@@ -65,6 +67,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const OFFICIAL_BOT_SERVER = "1441447050024714252";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
@@ -74,6 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isIpBanned, setIsIpBanned] = useState(false);
   const [loading, setLoading] = useState(true);
   const [discordUser, setDiscordUser] = useState<{ discordId: string; username: string } | null>(null);
+  const [canCreateAccounts, setCanCreateAccounts] = useState(false);
+  const [isSupportTeam, setIsSupportTeam] = useState(false);
   const { toast } = useToast();
 
   // Check auth status on mount
@@ -173,6 +179,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       const data = await response.json();
       setDiscordUser({ discordId: data.discordId, username: data.username });
+      
+      // Check if user is support team (admin/owner of official bot server)
+      try {
+        const checkResponse = await fetch(`/api/auth/check-support-team?discordId=${discordUserData.id}`);
+        const checkData = await checkResponse.json();
+        setCanCreateAccounts(checkData.isSupportTeam);
+        setIsSupportTeam(checkData.isSupportTeam);
+      } catch (error) {
+        console.error("Failed to check support team status:", error);
+      }
       return true;
     } catch (error: any) {
       toast({ variant: "destructive", title: "Error", description: error.message || "Discord login failed" });
@@ -345,6 +361,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={{ 
       user, users, cases, logs, clientIp, isIpBanned, loading, discordUser,
+      canCreateAccounts, isSupportTeam,
       login, discordLogin, selectServer, register, logout, 
       createCase, updateCase, deleteCase, 
       suspendUser, unsuspendUser, editUser, createUserWithInvite, toggleCasePublic,

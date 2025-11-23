@@ -24,7 +24,7 @@ const registerSchema = z.object({
 });
 
 export default function Login() {
-  const { login, register, discordLogin, isIpBanned, clientIp } = useAuth();
+  const { login, register, discordLogin, isIpBanned, clientIp, canCreateAccounts } = useAuth();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -220,9 +220,11 @@ export default function Login() {
               </div>
             ) : (
               <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-black/40 border border-white/10">
+                <TabsList className={`grid w-full bg-black/40 border border-white/10 ${canCreateAccounts ? 'grid-cols-2' : ''}`}>
                   <TabsTrigger value="login" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">LOGIN</TabsTrigger>
-                  <TabsTrigger value="register" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">REGISTER</TabsTrigger>
+                  {canCreateAccounts && (
+                    <TabsTrigger value="register" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary">REGISTER</TabsTrigger>
+                  )}
                 </TabsList>
                 
                 <TabsContent value="login">
@@ -275,6 +277,7 @@ export default function Login() {
                   </Form>
                 </TabsContent>
                 
+                {canCreateAccounts && (
                 <TabsContent value="register">
                   <Form {...registerForm}>
                     <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4 mt-4">
@@ -340,6 +343,7 @@ export default function Login() {
                     </form>
                   </Form>
                 </TabsContent>
+                )}
               </Tabs>
             )}
             
