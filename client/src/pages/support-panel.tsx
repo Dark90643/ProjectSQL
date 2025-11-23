@@ -1,11 +1,10 @@
 import { useAuth } from "@/lib/auth-context";
 import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Search, BarChart3, Zap, ChevronLeft } from "lucide-react";
+import { Search, BarChart3, Zap } from "lucide-react";
 
 interface CaseData {
   id: string;
@@ -28,7 +27,7 @@ interface ServerStats {
 }
 
 export default function SupportPanel() {
-  const { user, isSupportTeam, logout } = useAuth();
+  const { user, isSupportTeam } = useAuth();
   const [, setLocation] = useLocation();
   const [cases, setCases] = useState<CaseData[]>([]);
   const [servers, setServers] = useState<ServerStats[]>([]);
@@ -60,14 +59,9 @@ export default function SupportPanel() {
     ? cases.filter(c => c.serverId === selectedServer && c.title.toLowerCase().includes(searchQuery.toLowerCase()))
     : cases.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const handleLogout = async () => {
-    await logout();
-    setLocation("/");
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-sm text-muted-foreground font-mono">LOADING SUPPORT PANEL...</p>
@@ -78,16 +72,13 @@ export default function SupportPanel() {
 
   if (!isSupportTeam) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black p-4">
+      <div className="flex items-center justify-center h-full p-4">
         <Card className="border-destructive/50 max-w-md w-full">
           <CardHeader>
             <CardTitle className="font-mono text-destructive">ACCESS DENIED</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground font-mono text-sm">You do not have permission to access the support panel. Only administrators and owners of the official AEGIS bot server can access this page.</p>
-            <Button onClick={() => setLocation("/")} className="w-full" variant="outline">
-              RETURN
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -95,32 +86,20 @@ export default function SupportPanel() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-black p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 border rounded-lg flex items-center justify-center bg-primary/10 border-primary/50 text-primary">
-              <Shield size={24} />
-            </div>
-            <div>
-              <h1 className="font-mono text-2xl font-bold text-white tracking-tighter">SUPPORT_PANEL</h1>
-              <p className="text-primary/60 font-mono text-xs">MULTI-SERVER CASE MANAGEMENT</p>
-            </div>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="font-mono text-xs gap-2"
-            onClick={handleLogout}
-          >
-            <ChevronLeft size={14} />
-            LOGOUT
-          </Button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 border rounded-lg flex items-center justify-center bg-primary/10 border-primary/50 text-primary">
+          <Zap size={20} />
         </div>
+        <div>
+          <h1 className="font-mono text-2xl font-bold text-white tracking-tighter">SUPPORT_PANEL</h1>
+          <p className="text-primary/60 font-mono text-xs">MULTI-SERVER CASE MANAGEMENT</p>
+        </div>
+      </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="overview" className="w-full">
+      {/* Tabs */}
+      <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-black/40 border border-white/10">
             <TabsTrigger value="overview" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary gap-2">
               <BarChart3 size={14} /> OVERVIEW
@@ -131,10 +110,10 @@ export default function SupportPanel() {
             <TabsTrigger value="search" className="font-mono data-[state=active]:bg-primary/20 data-[state=active]:text-primary gap-2">
               <Search size={14} /> SEARCH
             </TabsTrigger>
-          </TabsList>
+        </TabsList>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-4">
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card className="border-primary/20">
                 <CardHeader className="pb-2">
@@ -154,7 +133,7 @@ export default function SupportPanel() {
               </Card>
               <Card className="border-primary/20">
                 <CardHeader className="pb-2">
-                  <CardTitle className="font-mono text-sm">ACTIVE</CardTitle>
+                  <CardTitle className="font-mono text-sm">ACTIVE_CASES</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold text-primary">{cases.filter(c => c.status === 'Active').length}</p>
@@ -162,8 +141,8 @@ export default function SupportPanel() {
               </Card>
             </div>
 
-            {/* Server Statistics */}
-            <Card className="border-primary/20">
+          {/* Server Statistics */}
+          <Card className="border-primary/20">
               <CardHeader>
                 <CardTitle className="font-mono text-sm">SERVER STATISTICS</CardTitle>
               </CardHeader>
@@ -182,14 +161,14 @@ export default function SupportPanel() {
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          {/* Cases Tab */}
-          <TabsContent value="cases" className="space-y-4">
-            {/* Server Filter */}
-            <div className="space-y-2">
+        {/* Cases Tab */}
+        <TabsContent value="cases" className="space-y-4">
+          {/* Server Filter */}
+          <div className="space-y-2">
               <label className="font-mono text-xs uppercase text-muted-foreground">Filter by Server</label>
               <select 
                 value={selectedServer || ""}
@@ -202,11 +181,11 @@ export default function SupportPanel() {
                     {server.serverName}
                   </option>
                 ))}
-              </select>
-            </div>
+            </select>
+          </div>
 
-            {/* Cases List */}
-            <div className="space-y-3">
+          {/* Cases List */}
+          <div className="space-y-3">
               {filteredCases.length === 0 ? (
                 <Card className="border-primary/20">
                   <CardContent className="p-6 text-center">
@@ -239,27 +218,27 @@ export default function SupportPanel() {
                       </div>
                     </CardContent>
                   </Card>
-                ))
-              )}
-            </div>
-          </TabsContent>
+              ))
+            )}
+          </div>
+        </TabsContent>
 
-          {/* Search Tab */}
-          <TabsContent value="search" className="space-y-4">
-            <div className="space-y-2">
-              <label className="font-mono text-xs uppercase text-muted-foreground">Search Cases</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Enter case title..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 bg-black/40 border-white/10 font-mono text-sm"
-                />
-              </div>
+        {/* Search Tab */}
+        <TabsContent value="search" className="space-y-4">
+          <div className="space-y-2">
+            <label className="font-mono text-xs uppercase text-muted-foreground">Search Cases</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Enter case title..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 bg-black/40 border-white/10 font-mono text-sm"
+              />
             </div>
+          </div>
 
-            <div className="space-y-3">
+          <div className="space-y-3">
               {filteredCases.length === 0 ? (
                 <Card className="border-primary/20">
                   <CardContent className="p-6 text-center">
@@ -274,12 +253,11 @@ export default function SupportPanel() {
                       <CardDescription className="font-mono text-xs">{caseData.serverName} • {caseData.status}</CardDescription>
                     </CardHeader>
                   </Card>
-                ))
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+              ))
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

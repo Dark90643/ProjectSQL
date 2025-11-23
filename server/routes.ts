@@ -495,7 +495,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const servers = await storage.getServersByUser(discordId as string);
-      res.json(servers);
+      
+      // Construct Discord CDN URLs for server icons
+      const serversWithIcons = servers.map(server => ({
+        ...server,
+        serverIcon: server.serverIcon 
+          ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
+          : undefined,
+      }));
+      
+      res.json(serversWithIcons);
     } catch (error: any) {
       console.error("Get servers error:", error);
       res.status(500).json({ error: "Failed to get servers" });
@@ -509,8 +518,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Server ID required" });
       }
 
-      const workspace = await storage.getServerWorkspace(serverId as string);
-      res.json({ hasBotInServer: !!workspace });
+      // Check if bot user exists in server members
+      // The bot has a specific Discord ID: 1442053672694714529
+      const botDiscordId = "1442053672694714529";
+      const botMember = await storage.getServerMember(serverId as string, botDiscordId);
+      
+      res.json({ hasBotInServer: !!botMember });
     } catch (error: any) {
       console.error("Check bot error:", error);
       res.status(500).json({ error: "Failed to check bot status" });

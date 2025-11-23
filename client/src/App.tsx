@@ -52,7 +52,9 @@ function RouterContent() {
       <Route path="/server-selector" component={ServerSelector} />
       <Route path="/discord-auth" component={DiscordAuth} />
       <Route path="/bot-invite" component={BotInvite} />
-      <Route path="/support-panel" component={SupportPanel} />
+      <Route path="/support-panel">
+        <Layout><SupportPanel /></Layout>
+      </Route>
       
       {/* Protected Routes need Layout */}
       <Route path="/dashboard">
