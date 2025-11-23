@@ -227,12 +227,14 @@ export default function Dashboard() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href="/cases/new">
-            <Button className="font-mono gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
-              <Plus size={16} />
-              INITIATE CASE
-            </Button>
-          </Link>
+          {hasPermission && (
+            <Link href="/cases/new">
+              <Button className="font-mono gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                <Plus size={16} />
+                INITIATE CASE
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 

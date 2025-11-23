@@ -39,18 +39,47 @@ const caseSchema = z.object({
 export default function CaseView() {
   const [, params] = useRoute("/cases/:id");
   const [, setLocation] = useLocation();
-  const { cases, user, createCase, updateCase, deleteCase, toggleCasePublic } = useAuth();
+  const { cases, user, createCase, updateCase, deleteCase, toggleCasePublic, currentServerId } = useAuth();
   const { toast } = useToast();
   
   const isNew = params?.id === "new";
   const contextCase = cases.find(c => c.id === params?.id);
   const [liveCase, setLiveCase] = useState<any>(null);
   const [isLoadingCase, setIsLoadingCase] = useState(!isNew);
+  const [hasCreatePermission, setHasCreatePermission] = useState<boolean | null>(null);
   
   const [isEditing, setIsEditing] = useState(isNew);
   const [needsPassword, setNeedsPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  // Check create permissions for new cases
+  useEffect(() => {
+    if (isNew) {
+      const checkPermissions = async () => {
+        try {
+          const response = await fetch("/api/auth/server-permissions", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          setHasCreatePermission(data.hasPermission);
+          
+          if (!data.hasPermission) {
+            // Redirect if no permission
+            setTimeout(() => {
+              setLocation("/dashboard");
+              toast({ variant: "destructive", title: "Access Denied", description: "Only administrators and owners can create cases" });
+            }, 100);
+          }
+        } catch (error) {
+          console.error("Error checking permissions:", error);
+          setHasCreatePermission(false);
+          setLocation("/dashboard");
+        }
+      };
+      checkPermissions();
+    }
+  }, [isNew, setLocation, toast]);
 
   // Fetch fresh case data on mount and when case ID changes
   useEffect(() => {
@@ -76,7 +105,7 @@ export default function CaseView() {
   const existingCase = liveCase || contextCase;
 
   // Permission Checks
-  const canEdit = user?.role === "Management" || user?.role === "Overseer" || (user?.role === "Agent" && existingCase?.assignedAgent === user?.username) || isNew;
+  const canEdit = isNew ? (hasCreatePermission === true) : (user?.role === "Management" || user?.role === "Overseer" || (user?.role === "Agent" && existingCase?.assignedAgent === user?.username));
   const canDelete = user?.role === "Management" || user?.role === "Overseer";
   const isOverseer = user?.role === "Overseer";
 
@@ -122,14 +151,19 @@ export default function CaseView() {
     }
   };
 
-  // Show loading state while checking encryption status
-  if (isLoadingCase) {
+  // Show loading state while checking permissions or loading case
+  if (isLoadingCase || (isNew && hasCreatePermission === null)) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
         <div className="h-12 w-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-        <p className="font-mono text-xs text-muted-foreground">LOADING CASE FILE...</p>
+        <p className="font-mono text-xs text-muted-foreground">{isNew ? "CHECKING PERMISSIONS..." : "LOADING CASE FILE..."}</p>
       </div>
     );
+  }
+
+  // Redirect if trying to create case without permission
+  if (isNew && hasCreatePermission === false) {
+    return null;
   }
 
   // Redirect if case not found and not creating new

@@ -1126,11 +1126,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const caseData = req.body;
     const { serverId } = caseData;
     
-    // If serverId is provided, verify membership
+    // If serverId is provided, verify user is admin or owner
     if (serverId) {
-      const isServerMember = await storage.getServerMember(serverId, req.user!.id);
-      if (!isServerMember) {
+      const serverMember = await storage.getServerMember(serverId, req.user!.id);
+      if (!serverMember) {
         return res.status(403).json({ error: "Not a member of this server" });
+      }
+      // Only admins and owners can create cases
+      if (!serverMember.isAdmin && !serverMember.isOwner) {
+        return res.status(403).json({ error: "Only administrators and owners can create cases" });
       }
     }
     
