@@ -1,0 +1,88 @@
+# Overview
+
+AEGIS_NET is a secure case management system designed for handling classified information and investigations. The application provides role-based access control with three user levels (Agent, Management, Overseer), case tracking with public/private visibility, Discord integration for notifications and bot commands, and comprehensive audit logging. The system features a government/intelligence agency aesthetic with a focus on security and controlled information dissemination.
+
+# User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+# System Architecture
+
+## Frontend Architecture
+
+**Framework**: React with TypeScript using Vite as the build tool and development server.
+
+**UI Library**: Shadcn UI (New York variant) with Radix UI primitives for accessible components. The design system uses CSS variables for theming with a neutral base color and supports dark mode.
+
+**Styling**: TailwindCSS v4 with custom configuration, using CSS variables for theme customization. Custom animations and utilities are implemented through the tailwindcss-animate plugin.
+
+**State Management**: TanStack Query (React Query) for server state management with credentials included in all requests. Auth state is managed through a React Context provider.
+
+**Routing**: Wouter for lightweight client-side routing with protected routes that redirect unauthenticated users.
+
+**Form Handling**: React Hook Form with Zod validation for type-safe form schemas.
+
+## Backend Architecture
+
+**Runtime**: Node.js with TypeScript using ES modules.
+
+**Framework**: Express.js for HTTP server with custom middleware for request logging and error handling.
+
+**Session Management**: Express-session with connect-pg-simple for PostgreSQL-backed session storage. Sessions persist for 30 days and use httpOnly cookies with lax SameSite policy.
+
+**Authentication**: Passport.js with Local Strategy for username/password authentication. Passwords are hashed using bcryptjs (10 rounds). The system includes an invite code mechanism for user registration.
+
+**API Design**: RESTful endpoints organized by resource type (auth, users, cases, invites, recovery) with role-based authorization middleware.
+
+**Development Server**: Vite middleware integration in development mode for HMR and asset serving. Production mode serves static files from the dist/public directory.
+
+## Data Storage
+
+**Database**: PostgreSQL accessed through Neon serverless driver with WebSocket support for serverless environments.
+
+**ORM**: Drizzle ORM for type-safe database queries and schema management. Schema is defined in TypeScript with automatic type inference.
+
+**Schema Structure**:
+- **users**: Authentication and role management (Agent/Management/Overseer levels)
+- **cases**: Case records with public/private visibility, priority levels, status tracking, and optional Google Doc integration
+- **logs**: Audit trail for all system actions with user and target tracking
+- **inviteCodes**: Registration control through one-time use codes
+- **modWarnings**: User moderation tracking (referenced but not fully implemented in provided files)
+
+**Migrations**: Drizzle Kit for schema migrations with PostgreSQL dialect, storing migration files in the `/migrations` directory.
+
+## Authentication & Authorization
+
+**Strategy**: Session-based authentication with role-based access control (RBAC).
+
+**User Roles**: Three-tier hierarchy with different permission levels:
+- Agent: Basic access to cases
+- Management: Administrative functions including user management
+- Overseer: Full system access
+
+**Security Features**:
+- Invite-code based registration to control user onboarding
+- Account suspension capability
+- IP tracking for user sessions
+- Optional invite verification requirement per user
+- Online status tracking
+
+## External Dependencies
+
+**Discord Integration**: 
+- Discord.js v14 for bot functionality with slash commands for case search
+- Webhook integration for case notifications with rich embeds
+- Server security features including account age verification, join rate limiting, and suspicious activity detection
+- Commands support public case search and encrypted case access
+
+**Database Service**: Neon PostgreSQL serverless with connection pooling through @neondatabase/serverless.
+
+**Third-party Services**:
+- Google Docs integration (optional URL field on cases)
+- Discord webhooks for audit trail and case publication notifications
+- Custom Discord bot with client ID for server management
+
+**Development Tools**:
+- Replit-specific plugins for error overlays, cartographer, and dev banner
+- Runtime error modal for development debugging
+- Hot Module Replacement through Vite
