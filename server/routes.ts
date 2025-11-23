@@ -801,18 +801,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Log the member data for debugging
+      console.log("Server member found:", {
+        serverId,
+        discordId,
+        isOwner: member?.isOwner,
+        isAdmin: member?.isAdmin,
+      });
+
       // Create a session user for this workspace
       const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+      const roleFromMember = member && (member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent") || "Agent";
       const user: Express.User = {
         id: `${discordId}:${serverId}`,
         username: discordId,
-        role: member && (member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent") || "Agent",
+        role: roleFromMember,
         isSuspended: false,
         ip: typeof clientIp === 'string' ? clientIp : "unknown",
         isOnline: true,
         serverId,
         discordUserId: discordId,
       };
+      
+      console.log("User role assignment:", {
+        discordId,
+        serverId,
+        role: roleFromMember,
+        isOwner: member?.isOwner,
+        isAdmin: member?.isAdmin,
+      });
 
       req.login(user, (err) => {
         if (err) {
@@ -821,7 +838,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Store the full user object in session for Discord users
         if (req.session) {
           req.session.passport = { user };
+          req.session.save((err) => {
+            if (err) {
+              console.error("Session save error:", err);
+            } else {
+              console.log("Discord user session saved with serverId:", user.serverId);
+            }
+          });
         }
+        console.log("Discord user logged in:", { id: user.id, serverId: user.serverId, discordUserId: user.discordUserId });
         res.json(user);
       });
     } catch (error: any) {
