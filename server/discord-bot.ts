@@ -113,8 +113,9 @@ async function handleSearch(
 ) {
   try {
     console.log("Fetching cases for search...");
+    const apiUrl = process.env.API_URL || "http://localhost:5000";
     const response = await fetch(
-      "http://localhost:5000/api/cases/public",
+      `${apiUrl}/api/cases/public`,
       { timeout: 10000 }
     );
     
@@ -168,8 +169,9 @@ async function handleCaseDetails(
 ) {
   try {
     console.log(`Fetching case details for ${caseId}...`);
+    const apiUrl = process.env.API_URL || "http://localhost:5000";
     const response = await fetch(
-      `http://localhost:5000/api/cases/${caseId}`,
+      `${apiUrl}/api/cases/${caseId}`,
       { timeout: 10000 }
     );
     
@@ -203,8 +205,9 @@ async function handleCaseDetails(
 async function handleListCases(interaction: any) {
   try {
     console.log("Fetching all public cases...");
+    const apiUrl = process.env.API_URL || "http://localhost:5000";
     const response = await fetch(
-      "http://localhost:5000/api/cases/public",
+      `${apiUrl}/api/cases/public`,
       { timeout: 10000 }
     );
     
