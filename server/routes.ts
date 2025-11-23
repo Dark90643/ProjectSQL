@@ -270,7 +270,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/discord/callback", async (req: Request, res: Response) => {
     try {
       console.log("=== Discord OAuth Callback Started ===");
-      const { code } = req.query;
+      const { code, error } = req.query;
+      
+      // Handle user denying Discord authorization
+      if (error) {
+        console.log("Discord authorization denied by user");
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+        return res.redirect(`${frontendUrl}/?cancelled=true`);
+      }
+      
       if (!code) {
         console.error("Discord callback: No code provided");
         return res.status(400).json({ error: "Missing authorization code" });

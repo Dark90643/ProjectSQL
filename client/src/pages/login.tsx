@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useLocation, Link } from "wouter";
 import { z } from "zod";
@@ -32,6 +32,16 @@ export default function Login() {
   const [verificationCode, setVerificationCode] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [loggedInUsername, setLoggedInUsername] = useState("");
+
+  // Handle Discord cancellation
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("cancelled") === "true") {
+      setAuthError("Discord authorization cancelled. Please try again.");
+      // Clean up the URL
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, []);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
