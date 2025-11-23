@@ -958,20 +958,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/cases", requireAuth, async (req: Request, res: Response) => {
     const { serverId } = req.query;
     
-    if (!serverId) {
-      return res.status(400).json({ error: "serverId is required" });
+    // If serverId is provided (Discord OAuth flow), filter by that server
+    if (serverId) {
+      // Verify user is a member of this server
+      const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+      if (!isServerMember) {
+        return res.status(403).json({ error: "Not a member of this server" });
+      }
+      
+      // Get all cases and filter by serverId
+      const allCases = await storage.getAllCases();
+      const serverCases = allCases.filter(c => c.serverId === serverId);
+      return res.json(serverCases);
     }
     
-    // Verify user is a member of this server
-    const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
-    if (!isServerMember) {
-      return res.status(403).json({ error: "Not a member of this server" });
-    }
-    
-    // Get all cases and filter by serverId
+    // For traditional username/password login (no serverId), return all cases
     const allCases = await storage.getAllCases();
-    const serverCases = allCases.filter(c => c.serverId === serverId);
-    res.json(serverCases);
+    res.json(allCases);
   });
 
   app.get("/api/cases/encrypted/list", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
@@ -1041,14 +1044,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const caseData = req.body;
     const { serverId } = caseData;
     
-    if (!serverId) {
-      return res.status(400).json({ error: "serverId is required" });
-    }
-    
-    // Verify user is a member of this server
-    const isServerMember = await storage.getServerMember(serverId, req.user!.id);
-    if (!isServerMember) {
-      return res.status(403).json({ error: "Not a member of this server" });
+    // If serverId is provided, verify membership
+    if (serverId) {
+      const isServerMember = await storage.getServerMember(serverId, req.user!.id);
+      if (!isServerMember) {
+        return res.status(403).json({ error: "Not a member of this server" });
+      }
     }
     
     const id = `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`;
@@ -1058,7 +1059,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       id,
       assignedAgent: req.user!.username,
       isPublic: false,
-      serverId,
+      serverId: serverId || null,
     });
 
     await storage.createLog({
@@ -1078,20 +1079,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { id } = req.params;
     const { serverId, ...updates } = req.body;
     
-    if (!serverId) {
-      return res.status(400).json({ error: "serverId is required" });
-    }
-    
-    // Verify user is a member of this server
-    const isServerMember = await storage.getServerMember(serverId, req.user!.id);
-    if (!isServerMember) {
-      return res.status(403).json({ error: "Not a member of this server" });
-    }
-    
-    // Verify case belongs to this server
+    // Get the case first to validate
     const caseData = await storage.getCase(id);
-    if (!caseData || caseData.serverId !== serverId) {
+    if (!caseData) {
+      return res.status(404).json({ error: "Case not found" });
+    }
+    
+    // If serverId is provided, verify it matches
+    if (serverId && caseData.serverId !== serverId) {
       return res.status(403).json({ error: "Case not found in this server" });
+    }
+    
+    // If serverId is provided, verify user is a member
+    if (serverId) {
+      const isServerMember = await storage.getServerMember(serverId, req.user!.id);
+      if (!isServerMember) {
+        return res.status(403).json({ error: "Not a member of this server" });
+      }
     }
     
     const updatedCase = await storage.updateCase(id, updates);
@@ -1112,20 +1116,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { id } = req.params;
     const { serverId } = req.query;
     
-    if (!serverId) {
-      return res.status(400).json({ error: "serverId is required" });
-    }
-    
-    // Verify user is a member of this server
-    const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
-    if (!isServerMember) {
-      return res.status(403).json({ error: "Not a member of this server" });
-    }
-    
     const caseData = await storage.getCase(id);
     
-    if (!caseData || caseData.serverId !== serverId) {
-      return res.status(404).json({ error: "Case not found in this server" });
+    if (!caseData) {
+      return res.status(404).json({ error: "Case not found" });
+    }
+    
+    // If serverId is provided, verify it matches
+    if (serverId && caseData.serverId !== serverId) {
+      return res.status(403).json({ error: "Case not found in this server" });
+    }
+    
+    // If serverId is provided, verify user is a member
+    if (serverId) {
+      const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+      if (!isServerMember) {
+        return res.status(403).json({ error: "Not a member of this server" });
+      }
     }
 
     const success = await storage.deleteCase(id, req.user!.id);
@@ -1146,20 +1153,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { id } = req.params;
     const { serverId } = req.query;
     
-    if (!serverId) {
-      return res.status(400).json({ error: "serverId is required" });
-    }
-    
-    // Verify user is a member of this server
-    const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
-    if (!isServerMember) {
-      return res.status(403).json({ error: "Not a member of this server" });
-    }
-    
     const caseData = await storage.getCase(id);
     
-    if (!caseData || caseData.serverId !== serverId) {
-      return res.status(404).json({ error: "Case not found in this server" });
+    if (!caseData) {
+      return res.status(404).json({ error: "Case not found" });
+    }
+    
+    // If serverId is provided, verify it matches
+    if (serverId && caseData.serverId !== serverId) {
+      return res.status(403).json({ error: "Case not found in this server" });
+    }
+    
+    // If serverId is provided, verify user is a member
+    if (serverId) {
+      const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+      if (!isServerMember) {
+        return res.status(403).json({ error: "Not a member of this server" });
+      }
     }
     
     const updatedCase = await storage.updateCase(id, { isPublic: !caseData.isPublic });

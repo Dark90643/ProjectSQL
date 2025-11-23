@@ -274,10 +274,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const createCase = async (newCaseData: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => {
     try {
-      if (!currentServerId) {
-        throw new Error("No server selected");
-      }
-      const newCase = await api.cases.create(newCaseData, currentServerId);
+      const newCase = await api.cases.create(newCaseData, currentServerId || undefined);
       setCases([newCase, ...cases]);
       toast({ title: "Case Created", description: `Case ${newCase.id} initiated successfully.` });
     } catch (error: any) {
@@ -287,10 +284,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateCase = async (id: string, updates: Partial<Case>) => {
     try {
-      if (!currentServerId) {
-        throw new Error("No server selected");
-      }
-      const updatedCase = await api.cases.update(id, updates, currentServerId);
+      const updatedCase = await api.cases.update(id, updates, currentServerId || undefined);
       setCases(prev => prev.map(c => c.id === id ? updatedCase : c));
       toast({ title: "Case Updated", description: `Case ${id} modified.` });
     } catch (error: any) {
@@ -300,10 +294,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const deleteCase = async (id: string) => {
     try {
-      if (!currentServerId) {
-        throw new Error("No server selected");
-      }
-      await api.cases.delete(id, currentServerId);
+      await api.cases.delete(id, currentServerId || undefined);
       setCases(prev => prev.filter(c => c.id !== id));
       toast({ title: "Case Deleted", description: `Case ${id} removed from database.` });
     } catch (error: any) {
@@ -355,10 +346,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const toggleCasePublic = async (id: string) => {
     try {
-      if (!currentServerId) {
-        throw new Error("No server selected");
-      }
-      const updatedCase = await api.cases.togglePublic(id, currentServerId);
+      const updatedCase = await api.cases.togglePublic(id, currentServerId || undefined);
       setCases(prev => prev.map(c => c.id === id ? updatedCase : c));
       toast({ 
         title: updatedCase.isPublic ? "Case Published" : "Case Hidden", 
