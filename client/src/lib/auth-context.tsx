@@ -255,14 +255,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Monitor for suspension (kicked out)
+  // Monitor for suspension (kicked out) - only after user navigates
   useEffect(() => {
+    if (!user) return;
+    
+    let failureCount = 0;
     const interval = setInterval(async () => {
-      if (user) {
-        try {
-          await api.auth.me();
-        } catch (error) {
-          // Session expired or user was suspended
+      try {
+        await api.auth.me();
+        failureCount = 0; // Reset on success
+      } catch (error) {
+        failureCount++;
+        // Only logout if we get multiple consecutive failures
+        if (failureCount >= 3) {
           setUser(null);
           toast({ 
             variant: "destructive", 
@@ -271,7 +276,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
         }
       }
-    }, 30000); // Check every 30 seconds
+    }, 60000); // Check every 60 seconds (increased from 30)
 
     return () => clearInterval(interval);
   }, [user, toast]);
