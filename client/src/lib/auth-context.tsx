@@ -159,16 +159,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await api.auth.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Always clear the user state to trigger route redirect
       setUser(null);
       setUsers([]);
       setCases([]);
       setLogs([]);
-      // Redirect to login page
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Still redirect even if logout fails
-      window.location.href = "/";
     }
   };
 
