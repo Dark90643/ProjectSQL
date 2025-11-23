@@ -47,23 +47,24 @@ export const api = {
     verify: (code: string, userId: string) => fetchAPI("/invites/verify", { method: "POST", body: JSON.stringify({ code, userId }) }),
   },
   cases: {
-    getAll: () => fetchAPI("/cases"),
+    getAll: (serverId?: string) => 
+      fetchAPI(serverId ? `/cases?serverId=${serverId}` : "/cases"),
     getPublic: () => fetchAPI("/cases/public"),
     get: (id: string) => fetchAPI(`/cases/${id}`),
-    create: (data: any) =>
+    create: (data: any, serverId?: string) =>
       fetchAPI("/cases", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, serverId }),
       }),
-    update: (id: string, data: any) =>
+    update: (id: string, data: any, serverId?: string) =>
       fetchAPI(`/cases/${id}`, {
         method: "PATCH",
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, serverId }),
       }),
-    delete: (id: string) =>
-      fetchAPI(`/cases/${id}`, { method: "DELETE" }),
-    togglePublic: (id: string) =>
-      fetchAPI(`/cases/${id}/toggle-public`, { method: "PATCH" }),
+    delete: (id: string, serverId?: string) =>
+      fetchAPI(`/cases/${id}${serverId ? `?serverId=${serverId}` : ""}`, { method: "DELETE" }),
+    togglePublic: (id: string, serverId?: string) =>
+      fetchAPI(`/cases/${id}/toggle-public${serverId ? `?serverId=${serverId}` : ""}`, { method: "PATCH" }),
   },
   logs: {
     getAll: () => fetchAPI("/logs"),

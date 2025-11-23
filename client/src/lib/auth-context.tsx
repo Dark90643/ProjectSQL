@@ -47,6 +47,7 @@ interface AuthContextType {
   isIpBanned: boolean;
   loading: boolean;
   discordUser: { discordId: string; username: string } | null;
+  currentServerId: string | null;
   canCreateAccounts: boolean;
   isSupportTeam: boolean;
   login: (username: string, password: string) => Promise<boolean>;
@@ -78,6 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isIpBanned, setIsIpBanned] = useState(false);
   const [loading, setLoading] = useState(true);
   const [discordUser, setDiscordUser] = useState<{ discordId: string; username: string } | null>(null);
+  const [currentServerId, setCurrentServerId] = useState<string | null>(() => {
+    // Restore from localStorage on mount
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('currentServerId');
+    }
+    return null;
+  });
   const [canCreateAccounts, setCanCreateAccounts] = useState(false);
   const [isSupportTeam, setIsSupportTeam] = useState(false);
   const { toast } = useToast();
@@ -99,7 +107,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Check if user is logged in
         const userData = await api.auth.me();
         setUser(userData);
-        await loadUserData();
         
         // Check if user is support team
         try {
@@ -121,10 +128,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
+  // Load user data when currentServerId becomes available
+  useEffect(() => {
+    if (user && currentServerId) {
+      loadUserData();
+    }
+  }, [currentServerId, user]);
+
   const loadUserData = async () => {
+    if (!currentServerId) {
+      setCases([]);
+      return;
+    }
+    
     try {
       const [casesData, usersData, logsData] = await Promise.all([
-        api.cases.getAll(),
+        api.cases.getAll(currentServerId),
         api.users.getAll().catch(() => []), // May not have permission
         api.logs.getAll().catch(() => []), // May not have permission
       ]);
@@ -225,6 +244,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       const userData = await response.json();
       setUser(userData);
+      setCurrentServerId(serverId);
+      localStorage.setItem('currentServerId', serverId);
       setDiscordUser(null);
       await loadUserData();
       return true;
@@ -246,12 +267,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setCases([]);
       setLogs([]);
       setDiscordUser(null);
+      setCurrentServerId(null);
+      localStorage.removeItem('currentServerId');
     }
   };
 
   const createCase = async (newCaseData: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => {
     try {
-      const newCase = await api.cases.create(newCaseData);
+      if (!currentServerId) {
+        throw new Error("No server selected");
+      }
+      const newCase = await api.cases.create(newCaseData, currentServerId);
       setCases([newCase, ...cases]);
       toast({ title: "Case Created", description: `Case ${newCase.id} initiated successfully.` });
     } catch (error: any) {
@@ -261,7 +287,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateCase = async (id: string, updates: Partial<Case>) => {
     try {
-      const updatedCase = await api.cases.update(id, updates);
+      if (!currentServerId) {
+        throw new Error("No server selected");
+      }
+      const updatedCase = await api.cases.update(id, updates, currentServerId);
       setCases(prev => prev.map(c => c.id === id ? updatedCase : c));
       toast({ title: "Case Updated", description: `Case ${id} modified.` });
     } catch (error: any) {
@@ -271,7 +300,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const deleteCase = async (id: string) => {
     try {
-      await api.cases.delete(id);
+      if (!currentServerId) {
+        throw new Error("No server selected");
+      }
+      await api.cases.delete(id, currentServerId);
       setCases(prev => prev.filter(c => c.id !== id));
       toast({ title: "Case Deleted", description: `Case ${id} removed from database.` });
     } catch (error: any) {
@@ -323,7 +355,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const toggleCasePublic = async (id: string) => {
     try {
-      const updatedCase = await api.cases.togglePublic(id);
+      if (!currentServerId) {
+        throw new Error("No server selected");
+      }
+      const updatedCase = await api.cases.togglePublic(id, currentServerId);
       setCases(prev => prev.map(c => c.id === id ? updatedCase : c));
       toast({ 
         title: updatedCase.isPublic ? "Case Published" : "Case Hidden", 
@@ -371,7 +406,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ 
-      user, users, cases, logs, clientIp, isIpBanned, loading, discordUser,
+      user, users, cases, logs, clientIp, isIpBanned, loading, discordUser, currentServerId,
       canCreateAccounts, isSupportTeam,
       login, discordLogin, selectServer, register, logout, 
       createCase, updateCase, deleteCase, 

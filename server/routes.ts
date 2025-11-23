@@ -956,8 +956,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/cases", requireAuth, async (req: Request, res: Response) => {
-    const cases = await storage.getAllCases();
-    res.json(cases);
+    const { serverId } = req.query;
+    
+    if (!serverId) {
+      return res.status(400).json({ error: "serverId is required" });
+    }
+    
+    // Verify user is a member of this server
+    const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+    if (!isServerMember) {
+      return res.status(403).json({ error: "Not a member of this server" });
+    }
+    
+    // Get all cases and filter by serverId
+    const allCases = await storage.getAllCases();
+    const serverCases = allCases.filter(c => c.serverId === serverId);
+    res.json(serverCases);
   });
 
   app.get("/api/cases/encrypted/list", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
@@ -1025,6 +1039,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cases", requireAuth, async (req: Request, res: Response) => {
     const caseData = req.body;
+    const { serverId } = caseData;
+    
+    if (!serverId) {
+      return res.status(400).json({ error: "serverId is required" });
+    }
+    
+    // Verify user is a member of this server
+    const isServerMember = await storage.getServerMember(serverId, req.user!.id);
+    if (!isServerMember) {
+      return res.status(403).json({ error: "Not a member of this server" });
+    }
+    
     const id = `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`;
     
     const newCase = await storage.createCase({
@@ -1032,6 +1058,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       id,
       assignedAgent: req.user!.username,
       isPublic: false,
+      serverId,
     });
 
     await storage.createLog({
@@ -1049,7 +1076,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/cases/:id", requireAuth, async (req: Request, res: Response) => {
     const { id } = req.params;
-    const updates = req.body;
+    const { serverId, ...updates } = req.body;
+    
+    if (!serverId) {
+      return res.status(400).json({ error: "serverId is required" });
+    }
+    
+    // Verify user is a member of this server
+    const isServerMember = await storage.getServerMember(serverId, req.user!.id);
+    if (!isServerMember) {
+      return res.status(403).json({ error: "Not a member of this server" });
+    }
+    
+    // Verify case belongs to this server
+    const caseData = await storage.getCase(id);
+    if (!caseData || caseData.serverId !== serverId) {
+      return res.status(403).json({ error: "Case not found in this server" });
+    }
     
     const updatedCase = await storage.updateCase(id, updates);
     
@@ -1067,10 +1110,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/cases/:id", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     const { id } = req.params;
+    const { serverId } = req.query;
+    
+    if (!serverId) {
+      return res.status(400).json({ error: "serverId is required" });
+    }
+    
+    // Verify user is a member of this server
+    const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+    if (!isServerMember) {
+      return res.status(403).json({ error: "Not a member of this server" });
+    }
+    
     const caseData = await storage.getCase(id);
     
-    if (!caseData) {
-      return res.status(404).json({ error: "Case not found" });
+    if (!caseData || caseData.serverId !== serverId) {
+      return res.status(404).json({ error: "Case not found in this server" });
     }
 
     const success = await storage.deleteCase(id, req.user!.id);
@@ -1089,10 +1144,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/cases/:id/toggle-public", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
     const { id } = req.params;
+    const { serverId } = req.query;
+    
+    if (!serverId) {
+      return res.status(400).json({ error: "serverId is required" });
+    }
+    
+    // Verify user is a member of this server
+    const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+    if (!isServerMember) {
+      return res.status(403).json({ error: "Not a member of this server" });
+    }
+    
     const caseData = await storage.getCase(id);
     
-    if (!caseData) {
-      return res.status(404).json({ error: "Case not found" });
+    if (!caseData || caseData.serverId !== serverId) {
+      return res.status(404).json({ error: "Case not found in this server" });
     }
     
     const updatedCase = await storage.updateCase(id, { isPublic: !caseData.isPublic });
