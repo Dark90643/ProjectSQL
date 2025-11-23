@@ -283,6 +283,37 @@ const commands = [
         .setDescription("User to check mutes for")
         .setRequired(true)
     ),
+  // Lockdown commands
+  new SlashCommandBuilder()
+    .setName("lockdown")
+    .setDescription("Lock or unlock the current channel (admin only)")
+    .addBooleanOption((option) =>
+      option
+        .setName("lock")
+        .setDescription("Lock (true) or unlock (false) the channel")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for lockdown (optional)")
+        .setRequired(false)
+    ),
+  new SlashCommandBuilder()
+    .setName("server-lockdown")
+    .setDescription("Lock or unlock the entire server (admin only)")
+    .addBooleanOption((option) =>
+      option
+        .setName("lock")
+        .setDescription("Lock (true) or unlock (false) the server")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for server lockdown (optional)")
+        .setRequired(false)
+    ),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -459,6 +490,14 @@ export async function initializeDiscordBot() {
       } else if (command === "usermutes") {
         const user = interaction.options.getUser("user")!;
         await handleUserMutes(interaction, user);
+      } else if (command === "lockdown") {
+        const lock = interaction.options.getBoolean("lock")!;
+        const reason = interaction.options.getString("reason");
+        await handleChannelLockdown(interaction, lock, reason);
+      } else if (command === "server-lockdown") {
+        const lock = interaction.options.getBoolean("lock")!;
+        const reason = interaction.options.getString("reason");
+        await handleServerLockdown(interaction, lock, reason);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -473,6 +512,47 @@ export async function initializeDiscordBot() {
     }
   });
 
+
+  // Message filter for suspicious links / DoXX prevention
+  client.on("messageCreate", async (message) => {
+    try {
+      // Ignore bot messages
+      if (message.author.bot) return;
+      
+      const suspiciousPatterns = await checkForSuspiciousContent(message.content);
+      
+      if (suspiciousPatterns.length > 0) {
+        // Delete the message
+        await message.delete().catch(() => {});
+        
+        // Send warning to user
+        const warnings = suspiciousPatterns.join(", ");
+        try {
+          await message.author.send({
+            content: `⚠️ Your message in ${message.guild?.name} was deleted for containing suspicious content: **${warnings}**\n\nPlease do not share personal information or suspicious links.`,
+          });
+        } catch {
+          console.log("Could not send DM to user");
+        }
+        
+        // Log to channel
+        const logEmbed = new EmbedBuilder()
+          .setColor(Colors.Red)
+          .setTitle("Suspicious Content Detected")
+          .setDescription(`Message deleted from ${message.author.tag}`)
+          .addFields(
+            { name: "User", value: `${message.author.tag} (${message.author.id})`, inline: true },
+            { name: "Channel", value: message.channel.toString(), inline: true },
+            { name: "Reason", value: warnings, inline: false }
+          )
+          .setTimestamp();
+        
+        console.log(`Suspicious content deleted from ${message.author.tag}: ${warnings}`);
+      }
+    } catch (error) {
+      console.error("Error checking message for suspicious content:", error);
+    }
+  });
 
   // Login to Discord
   client.login(token);
@@ -1805,6 +1885,176 @@ async function handleUserMutes(interaction: any, user: any) {
     console.error("User mutes error:", error);
     await interaction.reply({
       content: "Failed to retrieve user mutes.",
+      ephemeral: true,
+    });
+  }
+}
+
+// Suspicious content detection for DoXX prevention
+async function checkForSuspiciousContent(content: string): Promise<string[]> {
+  const suspiciousPatterns: string[] = [];
+  
+  // Check for IP addresses (prevents IP doxxing)
+  const ipAddressRegex = /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g;
+  if (ipAddressRegex.test(content)) {
+    suspiciousPatterns.push("IP Address Detected");
+  }
+  
+  // Check for SSN-like patterns
+  const ssnRegex = /\b\d{3}-\d{2}-\d{4}\b/g;
+  if (ssnRegex.test(content)) {
+    suspiciousPatterns.push("SSN Pattern Detected");
+  }
+  
+  // Check for credit card-like patterns
+  const ccRegex = /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g;
+  if (ccRegex.test(content)) {
+    suspiciousPatterns.push("Credit Card Pattern Detected");
+  }
+  
+  // Check for API keys/tokens (common patterns)
+  const apiKeyRegex = /([a-zA-Z0-9_-]{32,}|sk_[a-z0-9]{24,}|ghp_[a-zA-Z0-9_]{36})/g;
+  if (apiKeyRegex.test(content)) {
+    suspiciousPatterns.push("API Key/Token Pattern");
+  }
+  
+  // Check for password-like patterns (e.g., "password:xyz")
+  const passwordRegex = /password[\s:=]+[^\s]+/gi;
+  if (passwordRegex.test(content)) {
+    suspiciousPatterns.push("Password Pattern");
+  }
+  
+  return suspiciousPatterns;
+}
+
+async function handleChannelLockdown(interaction: any, lock: boolean, reason?: string | null) {
+  try {
+    // Only administrators can lock channels
+    if (!interaction.memberPermissions?.has("ADMINISTRATOR")) {
+      await interaction.reply({
+        content: "Only administrators can use lockdown commands.",
+        ephemeral: true,
+      });
+      return;
+    }
+    
+    const channel = interaction.channel;
+    const everyone = channel.guild.roles.everyone;
+    
+    try {
+      // Set permissions for @everyone role
+      await channel.permissionOverwrites.edit(everyone, {
+        SendMessages: !lock, // Disable sending messages when locking
+      });
+      
+      const status = lock ? "🔒 LOCKED" : "🔓 UNLOCKED";
+      const action = lock ? "locked" : "unlocked";
+      
+      const embed = new EmbedBuilder()
+        .setColor(lock ? Colors.Red : Colors.Green)
+        .setTitle(`Channel ${status}`)
+        .setDescription(`This channel has been ${action}`)
+        .addFields(
+          { name: "Channel", value: channel.toString(), inline: true },
+          { name: "Administrator", value: interaction.user.tag, inline: true }
+        );
+      
+      if (reason) {
+        embed.addFields({ name: "Reason", value: reason, inline: false });
+      }
+      
+      embed.setTimestamp();
+      
+      await interaction.reply({
+        embeds: [embed],
+        ephemeral: false,
+      });
+      
+      console.log(`Channel ${channel.name} ${action} by ${interaction.user.tag}${reason ? `: ${reason}` : ""}`);
+    } catch (error) {
+      console.error("Error changing channel permissions:", error);
+      await interaction.reply({
+        content: "Failed to modify channel permissions. Make sure I have proper permissions.",
+        ephemeral: true,
+      });
+    }
+  } catch (error) {
+    console.error("Channel lockdown error:", error);
+    await interaction.reply({
+      content: "Failed to execute channel lockdown.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleServerLockdown(interaction: any, lock: boolean, reason?: string | null) {
+  try {
+    // Only administrators can lock the server
+    if (!interaction.memberPermissions?.has("ADMINISTRATOR")) {
+      await interaction.reply({
+        content: "Only administrators can use server lockdown commands.",
+        ephemeral: true,
+      });
+      return;
+    }
+    
+    const guild = interaction.guild;
+    const everyone = guild.roles.everyone;
+    
+    await interaction.deferReply({ ephemeral: false });
+    
+    try {
+      let lockedCount = 0;
+      const channels = guild.channels.cache;
+      
+      // Lock/unlock all text channels
+      for (const [, channel] of channels) {
+        if (channel.isTextBased()) {
+          try {
+            await channel.permissionOverwrites.edit(everyone, {
+              SendMessages: !lock,
+            });
+            lockedCount++;
+          } catch (err) {
+            console.log(`Could not modify ${channel.name}: ${err}`);
+          }
+        }
+      }
+      
+      const status = lock ? "🔒 LOCKED" : "🔓 UNLOCKED";
+      const action = lock ? "locked" : "unlocked";
+      
+      const embed = new EmbedBuilder()
+        .setColor(lock ? Colors.Red : Colors.Green)
+        .setTitle(`Server ${status}`)
+        .setDescription(`All text channels have been ${action}`)
+        .addFields(
+          { name: "Server", value: guild.name, inline: true },
+          { name: "Administrator", value: interaction.user.tag, inline: true },
+          { name: "Channels Modified", value: `${lockedCount}`, inline: true }
+        );
+      
+      if (reason) {
+        embed.addFields({ name: "Reason", value: reason, inline: false });
+      }
+      
+      embed.setTimestamp();
+      
+      await interaction.editReply({
+        embeds: [embed],
+      });
+      
+      console.log(`Server ${guild.name} ${action} (${lockedCount} channels) by ${interaction.user.tag}${reason ? `: ${reason}` : ""}`);
+    } catch (error) {
+      console.error("Error changing server permissions:", error);
+      await interaction.editReply({
+        content: "Failed to modify server permissions. Make sure I have proper permissions.",
+      });
+    }
+  } catch (error) {
+    console.error("Server lockdown error:", error);
+    await interaction.reply({
+      content: "Failed to execute server lockdown.",
       ephemeral: true,
     });
   }

@@ -76,12 +76,25 @@ Preferred communication style: Simple, everyday language.
 
 **Discord Integration**: 
 - Discord.js v14 for bot functionality with comprehensive slash commands
-- Public case search commands: `/search`, `/case`, `/cases` with pagination (Previous/Next buttons)
-- Moderation commands: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
-- IP ban command: `/ipban` for banning IP addresses from servers
-- User tracking commands: `/userhistory`, `/userwarnings`, `/userbans`, `/usermutes` for viewing individual moderation records
-- Raid protection features: `/enable-raid-protection`, `/disable-raid-protection`, `/raid-status`
-- Security configuration: `/security-config` for account age and join rate limits
+- **Public Case Search**: `/search`, `/case`, `/cases` with pagination (Previous/Next buttons)
+- **Moderation Commands**: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
+- **IP Ban Command**: `/ipban` for banning IP addresses from servers
+- **User Tracking Commands**: `/userhistory`, `/userwarnings`, `/userbans`, `/usermutes` for viewing individual moderation records
+- **Lockdown Features**:
+  - `/lockdown` - Lock/unlock individual channels to prevent message sending
+  - `/server-lockdown` - Lock/unlock entire server (all text channels)
+  - Useful for emergency situations, data breaches, or planned maintenance
+- **Malicious Link & DoXX Prevention**:
+  - Automatic detection and deletion of messages containing:
+    - IP addresses (prevents IP doxxing)
+    - SSN patterns
+    - Credit card patterns
+    - API keys and tokens
+    - Password patterns
+  - Users receive DM notification when message is deleted
+  - Admin logging of suspicious content removal
+- **Raid Protection Features**: `/enable-raid-protection`, `/disable-raid-protection`, `/raid-status`
+- **Security Configuration**: `/security-config` for account age and join rate limits
 - **Per-Server Permission System**:
   - `/set-command-permissions` allows admins to configure who can use bot commands
   - Each server can have specific roles with command access
