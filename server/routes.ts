@@ -221,6 +221,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(req.user);
   });
 
+  app.get("/api/auth/server-permissions", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      const member = await storage.getServerMember(user.serverId, user.discordUserId || "");
+      const hasPermission = !!(member && (member.isOwner || member.isAdmin));
+      
+      res.json({ hasPermission, isOwner: member?.isOwner || false, isAdmin: member?.isAdmin || false });
+    } catch (error: any) {
+      console.error("Check server permissions error:", error);
+      res.status(500).json({ error: "Failed to check permissions" });
+    }
+  });
+
   app.get("/api/auth/check-ip", async (req: Request, res: Response) => {
     const clientIp = req.ip || req.socket.remoteAddress || "unknown";
     const allUsers = await storage.getAllUsers();

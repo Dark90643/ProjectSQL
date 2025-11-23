@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { Link } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,8 @@ import {
   Eye,
   Globe,
   Lock,
-  Shield
+  Shield,
+  ChevronLeft
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -30,12 +31,88 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard() {
   const { cases, user, deleteCase, toggleCasePublic } = useAuth();
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [encryptingCaseId, setEncryptingCaseId] = useState<string | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [accessDeniedTime, setAccessDeniedTime] = useState<number>(0);
+
+  useEffect(() => {
+    if (!user) return;
+    
+    // Check server permissions
+    const checkPermissions = async () => {
+      try {
+        const response = await fetch("/api/auth/server-permissions", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        setHasPermission(data.hasPermission);
+        
+        if (!data.hasPermission) {
+          setAccessDeniedTime(3);
+        }
+      } catch (error) {
+        console.error("Error checking permissions:", error);
+        setHasPermission(false);
+        setAccessDeniedTime(3);
+      }
+    };
+    
+    checkPermissions();
+  }, [user]);
+
+  // Handle access denied countdown
+  useEffect(() => {
+    if (accessDeniedTime <= 0) return;
+    
+    const timer = setTimeout(() => {
+      setAccessDeniedTime(accessDeniedTime - 1);
+    }, 1000);
+    
+    if (accessDeniedTime === 1) {
+      setTimeout(() => {
+        setLocation("/public-dashboard");
+      }, 1000);
+    }
+    
+    return () => clearTimeout(timer);
+  }, [accessDeniedTime, setLocation]);
 
   if (!user) return null;
+
+  // Show access denied message if user doesn't have permission
+  if (hasPermission === false) {
+    return (
+      <div className="flex items-center justify-center h-full p-4">
+        <Card className="border-destructive/50 max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="font-mono text-destructive">ACCESS DENIED</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground font-mono text-sm">You do not have administrator or moderator permissions in this server. Only server administrators and owners can access the agent dashboard.</p>
+            <p className="text-muted-foreground font-mono text-xs">
+              Redirecting to public cases in <span className="text-destructive font-bold">{accessDeniedTime}</span> seconds...
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show loading state while checking permissions
+  if (hasPermission === null) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-sm text-muted-foreground font-mono">CHECKING PERMISSIONS...</p>
+        </div>
+      </div>
+    );
+  }
 
   const filteredCases = cases.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || 
