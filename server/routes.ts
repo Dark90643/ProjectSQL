@@ -19,6 +19,8 @@ declare global {
       isSuspended: boolean;
       ip: string;
       isOnline: boolean;
+      serverId?: string;
+      discordUserId?: string;
     }
   }
 }
@@ -446,6 +448,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isSuspended: false,
         ip: req.ip || req.socket.remoteAddress || "unknown",
         isOnline: true,
+        discordUserId: discordUser.id,
       };
 
       // Establish Passport session
@@ -735,6 +738,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isSuspended: false,
         ip: req.ip || req.socket.remoteAddress || "unknown",
         isOnline: true,
+        serverId,
+        discordUserId: discordId,
       };
 
       req.login(user, (err) => {
