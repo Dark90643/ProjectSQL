@@ -72,14 +72,6 @@ passport.deserializeUser(async (id: any, done) => {
       return done(null, false);
     }
     
-    // If ID contains ":", it's a Discord user (format: discordId:serverId)
-    if (id.includes(":")) {
-      // For Discord users, parse the composite ID and restore from session
-      // The session should have the full user object with serverId
-      // If session doesn't have it, we can't restore without making DB calls
-      return done(null, false);
-    }
-    
     const user = await storage.getUser(id);
     if (!user) {
       return done(null, false);
