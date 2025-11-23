@@ -47,6 +47,46 @@ export const inviteCodes = pgTable("invite_codes", {
   usedAt: timestamp("used_at"),
 });
 
+export const modWarnings = pgTable("mod_warnings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull(),
+  userId: text("user_id").notNull(),
+  moderatorId: text("moderator_id").notNull(),
+  reason: text("reason").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const modMutes = pgTable("mod_mutes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull(),
+  userId: text("user_id").notNull(),
+  moderatorId: text("moderator_id").notNull(),
+  reason: text("reason").notNull(),
+  duration: text("duration").notNull(), // e.g., "1h", "1d", "permanent"
+  mutedAt: timestamp("muted_at").notNull().defaultNow(),
+  unmutedAt: timestamp("unmuted_at"),
+});
+
+export const modBans = pgTable("mod_bans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull(),
+  userId: text("user_id").notNull(),
+  moderatorId: text("moderator_id").notNull(),
+  reason: text("reason").notNull(),
+  bannedAt: timestamp("banned_at").notNull().defaultNow(),
+});
+
+export const modLogs = pgTable("mod_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull(),
+  action: text("action").notNull(), // warn, kick, ban, mute, unmute
+  moderatorId: text("moderator_id").notNull(),
+  targetId: text("target_id").notNull(),
+  reason: text("reason").notNull(),
+  details: text("details"),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -69,6 +109,27 @@ export const insertInviteCodeSchema = createInsertSchema(inviteCodes).omit({
   usedAt: true,
 });
 
+export const insertModWarningSchema = createInsertSchema(modWarnings).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertModMuteSchema = createInsertSchema(modMutes).omit({
+  id: true,
+  mutedAt: true,
+  unmutedAt: true,
+});
+
+export const insertModBanSchema = createInsertSchema(modBans).omit({
+  id: true,
+  bannedAt: true,
+});
+
+export const insertModLogSchema = createInsertSchema(modLogs).omit({
+  id: true,
+  timestamp: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertCase = z.infer<typeof insertCaseSchema>;
@@ -77,3 +138,11 @@ export type InsertLog = z.infer<typeof insertLogSchema>;
 export type Log = typeof logs.$inferSelect;
 export type InsertInviteCode = z.infer<typeof insertInviteCodeSchema>;
 export type InviteCode = typeof inviteCodes.$inferSelect;
+export type InsertModWarning = z.infer<typeof insertModWarningSchema>;
+export type ModWarning = typeof modWarnings.$inferSelect;
+export type InsertModMute = z.infer<typeof insertModMuteSchema>;
+export type ModMute = typeof modMutes.$inferSelect;
+export type InsertModBan = z.infer<typeof insertModBanSchema>;
+export type ModBan = typeof modBans.$inferSelect;
+export type InsertModLog = z.infer<typeof insertModLogSchema>;
+export type ModLog = typeof modLogs.$inferSelect;

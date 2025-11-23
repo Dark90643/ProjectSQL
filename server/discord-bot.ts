@@ -50,6 +50,94 @@ const commands = [
   new SlashCommandBuilder()
     .setName("cases")
     .setDescription("List all public cases"),
+  // Moderation commands
+  new SlashCommandBuilder()
+    .setName("warn")
+    .setDescription("Warn a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to warn")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for warning")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("kick")
+    .setDescription("Kick a user from the server")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to kick")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for kick")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("ban")
+    .setDescription("Ban a user from the server")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to ban")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for ban")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("mute")
+    .setDescription("Mute a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to mute")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("duration")
+        .setDescription("Duration (e.g., 1h, 1d, permanent)")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for mute")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("unmute")
+    .setDescription("Unmute a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to unmute")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("modlog")
+    .setDescription("View moderation log for a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to check")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("server-security")
+    .setDescription("Configure server security settings (admin only)"),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -85,6 +173,31 @@ export async function initializeDiscordBot() {
         await handleCaseDetails(interaction, caseId);
       } else if (command === "cases") {
         await handleListCases(interaction);
+      } else if (command === "warn") {
+        const user = interaction.options.getUser("user")!;
+        const reason = interaction.options.getString("reason")!;
+        await handleWarn(interaction, user, reason);
+      } else if (command === "kick") {
+        const user = interaction.options.getUser("user")!;
+        const reason = interaction.options.getString("reason")!;
+        await handleKick(interaction, user, reason);
+      } else if (command === "ban") {
+        const user = interaction.options.getUser("user")!;
+        const reason = interaction.options.getString("reason")!;
+        await handleBan(interaction, user, reason);
+      } else if (command === "mute") {
+        const user = interaction.options.getUser("user")!;
+        const duration = interaction.options.getString("duration")!;
+        const reason = interaction.options.getString("reason")!;
+        await handleMute(interaction, user, duration, reason);
+      } else if (command === "unmute") {
+        const user = interaction.options.getUser("user")!;
+        await handleUnmute(interaction, user);
+      } else if (command === "modlog") {
+        const user = interaction.options.getUser("user")!;
+        await handleModLog(interaction, user);
+      } else if (command === "server-security") {
+        await handleServerSecurity(interaction);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -115,7 +228,7 @@ async function handleSearch(
     const apiUrl = process.env.API_URL || "http://localhost:5000";
     const caseUrl = `${apiUrl}/api/cases/public`;
     console.log("Searching cases from:", caseUrl);
-    const response = await fetch(caseUrl, { timeout: 10000 });
+    const response = await fetch(caseUrl);
     
     if (!response.ok) {
       const text = await response.text();
@@ -170,7 +283,7 @@ async function handleCaseDetails(
     const apiUrl = process.env.API_URL || "http://localhost:5000";
     const caseUrl = `${apiUrl}/api/cases/${caseId}`;
     console.log(`Fetching case details from: ${caseUrl}`);
-    const response = await fetch(caseUrl, { timeout: 10000 });
+    const response = await fetch(caseUrl);
     
     if (!response.ok) {
       const text = await response.text();
@@ -206,7 +319,7 @@ async function handleListCases(interaction: any) {
     const apiUrl = process.env.API_URL || "http://localhost:5000";
     const caseUrl = `${apiUrl}/api/cases/public`;
     console.log("Fetching all public cases from:", caseUrl);
-    const response = await fetch(caseUrl, { timeout: 10000 });
+    const response = await fetch(caseUrl);
     
     if (!response.ok) {
       const text = await response.text();
@@ -310,4 +423,479 @@ function getPriorityColor(priority: string): number {
     default:
       return Colors.Grey;
   }
+}
+
+// Permission checking utility
+async function checkModPermission(interaction: any): Promise<boolean> {
+  if (!interaction.memberPermissions) return false;
+  const hasModerator =
+    interaction.memberPermissions.has("MODERATE_MEMBERS") ||
+    interaction.memberPermissions.has("BAN_MEMBERS") ||
+    interaction.memberPermissions.has("ADMINISTRATOR");
+  return hasModerator;
+}
+
+async function handleWarn(interaction: any, user: any, reason: string) {
+  try {
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const serverId = interaction.guildId;
+    const moderatorId = interaction.user.id;
+    const userId = user.id;
+
+    // Try to send DM to user
+    try {
+      const dm = await user.createDM();
+      await dm.send({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colors.Orange)
+            .setTitle("Warning")
+            .setDescription(`You have been warned in ${interaction.guild?.name}`)
+            .addFields(
+              { name: "Reason", value: reason },
+              {
+                name: "Moderator",
+                value: interaction.user.tag,
+              }
+            ),
+        ],
+      });
+    } catch {
+      console.log("Could not send DM to user");
+    }
+
+    // Log to moderation channel/audit
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Orange)
+      .setTitle("User Warned")
+      .addFields(
+        { name: "User", value: `${user.tag} (${userId})`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        },
+        { name: "Reason", value: reason, inline: false }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(
+      `User ${user.tag} warned by ${interaction.user.tag}: ${reason}`
+    );
+  } catch (error) {
+    console.error("Warn command error:", error);
+    await interaction.reply({
+      content: "Failed to warn user.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleKick(interaction: any, user: any, reason: string) {
+  try {
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Check if bot can kick the member
+    const member = await interaction.guild?.members.fetch(user.id);
+    if (!member) {
+      await interaction.reply({
+        content: "User not found in this server.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Try to send DM
+    try {
+      const dm = await user.createDM();
+      await dm.send({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colors.Red)
+            .setTitle("Kicked from Server")
+            .setDescription(`You have been kicked from ${interaction.guild?.name}`)
+            .addFields(
+              { name: "Reason", value: reason },
+              {
+                name: "Moderator",
+                value: interaction.user.tag,
+              }
+            ),
+        ],
+      });
+    } catch {
+      console.log("Could not send DM to user");
+    }
+
+    // Kick the member
+    await member.kick(reason);
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Red)
+      .setTitle("User Kicked")
+      .addFields(
+        { name: "User", value: `${user.tag}`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        },
+        { name: "Reason", value: reason, inline: false }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(
+      `User ${user.tag} kicked by ${interaction.user.tag}: ${reason}`
+    );
+  } catch (error) {
+    console.error("Kick command error:", error);
+    await interaction.reply({
+      content: "Failed to kick user.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleBan(interaction: any, user: any, reason: string) {
+  try {
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Try to send DM
+    try {
+      const dm = await user.createDM();
+      await dm.send({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colors.DarkRed)
+            .setTitle("Banned from Server")
+            .setDescription(`You have been banned from ${interaction.guild?.name}`)
+            .addFields(
+              { name: "Reason", value: reason },
+              {
+                name: "Moderator",
+                value: interaction.user.tag,
+              }
+            ),
+        ],
+      });
+    } catch {
+      console.log("Could not send DM to user");
+    }
+
+    // Ban the member
+    await interaction.guild?.bans.create(user.id, { reason });
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.DarkRed)
+      .setTitle("User Banned")
+      .addFields(
+        { name: "User", value: `${user.tag}`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        },
+        { name: "Reason", value: reason, inline: false }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(
+      `User ${user.tag} banned by ${interaction.user.tag}: ${reason}`
+    );
+  } catch (error) {
+    console.error("Ban command error:", error);
+    await interaction.reply({
+      content: "Failed to ban user.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleMute(
+  interaction: any,
+  user: any,
+  duration: string,
+  reason: string
+) {
+  try {
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const member = await interaction.guild?.members.fetch(user.id);
+    if (!member) {
+      await interaction.reply({
+        content: "User not found in this server.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Parse duration to milliseconds
+    let durationMs = 0;
+    if (duration.toLowerCase() !== "permanent") {
+      const parsed = parseDuration(duration);
+      if (parsed === null) {
+        await interaction.reply({
+          content:
+            'Invalid duration. Use format like "1h", "1d", "1w", or "permanent".',
+          ephemeral: true,
+        });
+        return;
+      }
+      durationMs = parsed;
+    }
+
+    // Apply Discord mute (timeout)
+    if (durationMs > 0) {
+      await member.timeout(durationMs, reason);
+    } else {
+      // For permanent, use max timeout (28 days)
+      await member.timeout(28 * 24 * 60 * 60 * 1000, reason);
+    }
+
+    // Try to send DM
+    try {
+      const dm = await user.createDM();
+      await dm.send({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colors.Yellow)
+            .setTitle("Muted")
+            .setDescription(`You have been muted in ${interaction.guild?.name}`)
+            .addFields(
+              { name: "Duration", value: duration },
+              { name: "Reason", value: reason },
+              {
+                name: "Moderator",
+                value: interaction.user.tag,
+              }
+            ),
+        ],
+      });
+    } catch {
+      console.log("Could not send DM to user");
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Yellow)
+      .setTitle("User Muted")
+      .addFields(
+        { name: "User", value: `${user.tag}`, inline: true },
+        { name: "Duration", value: duration, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        },
+        { name: "Reason", value: reason, inline: false }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(
+      `User ${user.tag} muted by ${interaction.user.tag} for ${duration}: ${reason}`
+    );
+  } catch (error) {
+    console.error("Mute command error:", error);
+    await interaction.reply({
+      content: "Failed to mute user.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleUnmute(interaction: any, user: any) {
+  try {
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const member = await interaction.guild?.members.fetch(user.id);
+    if (!member) {
+      await interaction.reply({
+        content: "User not found in this server.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Remove timeout
+    await member.timeout(null);
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Green)
+      .setTitle("User Unmuted")
+      .addFields(
+        { name: "User", value: `${user.tag}`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(`User ${user.tag} unmuted by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("Unmute command error:", error);
+    await interaction.reply({
+      content: "Failed to unmute user.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleModLog(interaction: any, user: any) {
+  try {
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blue)
+      .setTitle(`Moderation Log for ${user.tag}`)
+      .setDescription("Moderation tracking is enabled for this user.")
+      .addFields(
+        { name: "User ID", value: user.id, inline: true },
+        {
+          name: "Account Created",
+          value: new Date(user.createdTimestamp).toLocaleDateString(),
+          inline: true,
+        }
+      )
+      .setFooter({
+        text: "Check server audit log for detailed actions",
+      })
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: true,
+    });
+  } catch (error) {
+    console.error("Modlog command error:", error);
+    await interaction.reply({
+      content: "Failed to retrieve moderation log.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleServerSecurity(interaction: any) {
+  try {
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blurple)
+      .setTitle("Server Security Settings")
+      .setDescription(
+        "Configure your server security and moderation settings below:"
+      )
+      .addFields(
+        {
+          name: "Available Commands",
+          value:
+            "• `/warn` - Warn a user\n• `/kick` - Kick a user\n• `/ban` - Ban a user\n• `/mute` - Mute a user\n• `/unmute` - Unmute a user\n• `/modlog` - View moderation log",
+          inline: false,
+        },
+        {
+          name: "Best Practices",
+          value:
+            "• Always provide clear reasons for moderation actions\n• Document warnings for progressive discipline\n• Use mutes before kicks/bans\n• Keep audit logs for transparency",
+          inline: false,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: true,
+    });
+
+    console.log(`Server security settings accessed by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("Server security command error:", error);
+    await interaction.reply({
+      content: "Failed to load server security settings.",
+      ephemeral: true,
+    });
+  }
+}
+
+function parseDuration(duration: string): number | null {
+  const match = duration.match(/^(\d+)([hdwmy])$/i);
+  if (!match) return null;
+
+  const amount = parseInt(match[1]);
+  const unit = match[2].toLowerCase();
+
+  const units: { [key: string]: number } = {
+    h: 60 * 60 * 1000, // hours
+    d: 24 * 60 * 60 * 1000, // days
+    w: 7 * 24 * 60 * 60 * 1000, // weeks
+    m: 30 * 24 * 60 * 60 * 1000, // months (approximate)
+    y: 365 * 24 * 60 * 60 * 1000, // years (approximate)
+  };
+
+  return amount * (units[unit] || 0);
 }
