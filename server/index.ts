@@ -10,6 +10,10 @@ const app = express();
 // Session setup
 const PgSession = connectPgSimple(session);
 
+// Always use secure: false for cookies since the app is accessed over HTTP in development
+// and the database URL determines production mode
+const isProduction = !!process.env.DATABASE_URL?.includes("railway");
+
 app.use(
   session({
     store: new PgSession({
@@ -18,11 +22,12 @@ app.use(
     }),
     secret: process.env.SESSION_SECRET || "aegis-net-secret-key-change-in-production",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Changed to true to ensure session is saved
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // Always false since we use HTTP in development
+      sameSite: "lax",
     },
   })
 );
