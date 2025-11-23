@@ -438,15 +438,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Discord authentication incomplete - try logging in again" });
       }
 
-      // Create session
-      if (req.session) {
-        req.session.userId = discordUser.id;
-        req.session.discordUserId = discordUser.id;
-        req.session.username = discordUser.username;
-      }
+      // Create a user object for Passport
+      const user: Express.User = {
+        id: discordUser.id,
+        username: discordUser.username,
+        role: "Agent", // Default role for Discord OAuth users
+        isSuspended: false,
+        ip: req.ip || req.socket.remoteAddress || "unknown",
+        isOnline: true,
+      };
 
-      console.log("Discord authentication complete for:", discordUser.id);
-      res.json({ discordId: discordUser.id, username: discordUser.username });
+      // Establish Passport session
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Failed to establish session:", err);
+          return res.status(500).json({ error: "Failed to establish session" });
+        }
+
+        console.log("Discord authentication complete for:", discordUser.id);
+        res.json({ discordId: discordUser.id, username: discordUser.username });
+      });
     } catch (error: any) {
       console.error("Discord POST callback error:", error);
       res.status(500).json({ error: "Discord authentication failed" });
