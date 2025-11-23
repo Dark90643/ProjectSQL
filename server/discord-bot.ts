@@ -7,6 +7,9 @@ import {
   CommandInteraction,
   EmbedBuilder,
   Colors,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } from "discord.js";
 
 const token = process.env.DISCORD_BOT_TOKEN;
@@ -48,6 +51,15 @@ const serverSecurityConfigs = new Map<string, ServerSecurityConfig>();
 const serverPermissions = new Map<string, ServerPermissionConfig>();
 const recentJoins = new Map<string, number[]>(); // serverId -> [timestamps]
 const suspiciousUsers = new Set<string>(); // userId to track suspicious activity
+
+// Pagination storage for cases command
+interface CasesPaginationData {
+  cases: CaseData[];
+  currentPage: number;
+  userId: string;
+  guildId: string;
+}
+const casesPagination = new Map<string, CasesPaginationData>(); // messageId -> pagination data
 
 const commands = [
   new SlashCommandBuilder()
@@ -253,8 +265,96 @@ export async function initializeDiscordBot() {
     console.error("Failed to register Discord commands:", error);
   }
 
-  // Handle command interactions
+  // Handle button interactions
   client.on("interactionCreate", async (interaction) => {
+    if (interaction.isButton()) {
+      const customId = interaction.customId;
+      
+      if (customId.startsWith("cases_")) {
+        try {
+          const [_, action, messageId] = customId.split("_");
+          const paginationData = casesPagination.get(messageId);
+          
+          if (!paginationData) {
+            await interaction.reply({
+              content: "Pagination data expired. Please use `/cases` again.",
+              ephemeral: true,
+            });
+            return;
+          }
+          
+          // Only allow the user who initiated the command to use pagination
+          if (interaction.user.id !== paginationData.userId) {
+            await interaction.reply({
+              content: "You can only navigate pagination for your own command.",
+              ephemeral: true,
+            });
+            return;
+          }
+          
+          const casesPerPage = 5;
+          const totalPages = Math.ceil(paginationData.cases.length / casesPerPage);
+          
+          if (action === "prev" && paginationData.currentPage > 0) {
+            paginationData.currentPage--;
+          } else if (action === "next" && paginationData.currentPage < totalPages - 1) {
+            paginationData.currentPage++;
+          }
+          
+          // Get cases for current page
+          const startIdx = paginationData.currentPage * casesPerPage;
+          const endIdx = startIdx + casesPerPage;
+          const pageCases = paginationData.cases.slice(startIdx, endIdx);
+          
+          // Create embeds for this page
+          const embeds = pageCases.map((c) => {
+            return new EmbedBuilder()
+              .setColor(getPriorityColor(c.priority))
+              .setTitle(c.title)
+              .setDescription(c.description)
+              .addFields(
+                { name: "Case ID", value: c.id, inline: true },
+                { name: "Priority", value: c.priority, inline: true },
+                { name: "Status", value: c.status, inline: true },
+                { name: "Tags", value: c.tags.join(", ") || "None", inline: false }
+              )
+              .setFooter({ text: `Created: ${new Date(c.createdAt).toLocaleDateString()}` });
+          });
+          
+          // Create buttons
+          const prevButton = new ButtonBuilder()
+            .setCustomId(`cases_prev_${messageId}`)
+            .setLabel("⬅️ Previous")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(paginationData.currentPage === 0);
+          
+          const nextButton = new ButtonBuilder()
+            .setCustomId(`cases_next_${messageId}`)
+            .setLabel("Next ➡️")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(paginationData.currentPage >= totalPages - 1);
+          
+          const row = new ActionRowBuilder()
+            .addComponents(prevButton, nextButton);
+          
+          const pageInfo = `**Public Cases** (Page ${paginationData.currentPage + 1} of ${totalPages})\n\nShowing ${Math.min(5, paginationData.cases.length - startIdx)} of ${paginationData.cases.length} cases`;
+          
+          await interaction.update({
+            content: pageInfo,
+            embeds,
+            components: [row as any],
+          });
+        } catch (error) {
+          console.error("Button interaction error:", error);
+          await interaction.reply({
+            content: "An error occurred while processing your request.",
+            ephemeral: true,
+          });
+        }
+      }
+      return;
+    }
+    
     if (!interaction.isChatInputCommand()) return;
 
     const command = interaction.commandName;
@@ -447,8 +547,16 @@ async function handleListCases(interaction: any) {
       return;
     }
 
-    // Create summary embeds (limit to 10)
-    const embeds = cases.slice(0, 10).map((c) => {
+    // Pagination setup
+    const casesPerPage = 5;
+    const totalPages = Math.ceil(cases.length / casesPerPage);
+    const currentPage = 0;
+    
+    // Get first page of cases
+    const pageCases = cases.slice(0, casesPerPage);
+    
+    // Create embeds for first page
+    const embeds = pageCases.map((c) => {
       return new EmbedBuilder()
         .setColor(getPriorityColor(c.priority))
         .setTitle(c.title)
@@ -462,14 +570,46 @@ async function handleListCases(interaction: any) {
         .setFooter({ text: `Created: ${new Date(c.createdAt).toLocaleDateString()}` });
     });
 
-    const summary =
-      cases.length > 10
-        ? `\n\nShowing 10 of ${cases.length} cases`
-        : `\n\nTotal: ${cases.length} case(s)`;
+    // Create pagination buttons (only if more than one page)
+    let components: any[] = [];
+    if (totalPages > 1) {
+      // Use interaction ID as message ID placeholder
+      const messageId = `${interaction.id}`;
+      
+      // Store pagination data
+      casesPagination.set(messageId, {
+        cases,
+        currentPage,
+        userId: interaction.user.id,
+        guildId: interaction.guildId,
+      });
+      
+      const prevButton = new ButtonBuilder()
+        .setCustomId(`cases_prev_${messageId}`)
+        .setLabel("⬅️ Previous")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true); // First page, so prev is disabled
+      
+      const nextButton = new ButtonBuilder()
+        .setCustomId(`cases_next_${messageId}`)
+        .setLabel("Next ➡️")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(totalPages <= 1); // Disable if only one page
+      
+      components = [
+        new ActionRowBuilder()
+          .addComponents(prevButton, nextButton) as any
+      ];
+    }
+
+    const pageInfo = totalPages > 1 
+      ? `**Public Cases** (Page 1 of ${totalPages})\n\nShowing ${casesPerPage} of ${cases.length} cases`
+      : `**Public Cases**\n\nTotal: ${cases.length} case(s)`;
 
     await interaction.reply({
-      content: `**Public Cases**${summary}`,
+      content: pageInfo,
       embeds,
+      components,
     });
   } catch (error) {
     console.error("List cases error:", error);
