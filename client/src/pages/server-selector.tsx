@@ -40,10 +40,19 @@ export default function ServerSelector() {
   }, [discordUser, setLocation]);
 
   const filteredServers = useMemo(() => {
-    if (!searchQuery.trim()) return servers;
-    return servers.filter(server =>
-      server.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    try {
+      const query = searchQuery.trim().toLowerCase();
+      if (!query) return servers;
+      
+      return servers.filter(server => {
+        const serverName = (server.name || "").toLowerCase();
+        const serverId = (server.id || "").toLowerCase();
+        return serverName.includes(query) || serverId.includes(query);
+      });
+    } catch (error) {
+      console.error("Search error:", error);
+      return servers;
+    }
   }, [servers, searchQuery]);
 
   const handleSelectServer = async (serverId: string) => {
