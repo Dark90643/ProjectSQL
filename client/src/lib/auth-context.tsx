@@ -100,6 +100,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userData = await api.auth.me();
         setUser(userData);
         await loadUserData();
+        
+        // Check if user is support team
+        try {
+          const supportStatus = await api.auth.checkSupportTeam();
+          setIsSupportTeam(supportStatus.isSupportTeam);
+          setCanCreateAccounts(supportStatus.isSupportTeam);
+        } catch (error) {
+          // Not support team
+          setIsSupportTeam(false);
+          setCanCreateAccounts(false);
+        }
       } catch (error) {
         // Not logged in
         setUser(null);

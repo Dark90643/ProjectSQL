@@ -536,6 +536,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/auth/check-support-team-status", requireAuth, async (req: Request, res: Response) => {
+    try {
+      // For logged-in users, check if they're support team
+      // We need to get their Discord ID from the session
+      const discordId = (req.session as any).discordUserId || (req.session as any).discordId;
+      
+      if (!discordId) {
+        return res.json({ isSupportTeam: false });
+      }
+
+      const officialBotServer = "1441447050024714252";
+      const member = await storage.getServerMember(officialBotServer, discordId);
+      
+      const isSupportTeam = !!(member && (member.isOwner || member.isAdmin));
+      
+      res.json({ isSupportTeam });
+    } catch (error: any) {
+      console.error("Check support team status error:", error);
+      res.json({ isSupportTeam: false });
+    }
+  });
+
   app.get("/api/support/all-cases", requireAuth, async (req: Request, res: Response) => {
     try {
       // Check if user is support team

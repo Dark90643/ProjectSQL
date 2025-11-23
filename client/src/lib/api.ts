@@ -33,6 +33,7 @@ export const api = {
     logout: () => fetchAPI("/auth/logout", { method: "POST" }),
     me: () => fetchAPI("/auth/me"),
     checkIp: () => fetchAPI("/auth/check-ip"),
+    checkSupportTeam: () => fetchAPI("/auth/check-support-team-status"),
   },
   users: {
     getAll: () => fetchAPI("/users"),
