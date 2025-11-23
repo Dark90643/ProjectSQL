@@ -492,10 +492,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(cases);
   });
 
-  app.get("/api/cases/:id", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/cases/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const caseData = await storage.getCase(id);
-    res.json(caseData || null);
+    
+    // If case doesn't exist, return null
+    if (!caseData) {
+      return res.json(null);
+    }
+    
+    // If case is public, return it to anyone (for Discord bot and public access)
+    if (caseData.isPublic) {
+      return res.json(caseData);
+    }
+    
+    // If case is private, require authentication
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    
+    res.json(caseData);
   });
 
   app.post("/api/cases", requireAuth, async (req: Request, res: Response) => {
