@@ -71,6 +71,13 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Verify DATABASE_URL is set at runtime
+  if (!process.env.DATABASE_URL) {
+    console.error("ERROR: DATABASE_URL environment variable is not set!");
+    console.error("Please set the DATABASE_URL variable in Railway with your PostgreSQL connection string.");
+    process.exit(1);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

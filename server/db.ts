@@ -5,11 +5,12 @@ import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?"
-  );
+const dbUrl = process.env.DATABASE_URL;
+if (!dbUrl) {
+  console.error("WARNING: DATABASE_URL not set. Using dummy connection for build.");
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+export const pool = new Pool({ 
+  connectionString: dbUrl || "postgres://localhost/dummy" 
+});
 export const db = drizzle({ client: pool, schema });
