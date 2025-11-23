@@ -314,30 +314,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get or create server workspace
       let workspace = await storage.getServerWorkspace(serverId);
       if (!workspace) {
-        workspace = await storage.createServerWorkspace({
-          serverId,
-          serverName: `Server ${serverId}`,
-          ownerId: discordId,
-        });
+        try {
+          workspace = await storage.createServerWorkspace({
+            serverId,
+            serverName: `Server ${serverId}`,
+            ownerId: discordId,
+          });
+        } catch (error: any) {
+          // If workspace already exists (race condition), just fetch it
+          if (error.code === '23505') {
+            workspace = await storage.getServerWorkspace(serverId);
+          } else {
+            throw error;
+          }
+        }
       }
 
       // Get or create server member
       let member = await storage.getServerMember(serverId, discordId);
       if (!member) {
-        member = await storage.createServerMember({
-          serverId,
-          discordUserId: discordId,
-          roles: ["member"],
-          isOwner: false,
-          isAdmin: false,
-        });
+        try {
+          member = await storage.createServerMember({
+            serverId,
+            discordUserId: discordId,
+            roles: ["member"],
+            isOwner: false,
+            isAdmin: false,
+          });
+        } catch (error: any) {
+          // If member already exists, just fetch it
+          if (error.code === '23505') {
+            member = await storage.getServerMember(serverId, discordId);
+          } else {
+            throw error;
+          }
+        }
       }
 
       // Create a session user for this workspace
       const user: Express.User = {
         id: `${discordId}:${serverId}`,
         username: discordId,
-        role: member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent",
+        role: member && (member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent") || "Agent",
         isSuspended: false,
         ip: req.ip || req.socket.remoteAddress || "unknown",
         isOnline: true,
