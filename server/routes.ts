@@ -63,6 +63,13 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id: string, done) => {
   try {
+    // If ID contains ":", it's a Discord user (format: discordId:serverId)
+    if (id.includes(":")) {
+      // For Discord users, we can't look them up in the users table
+      // Return null and let the session handle it
+      return done(null, false);
+    }
+    
     const user = await storage.getUser(id);
     if (!user) {
       return done(null, false);
@@ -84,6 +91,10 @@ passport.deserializeUser(async (id: string, done) => {
 const requireAuth = (req: Request, res: Response, next: Function) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ error: "Unauthorized" });
+  }
+  // For Discord users, restore from session if needed
+  if (!req.user && req.session?.passport?.user) {
+    req.user = req.session.passport.user;
   }
   next();
 };
@@ -458,6 +469,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ error: "Failed to establish session" });
         }
 
+        // Store the full user object in session for Discord users
+        if (req.session) {
+          req.session.passport = { user };
+        }
+
         console.log("Discord authentication complete for:", discordUser.id);
         res.json({ discordId: discordUser.id, username: discordUser.username });
       });
@@ -745,6 +761,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.login(user, (err) => {
         if (err) {
           return res.status(500).json({ error: "Login failed" });
+        }
+        // Store the full user object in session for Discord users
+        if (req.session) {
+          req.session.passport = { user };
         }
         res.json(user);
       });

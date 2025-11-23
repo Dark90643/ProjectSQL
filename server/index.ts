@@ -39,6 +39,14 @@ declare module 'http' {
   }
 }
 
+declare module 'express-session' {
+  interface SessionData {
+    passport?: {
+      user?: any;
+    };
+  }
+}
+
 app.use(express.json({
   verify: (req, _res, buf) => {
     req.rawBody = buf;
