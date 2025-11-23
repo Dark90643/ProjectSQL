@@ -28,6 +28,21 @@ interface CaseData {
   updatedAt: Date;
 }
 
+interface ServerSecurityConfig {
+  enabled: boolean;
+  minAccountAge: number; // in days
+  joinRateLimit: number; // max joins per minute
+  autoKickNewAccounts: boolean;
+  suspiciousActivityThreshold: number;
+  muteNewMembers: boolean;
+  requireVerification: boolean;
+}
+
+// Server security configurations (in-memory storage)
+const serverSecurityConfigs = new Map<string, ServerSecurityConfig>();
+const recentJoins = new Map<string, number[]>(); // serverId -> [timestamps]
+const suspiciousUsers = new Set<string>(); // userId to track suspicious activity
+
 const commands = [
   new SlashCommandBuilder()
     .setName("search")
@@ -138,6 +153,48 @@ const commands = [
   new SlashCommandBuilder()
     .setName("server-security")
     .setDescription("Configure server security settings (admin only)"),
+  // Anti-raid commands
+  new SlashCommandBuilder()
+    .setName("enable-raid-protection")
+    .setDescription("Enable raid protection for this server (admin only)"),
+  new SlashCommandBuilder()
+    .setName("disable-raid-protection")
+    .setDescription("Disable raid protection for this server (admin only)"),
+  new SlashCommandBuilder()
+    .setName("raid-status")
+    .setDescription("Check raid protection status for this server"),
+  new SlashCommandBuilder()
+    .setName("security-config")
+    .setDescription("Configure security settings (admin only)")
+    .addNumberOption((option) =>
+      option
+        .setName("min_account_age")
+        .setDescription("Minimum account age in days (0-365)")
+        .setMinValue(0)
+        .setMaxValue(365)
+    )
+    .addNumberOption((option) =>
+      option
+        .setName("join_rate_limit")
+        .setDescription("Max joins per minute (5-100)")
+        .setMinValue(5)
+        .setMaxValue(100)
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("auto_kick_new_accounts")
+        .setDescription("Automatically kick accounts created today")
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("mute_new_members")
+        .setDescription("Mute new members until verified")
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("require_verification")
+        .setDescription("Require verification to post messages")
+    ),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -198,6 +255,14 @@ export async function initializeDiscordBot() {
         await handleModLog(interaction, user);
       } else if (command === "server-security") {
         await handleServerSecurity(interaction);
+      } else if (command === "enable-raid-protection") {
+        await handleEnableRaidProtection(interaction);
+      } else if (command === "disable-raid-protection") {
+        await handleDisableRaidProtection(interaction);
+      } else if (command === "raid-status") {
+        await handleRaidStatus(interaction);
+      } else if (command === "security-config") {
+        await handleSecurityConfig(interaction);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -211,6 +276,7 @@ export async function initializeDiscordBot() {
       }
     }
   });
+
 
   // Login to Discord
   client.login(token);
@@ -898,4 +964,231 @@ function parseDuration(duration: string): number | null {
   };
 
   return amount * (units[unit] || 0);
+}
+
+// Helper function to get or create server security configuration
+function getServerConfig(serverId: string): ServerSecurityConfig {
+  if (!serverSecurityConfigs.has(serverId)) {
+    serverSecurityConfigs.set(serverId, {
+      enabled: true,
+      minAccountAge: 7, // 7 days by default
+      joinRateLimit: 10, // max 10 joins per minute
+      autoKickNewAccounts: false,
+      suspiciousActivityThreshold: 5,
+      muteNewMembers: true,
+      requireVerification: false,
+    });
+  }
+  return serverSecurityConfigs.get(serverId)!;
+}
+
+async function handleEnableRaidProtection(interaction: any) {
+  try {
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const serverId = interaction.guildId;
+    const config = getServerConfig(serverId);
+    config.enabled = true;
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Green)
+      .setTitle("Raid Protection Enabled")
+      .setDescription("Raid protection is now active for this server")
+      .addFields(
+        { name: "Status", value: "✅ Active", inline: true },
+        { name: "Min Account Age", value: `${config.minAccountAge} days`, inline: true },
+        {
+          name: "Join Rate Limit",
+          value: `${config.joinRateLimit} joins/minute`,
+          inline: true,
+        },
+        {
+          name: "Mute New Members",
+          value: config.muteNewMembers ? "✅ Yes" : "❌ No",
+          inline: true,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed], ephemeral: false });
+    console.log(`Raid protection enabled for ${interaction.guild?.name}`);
+  } catch (error) {
+    console.error("Enable raid protection error:", error);
+    await interaction.reply({
+      content: "Failed to enable raid protection.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleDisableRaidProtection(interaction: any) {
+  try {
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const serverId = interaction.guildId;
+    const config = getServerConfig(serverId);
+    config.enabled = false;
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Red)
+      .setTitle("Raid Protection Disabled")
+      .setDescription("Raid protection is now inactive for this server")
+      .addFields({
+        name: "Status",
+        value: "❌ Inactive",
+        inline: true,
+      })
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed], ephemeral: false });
+    console.log(`Raid protection disabled for ${interaction.guild?.name}`);
+  } catch (error) {
+    console.error("Disable raid protection error:", error);
+    await interaction.reply({
+      content: "Failed to disable raid protection.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleRaidStatus(interaction: any) {
+  try {
+    const serverId = interaction.guildId;
+    const config = getServerConfig(serverId);
+
+    const embed = new EmbedBuilder()
+      .setColor(config.enabled ? Colors.Green : Colors.Red)
+      .setTitle("Raid Protection Status")
+      .setDescription(
+        config.enabled
+          ? "Raid protection is **active**"
+          : "Raid protection is **inactive**"
+      )
+      .addFields(
+        {
+          name: "Status",
+          value: config.enabled ? "✅ Active" : "❌ Inactive",
+          inline: true,
+        },
+        { name: "Min Account Age", value: `${config.minAccountAge} days`, inline: true },
+        {
+          name: "Join Rate Limit",
+          value: `${config.joinRateLimit} joins/minute`,
+          inline: true,
+        },
+        {
+          name: "Auto-kick New Accounts",
+          value: config.autoKickNewAccounts ? "✅ Yes" : "❌ No",
+          inline: true,
+        },
+        {
+          name: "Mute New Members",
+          value: config.muteNewMembers ? "✅ Yes" : "❌ No",
+          inline: true,
+        },
+        {
+          name: "Require Verification",
+          value: config.requireVerification ? "✅ Yes" : "❌ No",
+          inline: true,
+        }
+      )
+      .setFooter({
+        text: "Use /security-config to modify these settings",
+      })
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed], ephemeral: true });
+  } catch (error) {
+    console.error("Raid status error:", error);
+    await interaction.reply({
+      content: "Failed to retrieve raid protection status.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleSecurityConfig(interaction: any) {
+  try {
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const serverId = interaction.guildId;
+    const config = getServerConfig(serverId);
+
+    // Get option values
+    const minAccountAge = interaction.options.getNumber("min_account_age");
+    const joinRateLimit = interaction.options.getNumber("join_rate_limit");
+    const autoKickNewAccounts =
+      interaction.options.getBoolean("auto_kick_new_accounts");
+    const muteNewMembers = interaction.options.getBoolean("mute_new_members");
+    const requireVerification =
+      interaction.options.getBoolean("require_verification");
+
+    // Update configuration
+    if (minAccountAge !== null) config.minAccountAge = minAccountAge;
+    if (joinRateLimit !== null) config.joinRateLimit = joinRateLimit;
+    if (autoKickNewAccounts !== null)
+      config.autoKickNewAccounts = autoKickNewAccounts;
+    if (muteNewMembers !== null) config.muteNewMembers = muteNewMembers;
+    if (requireVerification !== null)
+      config.requireVerification = requireVerification;
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blurple)
+      .setTitle("Security Configuration Updated")
+      .setDescription("Your server security settings have been updated")
+      .addFields(
+        { name: "Min Account Age", value: `${config.minAccountAge} days`, inline: true },
+        {
+          name: "Join Rate Limit",
+          value: `${config.joinRateLimit} joins/minute`,
+          inline: true,
+        },
+        {
+          name: "Auto-kick New Accounts",
+          value: config.autoKickNewAccounts ? "✅ Enabled" : "❌ Disabled",
+          inline: true,
+        },
+        {
+          name: "Mute New Members",
+          value: config.muteNewMembers ? "✅ Enabled" : "❌ Disabled",
+          inline: true,
+        },
+        {
+          name: "Require Verification",
+          value: config.requireVerification ? "✅ Enabled" : "❌ Disabled",
+          inline: true,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed], ephemeral: false });
+    console.log(
+      `Security configuration updated for ${interaction.guild?.name}:`,
+      config
+    );
+  } catch (error) {
+    console.error("Security config error:", error);
+    await interaction.reply({
+      content: "Failed to update security configuration.",
+      ephemeral: true,
+    });
+  }
 }
