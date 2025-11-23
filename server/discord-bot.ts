@@ -10,6 +10,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ActivityType,
 } from "discord.js";
 import { storage } from "./storage";
 
@@ -586,6 +587,10 @@ export async function initializeDiscordBot() {
 
   client.once("ready", () => {
     console.log(`Discord bot logged in as ${client.user?.tag}`);
+    client.user?.setActivity({
+      name: "Managing massive intelligence in https://projectsql-production.up.railway.app/",
+      type: ActivityType.Watching,
+    });
   });
 }
 
