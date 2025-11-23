@@ -12,7 +12,8 @@ import {
   FileText,
   Menu,
   RotateCcw,
-  Zap
+  Zap,
+  Settings
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -83,6 +84,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
                 <Users size={18} />
                 ADMIN PANEL
+              </Button>
+            </Link>
+            <Link href="/settings">
+              <Button 
+                variant={location === "/settings" ? "secondary" : "ghost"} 
+                className="w-full justify-start gap-3 font-mono"
+              >
+                <Settings size={18} />
+                SETTINGS
               </Button>
             </Link>
             <Link href="/recovery">

@@ -12,6 +12,7 @@ import Dashboard from "@/pages/dashboard";
 import PublicDashboard from "@/pages/public-dashboard";
 import CaseView from "@/pages/case-view";
 import AdminPanel from "@/pages/admin";
+import SettingsPage from "@/pages/settings";
 import Recovery from "@/pages/recovery";
 import Layout from "@/components/layout";
 import NotFound from "@/pages/not-found";
@@ -62,6 +63,9 @@ function RouterContent() {
       </Route>
       <Route path="/admin">
         <Layout><ProtectedRoute component={AdminPanel} path="/admin" /></Layout>
+      </Route>
+      <Route path="/settings">
+        <Layout><ProtectedRoute component={SettingsPage} path="/settings" /></Layout>
       </Route>
       <Route path="/recovery">
         <Layout><ProtectedRoute component={Recovery} path="/recovery" /></Layout>

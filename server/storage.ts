@@ -23,6 +23,8 @@ import {
   type InsertServerWorkspace,
   type ServerMember,
   type InsertServerMember,
+  type WebhookConfig,
+  type InsertWebhookConfig,
   users,
   cases,
   logs,
@@ -35,6 +37,7 @@ import {
   discordAccounts,
   serverWorkspaces,
   serverMembers,
+  webhookConfigs,
 } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { sendAuditTrailDiscordEmbed } from "./discord-webhook";
@@ -100,6 +103,10 @@ export interface IStorage {
   removeIpBan(ipBanId: string): Promise<boolean>;
   getUserModLogs(serverId: string, userId: string): Promise<ModLog[]>;
   addModLog(log: InsertModLog): Promise<ModLog>;
+  
+  // Webhook config operations
+  getWebhookConfig(serverId: string): Promise<WebhookConfig | undefined>;
+  createOrUpdateWebhookConfig(config: InsertWebhookConfig & { serverId: string }): Promise<WebhookConfig>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -366,6 +373,27 @@ export class DatabaseStorage implements IStorage {
   async removeIpBan(ipBanId: string): Promise<boolean> {
     await db.delete(modIps).where(eq(modIps.id, ipBanId));
     return true;
+  }
+
+  // Webhook config operations
+  async getWebhookConfig(serverId: string): Promise<WebhookConfig | undefined> {
+    const [config] = await db.select().from(webhookConfigs).where(eq(webhookConfigs.serverId, serverId));
+    return config;
+  }
+
+  async createOrUpdateWebhookConfig(config: InsertWebhookConfig & { serverId: string }): Promise<WebhookConfig> {
+    const existing = await this.getWebhookConfig(config.serverId);
+    if (existing) {
+      const [updated] = await db
+        .update(webhookConfigs)
+        .set({ ...config, updatedAt: new Date() })
+        .where(eq(webhookConfigs.serverId, config.serverId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(webhookConfigs).values(config).returning();
+      return created;
+    }
   }
 }
 

@@ -1232,6 +1232,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Webhook configuration endpoints
+  app.get("/api/webhook/config", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      let config = await storage.getWebhookConfig(user.serverId);
+      if (!config) {
+        // Create default config
+        config = await storage.createOrUpdateWebhookConfig({
+          serverId: user.serverId,
+          auditTrailChannelId: null,
+          auditTrailEnabled: false,
+          casePostChannelId: null,
+          casePostEnabled: false,
+          caseReleaseChannelId: null,
+          caseReleaseEnabled: false,
+        });
+      }
+
+      res.json(config);
+    } catch (error: any) {
+      console.error("Get webhook config error:", error);
+      res.status(500).json({ error: "Failed to get webhook config" });
+    }
+  });
+
+  app.post("/api/webhook/config", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      const {
+        auditTrailChannelId,
+        auditTrailEnabled,
+        casePostChannelId,
+        casePostEnabled,
+        caseReleaseChannelId,
+        caseReleaseEnabled,
+      } = req.body;
+
+      const config = await storage.createOrUpdateWebhookConfig({
+        serverId: user.serverId,
+        auditTrailChannelId: auditTrailEnabled ? auditTrailChannelId : null,
+        auditTrailEnabled,
+        casePostChannelId: casePostEnabled ? casePostChannelId : null,
+        casePostEnabled,
+        caseReleaseChannelId: caseReleaseEnabled ? caseReleaseChannelId : null,
+        caseReleaseEnabled,
+      });
+
+      await storage.createLog({
+        action: "WEBHOOK_CONFIG_UPDATED",
+        userId: user.id,
+        targetId: user.serverId,
+        details: `Updated webhook configuration`,
+      });
+
+      res.json(config);
+    } catch (error: any) {
+      console.error("Update webhook config error:", error);
+      res.status(500).json({ error: "Failed to update webhook config" });
+    }
+  });
+
+  app.get("/api/webhook/channels", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      // TODO: Fetch actual Discord channels from bot
+      // For now, return empty array - will be implemented with Discord.js
+      res.json({ channels: [] });
+    } catch (error: any) {
+      console.error("Get webhook channels error:", error);
+      res.status(500).json({ error: "Failed to get channels" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

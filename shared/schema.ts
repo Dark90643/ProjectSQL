@@ -141,6 +141,19 @@ export const serverPermissions = pgTable("server_permissions", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const webhookConfigs = pgTable("webhook_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull().unique(),
+  auditTrailChannelId: text("audit_trail_channel_id"),
+  auditTrailEnabled: boolean("audit_trail_enabled").notNull().default(false),
+  casePostChannelId: text("case_post_channel_id"),
+  casePostEnabled: boolean("case_post_enabled").notNull().default(false),
+  caseReleaseChannelId: text("case_release_channel_id"),
+  caseReleaseEnabled: boolean("case_release_enabled").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const insertDiscordAccountSchema = createInsertSchema(discordAccounts).omit({
   id: true,
   createdAt: true,
@@ -212,6 +225,14 @@ export const insertServerPermissionSchema = createInsertSchema(serverPermissions
   updatedAt: true,
 });
 
+export const insertWebhookConfigSchema = createInsertSchema(webhookConfigs).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertWebhookConfig = z.infer<typeof insertWebhookConfigSchema>;
+export type WebhookConfig = typeof webhookConfigs.$inferSelect;
 export type InsertDiscordAccount = z.infer<typeof insertDiscordAccountSchema>;
 export type DiscordAccount = typeof discordAccounts.$inferSelect;
 export type InsertServerWorkspace = z.infer<typeof insertServerWorkspaceSchema>;
