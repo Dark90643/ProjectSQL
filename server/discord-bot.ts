@@ -862,11 +862,12 @@ async function checkModPermission(interaction: any): Promise<boolean> {
 
 async function handleWarn(interaction: any, user: any, reason: string) {
   try {
+    await interaction.deferReply({ ephemeral: false });
+    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "You do not have permission to use this command.",
-        ephemeral: true,
       });
       return;
     }
@@ -924,9 +925,8 @@ async function handleWarn(interaction: any, user: any, reason: string) {
       console.error("Failed to save warning to database:", dbError);
     }
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [embed],
-      ephemeral: false,
     });
 
     console.log(
@@ -934,20 +934,24 @@ async function handleWarn(interaction: any, user: any, reason: string) {
     );
   } catch (error) {
     console.error("Warn command error:", error);
-    await interaction.reply({
-      content: "Failed to warn user.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to warn user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
 async function handleKick(interaction: any, user: any, reason: string) {
   try {
+    await interaction.deferReply({ ephemeral: false });
+    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "You do not have permission to use this command.",
-        ephemeral: true,
       });
       return;
     }
@@ -1014,9 +1018,8 @@ async function handleKick(interaction: any, user: any, reason: string) {
       )
       .setTimestamp();
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [embed],
-      ephemeral: false,
     });
 
     console.log(
@@ -1024,20 +1027,24 @@ async function handleKick(interaction: any, user: any, reason: string) {
     );
   } catch (error) {
     console.error("Kick command error:", error);
-    await interaction.reply({
-      content: "Failed to kick user.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to kick user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
 async function handleBan(interaction: any, user: any, reason: string) {
   try {
+    await interaction.deferReply({ ephemeral: false });
+    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "You do not have permission to use this command.",
-        ephemeral: true,
       });
       return;
     }
@@ -1093,9 +1100,8 @@ async function handleBan(interaction: any, user: any, reason: string) {
       )
       .setTimestamp();
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [embed],
-      ephemeral: false,
     });
 
     console.log(
@@ -1103,10 +1109,13 @@ async function handleBan(interaction: any, user: any, reason: string) {
     );
   } catch (error) {
     console.error("Ban command error:", error);
-    await interaction.reply({
-      content: "Failed to ban user.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to ban user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
@@ -1117,20 +1126,20 @@ async function handleMute(
   reason: string
 ) {
   try {
+    await interaction.deferReply({ ephemeral: false });
+    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "You do not have permission to use this command.",
-        ephemeral: true,
       });
       return;
     }
 
     const member = await interaction.guild?.members.fetch(user.id);
     if (!member) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "User not found in this server.",
-        ephemeral: true,
       });
       return;
     }
@@ -1140,10 +1149,9 @@ async function handleMute(
     if (duration.toLowerCase() !== "permanent") {
       const parsed = parseDuration(duration);
       if (parsed === null) {
-        await interaction.reply({
+        await interaction.editReply({
           content:
             'Invalid duration. Use format like "1h", "1d", "1w", or "permanent".',
-          ephemeral: true,
         });
         return;
       }
@@ -1209,9 +1217,8 @@ async function handleMute(
       )
       .setTimestamp();
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [embed],
-      ephemeral: false,
     });
 
     console.log(
@@ -1219,29 +1226,32 @@ async function handleMute(
     );
   } catch (error) {
     console.error("Mute command error:", error);
-    await interaction.reply({
-      content: "Failed to mute user.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to mute user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
 async function handleUnmute(interaction: any, user: any) {
   try {
+    await interaction.deferReply({ ephemeral: false });
+    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "You do not have permission to use this command.",
-        ephemeral: true,
       });
       return;
     }
 
     const member = await interaction.guild?.members.fetch(user.id);
     if (!member) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "User not found in this server.",
-        ephemeral: true,
       });
       return;
     }
@@ -1275,18 +1285,20 @@ async function handleUnmute(interaction: any, user: any) {
       )
       .setTimestamp();
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [embed],
-      ephemeral: false,
     });
 
     console.log(`User ${user.tag} unmuted by ${interaction.user.tag}`);
   } catch (error) {
     console.error("Unmute command error:", error);
-    await interaction.reply({
-      content: "Failed to unmute user.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to unmute user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
@@ -1879,8 +1891,11 @@ async function handleUserWarnings(interaction: any, user: any) {
           inline: false,
         }))
       )
-      .setFooter({ text: warnings.length > 10 ? `Showing 10 of ${warnings.length} warnings` : `` })
       .setTimestamp();
+    
+    if (warnings.length > 10) {
+      embed.setFooter({ text: `Showing 10 of ${warnings.length} warnings` });
+    }
     
     await interaction.reply({
       embeds: [embed],
@@ -1923,8 +1938,11 @@ async function handleUserBans(interaction: any, user: any) {
           inline: false,
         }))
       )
-      .setFooter({ text: bans.length > 10 ? `Showing 10 of ${bans.length} bans` : `` })
       .setTimestamp();
+    
+    if (bans.length > 10) {
+      embed.setFooter({ text: `Showing 10 of ${bans.length} bans` });
+    }
     
     await interaction.reply({
       embeds: [embed],
@@ -1970,8 +1988,11 @@ async function handleUserMutes(interaction: any, user: any) {
           };
         })
       )
-      .setFooter({ text: mutes.length > 10 ? `Showing 10 of ${mutes.length} mutes` : `` })
       .setTimestamp();
+    
+    if (mutes.length > 10) {
+      embed.setFooter({ text: `Showing 10 of ${mutes.length} mutes` });
+    }
     
     await interaction.reply({
       embeds: [embed],
