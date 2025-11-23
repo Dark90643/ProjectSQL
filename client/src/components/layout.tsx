@@ -11,12 +11,13 @@ import {
   Lock,
   FileText,
   Menu,
-  RotateCcw
+  RotateCcw,
+  Zap
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { user, logout, isSupportTeam } = useAuth();
   const [location] = useLocation();
 
   if (!user) return <>{children}</>;
@@ -94,6 +95,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Button>
             </Link>
           </>
+        )}
+
+        {isSupportTeam && (
+          <Link href="/support-panel">
+            <Button 
+              variant={location === "/support-panel" ? "secondary" : "ghost"} 
+              className="w-full justify-start gap-3 font-mono text-amber-500 hover:text-amber-600"
+            >
+              <Zap size={18} />
+              SUPPORT PANEL
+            </Button>
+          </Link>
         )}
       </nav>
 
