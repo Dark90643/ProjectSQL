@@ -912,6 +912,18 @@ async function handleWarn(interaction: any, user: any, reason: string) {
       )
       .setTimestamp();
 
+    // Save warning to database
+    try {
+      await storage.addWarning({
+        serverId: interaction.guildId,
+        userId: user.id,
+        moderatorId: interaction.user.id,
+        reason: reason,
+      });
+    } catch (dbError) {
+      console.error("Failed to save warning to database:", dbError);
+    }
+
     await interaction.reply({
       embeds: [embed],
       ephemeral: false,
@@ -974,6 +986,19 @@ async function handleKick(interaction: any, user: any, reason: string) {
 
     // Kick the member
     await member.kick(reason);
+
+    // Save to mod logs
+    try {
+      await storage.addModLog({
+        serverId: interaction.guildId,
+        action: "kick",
+        moderatorId: interaction.user.id,
+        targetId: user.id,
+        reason: reason,
+      });
+    } catch (dbError) {
+      console.error("Failed to save kick to database:", dbError);
+    }
 
     const embed = new EmbedBuilder()
       .setColor(Colors.Red)
@@ -1041,6 +1066,18 @@ async function handleBan(interaction: any, user: any, reason: string) {
 
     // Ban the member
     await interaction.guild?.bans.create(user.id, { reason });
+
+    // Save ban to database
+    try {
+      await storage.addBan({
+        serverId: interaction.guildId,
+        userId: user.id,
+        moderatorId: interaction.user.id,
+        reason: reason,
+      });
+    } catch (dbError) {
+      console.error("Failed to save ban to database:", dbError);
+    }
 
     const embed = new EmbedBuilder()
       .setColor(Colors.DarkRed)
@@ -1121,6 +1158,19 @@ async function handleMute(
       await member.timeout(28 * 24 * 60 * 60 * 1000, reason);
     }
 
+    // Save mute to database
+    try {
+      await storage.addMute({
+        serverId: interaction.guildId,
+        userId: user.id,
+        moderatorId: interaction.user.id,
+        reason: reason,
+        duration: duration,
+      });
+    } catch (dbError) {
+      console.error("Failed to save mute to database:", dbError);
+    }
+
     // Try to send DM
     try {
       const dm = await user.createDM();
@@ -1198,6 +1248,19 @@ async function handleUnmute(interaction: any, user: any) {
 
     // Remove timeout
     await member.timeout(null);
+
+    // Log unmute to mod logs
+    try {
+      await storage.addModLog({
+        serverId: interaction.guildId,
+        action: "unmute",
+        moderatorId: interaction.user.id,
+        targetId: user.id,
+        reason: "User unmuted",
+      });
+    } catch (dbError) {
+      console.error("Failed to save unmute to database:", dbError);
+    }
 
     const embed = new EmbedBuilder()
       .setColor(Colors.Green)

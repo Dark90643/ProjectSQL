@@ -9,9 +9,13 @@ import {
   type InviteCode,
   type InsertInviteCode,
   type ModWarning,
+  type InsertModWarning,
   type ModMute,
+  type InsertModMute,
   type ModBan,
+  type InsertModBan,
   type ModLog,
+  type InsertModLog,
   users,
   cases,
   logs,
@@ -55,9 +59,13 @@ export interface IStorage {
   
   // Moderation operations
   getUserWarnings(serverId: string, userId: string): Promise<ModWarning[]>;
+  addWarning(warning: InsertModWarning): Promise<ModWarning>;
   getUserMutes(serverId: string, userId: string): Promise<ModMute[]>;
+  addMute(mute: InsertModMute): Promise<ModMute>;
   getUserBans(serverId: string, userId: string): Promise<ModBan[]>;
+  addBan(ban: InsertModBan): Promise<ModBan>;
   getUserModLogs(serverId: string, userId: string): Promise<ModLog[]>;
+  addModLog(log: InsertModLog): Promise<ModLog>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -180,12 +188,22 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(modWarnings.timestamp));
   }
   
+  async addWarning(warning: InsertModWarning): Promise<ModWarning> {
+    const [newWarning] = await db.insert(modWarnings).values(warning).returning();
+    return newWarning;
+  }
+  
   async getUserMutes(serverId: string, userId: string): Promise<ModMute[]> {
     return await db
       .select()
       .from(modMutes)
       .where(and(eq(modMutes.serverId, serverId), eq(modMutes.userId, userId)))
       .orderBy(desc(modMutes.mutedAt));
+  }
+  
+  async addMute(mute: InsertModMute): Promise<ModMute> {
+    const [newMute] = await db.insert(modMutes).values(mute).returning();
+    return newMute;
   }
   
   async getUserBans(serverId: string, userId: string): Promise<ModBan[]> {
@@ -196,12 +214,22 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(modBans.bannedAt));
   }
   
+  async addBan(ban: InsertModBan): Promise<ModBan> {
+    const [newBan] = await db.insert(modBans).values(ban).returning();
+    return newBan;
+  }
+  
   async getUserModLogs(serverId: string, userId: string): Promise<ModLog[]> {
     return await db
       .select()
       .from(modLogs)
       .where(and(eq(modLogs.serverId, serverId), eq(modLogs.targetId, userId)))
       .orderBy(desc(modLogs.timestamp));
+  }
+  
+  async addModLog(log: InsertModLog): Promise<ModLog> {
+    const [newLog] = await db.insert(modLogs).values(log).returning();
+    return newLog;
   }
 }
 
