@@ -77,12 +77,6 @@ export async function initializeDiscordBot() {
     const command = interaction.commandName;
 
     try {
-      // Immediately defer the reply to prevent timeout
-      await interaction.deferReply().catch(() => {
-        // If defer fails, the interaction might be expired
-        console.error("Failed to defer reply for command:", command);
-      });
-
       if (command === "search") {
         const query = interaction.options.getString("query")!.toLowerCase();
         await handleSearch(interaction, query);
@@ -95,8 +89,9 @@ export async function initializeDiscordBot() {
     } catch (error) {
       console.error("Error handling command:", error);
       try {
-        await interaction.editReply({
+        await interaction.reply({
           content: "An error occurred while processing your request.",
+          ephemeral: true,
         });
       } catch (replyError) {
         console.error("Failed to send error reply:", replyError);
@@ -140,7 +135,7 @@ async function handleSearch(
     );
 
     if (results.length === 0) {
-      await interaction.editReply(
+      await interaction.reply(
         "No public cases found matching your search."
       );
       return;
@@ -154,14 +149,14 @@ async function handleSearch(
         ? `\n\nShowing 5 of ${results.length} results`
         : `\n\nFound ${results.length} result(s)`;
 
-    await interaction.editReply({
+    await interaction.reply({
       content: `**Search Results for: "${query}"**${summary}`,
       embeds,
     });
   } catch (error) {
     console.error("Search error:", error);
     const errorMsg = error instanceof Error ? error.message : "Unknown error";
-    await interaction.editReply(
+    await interaction.reply(
       `Failed to search cases: ${errorMsg}`
     );
   }
@@ -179,7 +174,7 @@ async function handleCaseDetails(
     );
     
     if (!response.ok) {
-      await interaction.editReply(`Case with ID "${caseId}" not found.`);
+      await interaction.reply(`Case with ID "${caseId}" not found.`);
       return;
     }
 
@@ -188,18 +183,18 @@ async function handleCaseDetails(
 
     // Only show if public
     if (!caseData.isPublic) {
-      await interaction.editReply(
+      await interaction.reply(
         "This case is private and cannot be viewed publicly."
       );
       return;
     }
 
     const embed = createCaseEmbed(caseData);
-    await interaction.editReply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed] });
   } catch (error) {
     console.error("Case details error:", error);
     const errorMsg = error instanceof Error ? error.message : "Unknown error";
-    await interaction.editReply(
+    await interaction.reply(
       `Failed to fetch case details: ${errorMsg}`
     );
   }
@@ -221,7 +216,7 @@ async function handleListCases(interaction: any) {
     console.log(`Retrieved ${cases.length} public cases`);
 
     if (cases.length === 0) {
-      await interaction.editReply("No public cases available.");
+      await interaction.reply("No public cases available.");
       return;
     }
 
@@ -245,14 +240,14 @@ async function handleListCases(interaction: any) {
         ? `\n\nShowing 10 of ${cases.length} cases`
         : `\n\nTotal: ${cases.length} case(s)`;
 
-    await interaction.editReply({
+    await interaction.reply({
       content: `**Public Cases**${summary}`,
       embeds,
     });
   } catch (error) {
     console.error("List cases error:", error);
     const errorMsg = error instanceof Error ? error.message : "Unknown error";
-    await interaction.editReply(
+    await interaction.reply(
       `Failed to fetch cases: ${errorMsg}`
     );
   }
