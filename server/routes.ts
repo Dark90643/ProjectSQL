@@ -233,8 +233,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/discord/login", checkIpBan, (req: Request, res: Response) => {
     try {
       const clientId = process.env.DISCORD_CLIENT_ID;
-      const redirectUri = `${process.env.API_URL || "http://localhost:5000"}/api/auth/discord/callback`;
+      const apiUrl = process.env.API_URL || "http://localhost:5000";
+      const redirectUri = `${apiUrl}/api/auth/discord/callback`;
       const scopes = ["identify", "email", "guilds"];
+
+      console.log("Discord login - API_URL:", apiUrl);
+      console.log("Discord login - redirectUri:", redirectUri);
+      console.log("Discord login - clientId:", clientId);
 
       const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes.join("%20")}`;
       res.json({ authUrl });
@@ -254,7 +259,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const clientId = process.env.DISCORD_CLIENT_ID;
       const clientSecret = process.env.DISCORD_CLIENT_SECRET;
-      const redirectUri = `${process.env.API_URL || "http://localhost:5000"}/api/auth/discord/callback`;
+      const apiUrl = process.env.API_URL || "http://localhost:5000";
+      const redirectUri = `${apiUrl}/api/auth/discord/callback`;
+      
+      console.log("Discord callback - API_URL:", apiUrl);
+      console.log("Discord callback - clientId:", clientId);
+      console.log("Discord callback - code:", code);
 
       // Exchange code for access token
       const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
