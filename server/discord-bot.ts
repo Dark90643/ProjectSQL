@@ -162,6 +162,33 @@ const commands = [
         .setRequired(true)
     ),
   new SlashCommandBuilder()
+    .setName("unwarn")
+    .setDescription("Remove all warnings from a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to remove warnings from")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("unban")
+    .setDescription("Unban a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to unban")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("unipban")
+    .setDescription("Remove an IP ban from the server")
+    .addStringOption((option) =>
+      option
+        .setName("ip")
+        .setDescription("IP address to unban")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
     .setName("modlog")
     .setDescription("View moderation log for a user")
     .addUserOption((option) =>
@@ -480,6 +507,15 @@ export async function initializeDiscordBot() {
       } else if (command === "unmute") {
         const user = interaction.options.getUser("user")!;
         await handleUnmute(interaction, user);
+      } else if (command === "unwarn") {
+        const user = interaction.options.getUser("user")!;
+        await handleUnwarn(interaction, user);
+      } else if (command === "unban") {
+        const user = interaction.options.getUser("user")!;
+        await handleUnban(interaction, user);
+      } else if (command === "unipban") {
+        const ip = interaction.options.getString("ip")!;
+        await handleUnipban(interaction, ip);
       } else if (command === "modlog") {
         const user = interaction.options.getUser("user")!;
         await handleModLog(interaction, user);
@@ -1300,6 +1336,217 @@ async function handleUnmute(interaction: any, user: any) {
     try {
       await interaction.editReply({
         content: "Failed to unmute user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
+  }
+}
+
+async function handleUnwarn(interaction: any, user: any) {
+  try {
+    await interaction.deferReply({ ephemeral: false });
+    
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.editReply({
+        content: "You do not have permission to use this command.",
+      });
+      return;
+    }
+
+    // Get and remove all warnings
+    const warnings = await storage.getUserWarnings(interaction.guildId, user.id);
+    if (warnings.length === 0) {
+      await interaction.editReply({
+        content: `${user.tag} has no warnings to remove.`,
+      });
+      return;
+    }
+
+    await storage.removeAllWarnings(interaction.guildId, user.id);
+
+    // Log to mod logs
+    try {
+      await storage.addModLog({
+        serverId: interaction.guildId,
+        action: "unwarn",
+        moderatorId: interaction.user.id,
+        targetId: user.id,
+        reason: `Removed ${warnings.length} warning(s)`,
+      });
+    } catch (dbError) {
+      console.error("Failed to save unwarn to database:", dbError);
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Green)
+      .setTitle("Warnings Removed")
+      .addFields(
+        { name: "User", value: `${user.tag}`, inline: true },
+        { name: "Warnings Removed", value: `${warnings.length}`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.editReply({
+      embeds: [embed],
+    });
+
+    console.log(`User ${user.tag} had ${warnings.length} warning(s) removed by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("Unwarn command error:", error);
+    try {
+      await interaction.editReply({
+        content: "Failed to remove warnings.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
+  }
+}
+
+async function handleUnban(interaction: any, user: any) {
+  try {
+    await interaction.deferReply({ ephemeral: false });
+    
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.editReply({
+        content: "You do not have permission to use this command.",
+      });
+      return;
+    }
+
+    // Get and remove all bans
+    const bans = await storage.getUserBans(interaction.guildId, user.id);
+    if (bans.length === 0) {
+      await interaction.editReply({
+        content: `${user.tag} has no bans to remove.`,
+      });
+      return;
+    }
+
+    await storage.removeAllBans(interaction.guildId, user.id);
+
+    // Try to unban from Discord
+    try {
+      await interaction.guild?.bans.remove(user.id, "Unbanned by moderator");
+    } catch (banError) {
+      console.error("Failed to unban from Discord:", banError);
+    }
+
+    // Log to mod logs
+    try {
+      await storage.addModLog({
+        serverId: interaction.guildId,
+        action: "unban",
+        moderatorId: interaction.user.id,
+        targetId: user.id,
+        reason: `Removed ${bans.length} ban(s)`,
+      });
+    } catch (dbError) {
+      console.error("Failed to save unban to database:", dbError);
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Green)
+      .setTitle("User Unbanned")
+      .addFields(
+        { name: "User", value: `${user.tag}`, inline: true },
+        { name: "Bans Removed", value: `${bans.length}`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.editReply({
+      embeds: [embed],
+    });
+
+    console.log(`User ${user.tag} was unbanned by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("Unban command error:", error);
+    try {
+      await interaction.editReply({
+        content: "Failed to unban user.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
+  }
+}
+
+async function handleUnipban(interaction: any, ip: string) {
+  try {
+    await interaction.deferReply({ ephemeral: false });
+    
+    // Check permissions
+    if (!(await checkModPermission(interaction))) {
+      await interaction.editReply({
+        content: "You do not have permission to use this command.",
+      });
+      return;
+    }
+
+    // Get IP bans
+    const ipBans = await storage.getIpBans(interaction.guildId, ip);
+    if (ipBans.length === 0) {
+      await interaction.editReply({
+        content: `No IP bans found for ${ip}.`,
+      });
+      return;
+    }
+
+    // Remove all IP bans for this IP
+    for (const ban of ipBans) {
+      await storage.removeIpBan(ban.id);
+    }
+
+    // Log to mod logs
+    try {
+      await storage.addModLog({
+        serverId: interaction.guildId,
+        action: "unipban",
+        moderatorId: interaction.user.id,
+        targetId: "system",
+        reason: `Removed IP ban for ${ip}`,
+      });
+    } catch (dbError) {
+      console.error("Failed to save unipban to database:", dbError);
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Green)
+      .setTitle("IP Ban Removed")
+      .addFields(
+        { name: "IP Address", value: ip, inline: true },
+        { name: "Bans Removed", value: `${ipBans.length}`, inline: true },
+        {
+          name: "Moderator",
+          value: `${interaction.user.tag}`,
+          inline: true,
+        }
+      )
+      .setTimestamp();
+
+    await interaction.editReply({
+      embeds: [embed],
+    });
+
+    console.log(`IP ban for ${ip} removed by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("Unipban command error:", error);
+    try {
+      await interaction.editReply({
+        content: "Failed to remove IP ban.",
       });
     } catch (replyError) {
       console.error("Failed to send error reply:", replyError);

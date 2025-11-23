@@ -16,6 +16,7 @@ import {
   type InsertModBan,
   type ModLog,
   type InsertModLog,
+  type ModIp,
   users,
   cases,
   logs,
@@ -24,6 +25,7 @@ import {
   modMutes,
   modBans,
   modLogs,
+  modIps,
 } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { sendAuditTrailDiscordEmbed } from "./discord-webhook";
@@ -60,10 +62,16 @@ export interface IStorage {
   // Moderation operations
   getUserWarnings(serverId: string, userId: string): Promise<ModWarning[]>;
   addWarning(warning: InsertModWarning): Promise<ModWarning>;
+  removeWarning(warningId: string): Promise<boolean>;
+  removeAllWarnings(serverId: string, userId: string): Promise<boolean>;
   getUserMutes(serverId: string, userId: string): Promise<ModMute[]>;
   addMute(mute: InsertModMute): Promise<ModMute>;
   getUserBans(serverId: string, userId: string): Promise<ModBan[]>;
   addBan(ban: InsertModBan): Promise<ModBan>;
+  removeAllBans(serverId: string, userId: string): Promise<boolean>;
+  getIpBans(serverId: string, ip: string): Promise<ModIp[]>;
+  addIpBan(ban: any): Promise<ModIp>;
+  removeIpBan(ipBanId: string): Promise<boolean>;
   getUserModLogs(serverId: string, userId: string): Promise<ModLog[]>;
   addModLog(log: InsertModLog): Promise<ModLog>;
 }
@@ -230,6 +238,42 @@ export class DatabaseStorage implements IStorage {
   async addModLog(log: InsertModLog): Promise<ModLog> {
     const [newLog] = await db.insert(modLogs).values(log).returning();
     return newLog;
+  }
+  
+  async removeWarning(warningId: string): Promise<boolean> {
+    await db.delete(modWarnings).where(eq(modWarnings.id, warningId));
+    return true;
+  }
+  
+  async removeAllWarnings(serverId: string, userId: string): Promise<boolean> {
+    await db.delete(modWarnings).where(
+      and(eq(modWarnings.serverId, serverId), eq(modWarnings.userId, userId))
+    );
+    return true;
+  }
+  
+  async removeAllBans(serverId: string, userId: string): Promise<boolean> {
+    await db.delete(modBans).where(
+      and(eq(modBans.serverId, serverId), eq(modBans.userId, userId))
+    );
+    return true;
+  }
+  
+  async getIpBans(serverId: string, ip: string): Promise<ModIp[]> {
+    return await db
+      .select()
+      .from(modIps)
+      .where(and(eq(modIps.serverId, serverId), eq(modIps.ip, ip)));
+  }
+  
+  async addIpBan(ban: any): Promise<ModIp> {
+    const [newBan] = await db.insert(modIps).values(ban).returning();
+    return newBan;
+  }
+  
+  async removeIpBan(ipBanId: string): Promise<boolean> {
+    await db.delete(modIps).where(eq(modIps.id, ipBanId));
+    return true;
   }
 }
 
