@@ -72,6 +72,11 @@ passport.deserializeUser(async (id: any, done) => {
       return done(null, false);
     }
     
+    // If ID contains ":", it's a Discord user - return false and let requireAuth handle session restoration
+    if (id.includes(":")) {
+      return done(null, false);
+    }
+    
     const user = await storage.getUser(id);
     if (!user) {
       return done(null, false);
