@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { sendCaseDiscordEmbed } from "./discord-webhook";
+import { sendCaseDiscordEmbed, sendCasePublicDiscordEmbed } from "./discord-webhook";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
@@ -579,6 +579,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         targetId: id,
         details: `Changed public visibility to ${updatedCase.isPublic}`,
       });
+
+      // Send Discord notification when case is made public
+      if (updatedCase.isPublic) {
+        await sendCasePublicDiscordEmbed(updatedCase);
+      }
     }
     
     res.json(updatedCase);
