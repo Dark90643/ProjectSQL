@@ -163,8 +163,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUsers([]);
       setCases([]);
       setLogs([]);
+      // Redirect to login page
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout error:", error);
+      // Still redirect even if logout fails
+      window.location.href = "/";
     }
   };
 
