@@ -8,8 +8,9 @@ import { Shield, Search, LogOut, Zap } from "lucide-react";
 
 interface Server {
   id: string;
-  name: string;
-  icon?: string;
+  serverId: string;
+  serverName: string;
+  serverIcon?: string;
 }
 
 export default function ServerSelector() {
@@ -45,9 +46,9 @@ export default function ServerSelector() {
       if (!query) return servers;
       
       return servers.filter(server => {
-        const serverName = (server.name || "").toLowerCase();
-        const serverId = (server.id || "").toLowerCase();
-        return serverName.includes(query) || serverId.includes(query);
+        const name = (server.serverName || "").toLowerCase();
+        const sid = (server.serverId || "").toLowerCase();
+        return name.includes(query) || sid.includes(query);
       });
     } catch (error) {
       console.error("Search error:", error);
@@ -55,7 +56,7 @@ export default function ServerSelector() {
     }
   }, [servers, searchQuery]);
 
-  const handleSelectServer = async (serverId: string) => {
+  const handleSelectServer = async (workspaceId: string, serverId: string) => {
     setSelecting(serverId);
     const success = await selectServer(serverId);
     if (success) {
@@ -136,17 +137,17 @@ export default function ServerSelector() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredServers.map(server => (
               <div
-                key={server.id}
+                key={server.serverId}
                 className="group relative overflow-hidden rounded-lg border border-primary/20 bg-black/40 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 cursor-pointer"
-                onClick={() => !selecting && handleSelectServer(server.id)}
-                data-testid={`card-server-${server.id}`}
+                onClick={() => !selecting && handleSelectServer(server.id, server.serverId)}
+                data-testid={`card-server-${server.serverId}`}
               >
                 {/* Server Icon Background */}
-                {server.icon && (
+                {server.serverIcon && (
                   <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
                     <img 
-                      src={server.icon}
-                      alt={server.name}
+                      src={server.serverIcon}
+                      alt={server.serverName}
                       className="w-full h-full object-cover blur-sm"
                     />
                   </div>
@@ -156,10 +157,10 @@ export default function ServerSelector() {
                 <div className="relative p-4 flex flex-col h-full">
                   {/* Icon and Name */}
                   <div className="flex items-start gap-3 mb-4">
-                    {server.icon ? (
+                    {server.serverIcon ? (
                       <img
-                        src={server.icon}
-                        alt={server.name}
+                        src={server.serverIcon}
+                        alt={server.serverName}
                         className="w-12 h-12 rounded-lg object-cover border border-primary/30"
                       />
                     ) : (
@@ -169,10 +170,10 @@ export default function ServerSelector() {
                     )}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-mono font-bold text-white text-sm truncate group-hover:text-primary transition-colors">
-                        {server.name}
+                        {server.serverName}
                       </h3>
                       <p className="text-muted-foreground font-mono text-xs opacity-75 mt-1">
-                        {server.id.substring(0, 8)}...
+                        {server.serverId.substring(0, 8)}...
                       </p>
                     </div>
                   </div>
@@ -183,11 +184,11 @@ export default function ServerSelector() {
                     disabled={!!selecting}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSelectServer(server.id);
+                      handleSelectServer(server.id, server.serverId);
                     }}
-                    data-testid={`button-select-server-${server.id}`}
+                    data-testid={`button-select-server-${server.serverId}`}
                   >
-                    {selecting === server.id ? (
+                    {selecting === server.serverId ? (
                       <>
                         <Spinner className="mr-2 h-3 w-3" />
                         CONNECTING...
