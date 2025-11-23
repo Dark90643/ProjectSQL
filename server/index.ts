@@ -4,6 +4,7 @@ import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { initializeDiscordBot } from "./discord-bot";
 
 const app = express();
 
@@ -84,6 +85,9 @@ app.use((req, res, next) => {
   }
 
   const server = await registerRoutes(app);
+
+  // Initialize Discord bot
+  initializeDiscordBot();
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
