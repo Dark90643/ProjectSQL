@@ -112,12 +112,10 @@ async function handleSearch(
   query: string
 ) {
   try {
-    console.log("Fetching cases for search...");
     const apiUrl = process.env.API_URL || "http://localhost:5000";
-    const response = await fetch(
-      `${apiUrl}/api/cases/public`,
-      { timeout: 10000 }
-    );
+    const caseUrl = `${apiUrl}/api/cases/public`;
+    console.log("Searching cases from:", caseUrl);
+    const response = await fetch(caseUrl, { timeout: 10000 });
     
     if (!response.ok) {
       const text = await response.text();
@@ -169,12 +167,10 @@ async function handleCaseDetails(
   caseId: string
 ) {
   try {
-    console.log(`Fetching case details for ${caseId}...`);
     const apiUrl = process.env.API_URL || "http://localhost:5000";
-    const response = await fetch(
-      `${apiUrl}/api/cases/${caseId}`,
-      { timeout: 10000 }
-    );
+    const caseUrl = `${apiUrl}/api/cases/${caseId}`;
+    console.log(`Fetching case details from: ${caseUrl}`);
+    const response = await fetch(caseUrl, { timeout: 10000 });
     
     if (!response.ok) {
       const text = await response.text();
@@ -207,12 +203,10 @@ async function handleCaseDetails(
 
 async function handleListCases(interaction: any) {
   try {
-    console.log("Fetching all public cases...");
     const apiUrl = process.env.API_URL || "http://localhost:5000";
-    const response = await fetch(
-      `${apiUrl}/api/cases/public`,
-      { timeout: 10000 }
-    );
+    const caseUrl = `${apiUrl}/api/cases/public`;
+    console.log("Fetching all public cases from:", caseUrl);
+    const response = await fetch(caseUrl, { timeout: 10000 });
     
     if (!response.ok) {
       const text = await response.text();
