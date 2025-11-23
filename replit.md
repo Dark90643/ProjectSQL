@@ -95,7 +95,7 @@ Preferred communication style: Simple, everyday language.
 
 **Discord Integration**: 
 - Discord.js v14 for bot functionality with comprehensive slash commands
-- **Public Case Search**: `/search`, `/case`, `/cases` with pagination (Previous/Next buttons)
+- **Server-Scoped Case Search**: `/search`, `/case`, `/cases` commands only show cases from the current Discord server with pagination (Previous/Next buttons)
 - **Moderation Commands**: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
 - **IP Ban Command**: `/ipban` for banning IP addresses from servers
 - **User Tracking Commands**: `/userhistory`, `/userwarnings`, `/userbans`, `/usermutes` for viewing individual moderation records

@@ -19,6 +19,8 @@ const clientId = "1442053672694714529"; // Your bot's client ID from Discord Dev
 
 interface CaseData {
   id: string;
+  serverId?: string | null;
+  userId?: string | null;
   title: string;
   description: string;
   status: string;
@@ -481,12 +483,15 @@ export async function initializeDiscordBot() {
     try {
       if (command === "search") {
         const query = interaction.options.getString("query")!.toLowerCase();
-        await handleSearch(interaction, query);
+        const serverId = interaction.guildId!;
+        await handleSearch(interaction, query, serverId);
       } else if (command === "case") {
         const caseId = interaction.options.getString("case_id")!;
-        await handleCaseDetails(interaction, caseId);
+        const serverId = interaction.guildId!;
+        await handleCaseDetails(interaction, caseId, serverId);
       } else if (command === "cases") {
-        await handleListCases(interaction);
+        const serverId = interaction.guildId!;
+        await handleListCases(interaction, serverId);
       } else if (command === "warn") {
         const user = interaction.options.getUser("user")!;
         const reason = interaction.options.getString("reason")!;
@@ -632,12 +637,13 @@ export async function initializeDiscordBot() {
 
 async function handleSearch(
   interaction: any,
-  query: string
+  query: string,
+  serverId: string
 ) {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:5000";
     const caseUrl = `${apiUrl}/api/cases/public`;
-    console.log("Searching cases from:", caseUrl);
+    console.log("Searching cases from:", caseUrl, "for server:", serverId);
     const response = await fetch(caseUrl);
     
     if (!response.ok) {
@@ -649,17 +655,18 @@ async function handleSearch(
     const cases: CaseData[] = await response.json();
     console.log(`Found ${cases.length} public cases`);
 
-    // Filter cases by title or description matching the query
+    // Filter cases by server and title or description matching the query
     const results = cases.filter(
       (c) =>
-        c.title.toLowerCase().includes(query) ||
+        c.serverId === serverId &&
+        (c.title.toLowerCase().includes(query) ||
         c.description.toLowerCase().includes(query) ||
-        c.tags.some((tag) => tag.toLowerCase().includes(query))
+        c.tags.some((tag) => tag.toLowerCase().includes(query)))
     );
 
     if (results.length === 0) {
       await interaction.reply(
-        "No public cases found matching your search."
+        "No public cases found matching your search in this server."
       );
       return;
     }
@@ -687,12 +694,13 @@ async function handleSearch(
 
 async function handleCaseDetails(
   interaction: any,
-  caseId: string
+  caseId: string,
+  serverId: string
 ) {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:5000";
     const caseUrl = `${apiUrl}/api/cases/${caseId}`;
-    console.log(`Fetching case details from: ${caseUrl}`);
+    console.log(`Fetching case details from: ${caseUrl} for server: ${serverId}`);
     const response = await fetch(caseUrl);
     
     if (!response.ok) {
@@ -713,6 +721,14 @@ async function handleCaseDetails(
       return;
     }
 
+    // Only show if case belongs to this server
+    if (caseData.serverId !== serverId) {
+      await interaction.reply(
+        "This case is not available in this server."
+      );
+      return;
+    }
+
     const embed = createCaseEmbed(caseData);
     await interaction.reply({ embeds: [embed] });
   } catch (error) {
@@ -724,11 +740,11 @@ async function handleCaseDetails(
   }
 }
 
-async function handleListCases(interaction: any) {
+async function handleListCases(interaction: any, serverId: string) {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:5000";
     const caseUrl = `${apiUrl}/api/cases/public`;
-    console.log("Fetching all public cases from:", caseUrl);
+    console.log("Fetching all public cases from:", caseUrl, "for server:", serverId);
     const response = await fetch(caseUrl);
     
     if (!response.ok) {
@@ -737,11 +753,15 @@ async function handleListCases(interaction: any) {
       throw new Error(`API error: ${response.status}`);
     }
 
-    const cases: CaseData[] = await response.json();
-    console.log(`Retrieved ${cases.length} public cases`);
+    const allCases: CaseData[] = await response.json();
+    console.log(`Retrieved ${allCases.length} public cases`);
+
+    // Filter cases by server
+    const cases = allCases.filter(c => c.serverId === serverId);
+    console.log(`Filtered to ${cases.length} cases for this server`);
 
     if (cases.length === 0) {
-      await interaction.reply("No public cases available.");
+      await interaction.reply("No public cases available in this server.");
       return;
     }
 
