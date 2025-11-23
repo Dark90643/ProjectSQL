@@ -27,6 +27,15 @@ export default function Recovery() {
   const [confirmPermanentDelete, setConfirmPermanentDelete] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Check permissions - only Management and Overseer can access recovery
+  if (!user || (user.role !== "Management" && user.role !== "Overseer")) {
+    return (
+      <div className="flex items-center justify-center h-full text-destructive font-mono">
+        ACCESS DENIED - INSUFFICIENT PRIVILEGES
+      </div>
+    );
+  }
+
   const fetchDeletedCases = async () => {
     try {
       const response = await fetch("/api/recovery/deleted-cases", {
@@ -199,23 +208,21 @@ export default function Recovery() {
                       <RotateCcw size={14} />
                       {restoringId === log.targetId ? "RESTORING..." : "RESTORE CASE"}
                     </Button>
-                    {(user?.role === "Management" || user?.role === "Overseer") && (
-                      <Button
-                        onClick={() => handlePermanentlyDelete(log.targetId)}
-                        variant={confirmPermanentDelete === log.targetId ? "destructive" : "outline"}
-                        size={confirmPermanentDelete === log.targetId ? "default" : "icon"}
-                        data-testid={`button-permanently-delete-case-${log.targetId}`}
-                      >
-                        {confirmPermanentDelete === log.targetId ? (
-                          <>
-                            <AlertTriangle size={14} />
-                            DELETE FOREVER?
-                          </>
-                        ) : (
-                          <Trash2 size={16} />
-                        )}
-                      </Button>
-                    )}
+                    <Button
+                      onClick={() => handlePermanentlyDelete(log.targetId)}
+                      variant={confirmPermanentDelete === log.targetId ? "destructive" : "outline"}
+                      size={confirmPermanentDelete === log.targetId ? "default" : "icon"}
+                      data-testid={`button-permanently-delete-case-${log.targetId}`}
+                    >
+                      {confirmPermanentDelete === log.targetId ? (
+                        <>
+                          <AlertTriangle size={14} />
+                          DELETE FOREVER?
+                        </>
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                    </Button>
                     {confirmPermanentDelete === log.targetId && (
                       <Button 
                         variant="outline"

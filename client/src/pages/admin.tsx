@@ -24,7 +24,7 @@ export default function AdminPanel() {
   const [encryptedCases, setEncryptedCases] = useState<Case[]>([]);
 
   useEffect(() => {
-    if (user?.role === "Management" || user?.role === "Overseer") {
+    if (user && ["Management", "Overseer"].includes(user.role)) {
       fetch("/api/cases/encrypted/list", { credentials: "include" })
         .then(res => res.json())
         .then(data => setEncryptedCases(data))
