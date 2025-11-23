@@ -11,6 +11,18 @@ export default function DiscordAuth() {
     async function handleAuth() {
       try {
         const params = new URLSearchParams(window.location.search);
+        
+        // Check for Discord callback errors
+        const error = params.get("error");
+        if (error) {
+          console.error("Discord callback error:", error);
+          const details = params.get("details");
+          console.error("Error details:", details);
+          // Redirect to home with error query param
+          setLocation(`/?discord_error=${encodeURIComponent(error)}${details ? `&details=${encodeURIComponent(details)}` : ""}`);
+          return;
+        }
+        
         const discordId = params.get("discordId");
         const username = params.get("username");
 
@@ -19,6 +31,8 @@ export default function DiscordAuth() {
           setLocation("/");
           return;
         }
+
+        console.log("Discord auth page received:", { discordId, username });
 
         // Notify auth context that Discord login was successful
         const success = await discordLogin("", { id: discordId, username });

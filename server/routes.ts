@@ -34,6 +34,10 @@ passport.use(
         return done(null, false, { message: "Invalid credentials" });
       }
 
+      if (!user.password) {
+        return done(null, false, { message: "Invalid credentials" });
+      }
+
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
         return done(null, false, { message: "Invalid credentials" });
@@ -48,7 +52,7 @@ passport.use(
         username: user.username,
         role: user.role,
         isSuspended: user.isSuspended,
-        ip: user.ip,
+        ip: user.ip || "unknown",
         isOnline: user.isOnline,
       });
     } catch (error) {
@@ -79,7 +83,7 @@ passport.deserializeUser(async (id: string, done) => {
       username: user.username,
       role: user.role,
       isSuspended: user.isSuspended,
-      ip: user.ip,
+      ip: user.ip || "unknown",
       isOnline: user.isOnline,
     });
   } catch (error) {
@@ -167,7 +171,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Auto login
-      req.login({ ...user, isOnline: true }, async (err) => {
+      const userForLogin: Express.User = {
+        ...user,
+        isOnline: true,
+        ip: typeof clientIp === 'string' ? clientIp : "unknown",
+      };
+      req.login(userForLogin, async (err) => {
         if (err) {
           return res.status(500).json({ error: "Login failed after registration" });
         }
@@ -180,7 +189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           username: user.username,
           role: user.role,
           isSuspended: user.isSuspended,
-          ip: user.ip,
+          ip: clientIp,
           isOnline: true,
         });
       });
@@ -295,7 +304,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!code) {
         console.error("Discord callback: No code provided");
-        return res.status(400).json({ error: "Missing authorization code" });
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+        return res.redirect(`${frontendUrl}/?error=no_code`);
       }
 
       const clientId = process.env.DISCORD_CLIENT_ID;
@@ -310,7 +320,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!clientId || !clientSecret) {
         console.error("Discord callback: Missing CLIENT_ID or CLIENT_SECRET");
-        return res.status(500).json({ error: "Server configuration error" });
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+        return res.redirect(`${frontendUrl}/?error=server_config`);
       }
 
       // Exchange code for access token
@@ -330,7 +341,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!tokenResponse.ok) {
         const text = await tokenResponse.text();
         console.error("Discord token exchange failed:", tokenResponse.status, text);
-        return res.status(400).json({ error: `Failed to exchange code for token: ${text}` });
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+        return res.redirect(`${frontendUrl}/?error=token_exchange&details=${encodeURIComponent(text)}`);
       }
 
       const tokenData = await tokenResponse.json();
@@ -345,7 +357,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!userResponse.ok) {
         console.error("Failed to fetch Discord user info:", userResponse.status);
-        return res.status(400).json({ error: "Failed to fetch user info" });
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+        return res.redirect(`${frontendUrl}/?error=user_info`);
       }
 
       const discordUser = await userResponse.json();
@@ -370,54 +383,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let discordAccount = await storage.getDiscordAccount(discordUser.id);
       if (!discordAccount) {
         console.log("Creating new Discord account");
-        discordAccount = await storage.createDiscordAccount({
-          discordId: discordUser.id,
-          username: discordUser.username,
-          email: discordUser.email || null,
-          avatar: discordUser.avatar || null,
-          accessToken,
-          refreshToken: tokenData.refresh_token || "",
-          expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
-        });
+        try {
+          discordAccount = await storage.createDiscordAccount({
+            discordId: discordUser.id,
+            username: discordUser.username,
+            email: discordUser.email || null,
+            avatar: discordUser.avatar || null,
+            accessToken,
+            refreshToken: tokenData.refresh_token || "",
+            expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
+          });
+          console.log("Discord account created successfully");
+        } catch (createError: any) {
+          console.error("Failed to create Discord account:", createError.message);
+          throw createError;
+        }
       } else {
         console.log("Updating existing Discord account");
-        await storage.updateDiscordAccount(discordAccount.id, {
-          username: discordUser.username,
-          email: discordUser.email || null,
-          avatar: discordUser.avatar || null,
-          accessToken,
-          refreshToken: tokenData.refresh_token || "",
-          expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
-        });
+        try {
+          await storage.updateDiscordAccount(discordAccount.id, {
+            username: discordUser.username,
+            email: discordUser.email || null,
+            avatar: discordUser.avatar || null,
+            accessToken,
+            refreshToken: tokenData.refresh_token || "",
+            expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
+          });
+          console.log("Discord account updated successfully");
+        } catch (updateError: any) {
+          console.error("Failed to update Discord account:", updateError.message);
+          throw updateError;
+        }
       }
 
       // Create server workspaces and memberships for user's guilds
       console.log("Creating server workspaces and memberships...");
       for (const guild of userGuilds) {
-        let workspace = await storage.getServerWorkspace(guild.id);
-        if (!workspace) {
-          console.log("Creating workspace for guild:", guild.id, guild.name);
-          workspace = await storage.createServerWorkspace({
-            serverId: guild.id,
-            serverName: guild.name,
-            ownerId: discordUser.id,
-            serverIcon: guild.icon || undefined,
-          });
-        }
+        try {
+          let workspace = await storage.getServerWorkspace(guild.id);
+          if (!workspace) {
+            console.log("Creating workspace for guild:", guild.id, guild.name);
+            workspace = await storage.createServerWorkspace({
+              serverId: guild.id,
+              serverName: guild.name,
+              ownerId: discordUser.id,
+              serverIcon: guild.icon || undefined,
+            });
+          }
 
-        let member = await storage.getServerMember(guild.id, discordUser.id);
-        if (!member) {
-          const isOwner = guild.owner === true;
-          const isAdmin = (guild.permissions & 8) !== 0; // 8 = ADMINISTRATOR permission
-          
-          console.log("Creating member for guild:", guild.id, "isOwner:", isOwner, "isAdmin:", isAdmin);
-          await storage.createServerMember({
-            serverId: guild.id,
-            discordUserId: discordUser.id,
-            roles: guild.roles || [],
-            isOwner,
-            isAdmin,
-          });
+          let member = await storage.getServerMember(guild.id, discordUser.id);
+          if (!member) {
+            const isOwner = guild.owner === true;
+            const isAdmin = (guild.permissions & 8) !== 0; // 8 = ADMINISTRATOR permission
+            
+            console.log("Creating member for guild:", guild.id, "isOwner:", isOwner, "isAdmin:", isAdmin);
+            await storage.createServerMember({
+              serverId: guild.id,
+              discordUserId: discordUser.id,
+              roles: guild.roles || [],
+              isOwner,
+              isAdmin,
+            });
+          }
+        } catch (guildError: any) {
+          console.error("Failed to create workspace/member for guild", guild.id, ":", guildError.message);
+          // Don't fail the whole auth flow, just log and continue
         }
       }
 
@@ -429,7 +459,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("=== Discord callback error ===", error);
       console.error("Error stack:", error.stack);
-      res.status(500).json({ error: "Discord authentication failed", details: error.message });
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
+      res.redirect(`${frontendUrl}/?error=callback&details=${encodeURIComponent(error.message)}`);
     }
   });
 
@@ -438,7 +469,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { user: discordUser } = req.body;
       
+      console.log("Discord POST callback - received:", JSON.stringify(req.body));
+      
       if (!discordUser || !discordUser.id) {
+        console.error("Missing Discord user data in POST body");
         return res.status(400).json({ error: "Missing Discord user data" });
       }
 
@@ -447,17 +481,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get Discord account - should already exist from GET callback
       let discordAccount = await storage.getDiscordAccount(discordUser.id);
       if (!discordAccount) {
-        console.error("Discord account not found - likely the GET callback didn't complete");
+        console.error("Discord account not found for user:", discordUser.id);
+        console.error("This likely means the GET callback didn't complete successfully");
         return res.status(400).json({ error: "Discord authentication incomplete - try logging in again" });
       }
 
+      console.log("Discord account found, establishing session");
+
       // Create a user object for Passport
+      const clientIp2 = req.ip || req.socket.remoteAddress || "unknown";
       const user: Express.User = {
         id: discordUser.id,
         username: discordUser.username,
         role: "Agent", // Default role for Discord OAuth users
         isSuspended: false,
-        ip: req.ip || req.socket.remoteAddress || "unknown",
+        ip: typeof clientIp2 === 'string' ? clientIp2 : "unknown",
         isOnline: true,
         discordUserId: discordUser.id,
       };
@@ -479,7 +517,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       console.error("Discord POST callback error:", error);
-      res.status(500).json({ error: "Discord authentication failed" });
+      console.error("Error stack:", error.stack);
+      res.status(500).json({ error: "Discord authentication failed", details: error.message });
     }
   });
 
@@ -672,19 +711,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add cases to the stats
       const casesWithServer: any[] = [];
       for (const caseData of allCases) {
-        const serverName = serverStats[caseData.serverId || ""]?.serverName || `Server ${caseData.serverId}`;
+        const serverId = caseData.serverId || "";
+        const serverName = serverStats[serverId]?.serverName || `Server ${caseData.serverId}`;
         
         casesWithServer.push({
           ...caseData,
           serverName,
         });
 
-        if (serverStats[caseData.serverId]) {
-          serverStats[caseData.serverId].totalCases++;
+        if (serverId && serverStats[serverId]) {
+          serverStats[serverId].totalCases++;
           if (caseData.status === "Active") {
-            serverStats[caseData.serverId].activeCases++;
+            serverStats[serverId].activeCases++;
           } else if (caseData.status === "Closed") {
-            serverStats[caseData.serverId].closedCases++;
+            serverStats[serverId].closedCases++;
           }
         }
       }
@@ -747,12 +787,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create a session user for this workspace
+      const clientIp = req.ip || req.socket.remoteAddress || "unknown";
       const user: Express.User = {
         id: `${discordId}:${serverId}`,
         username: discordId,
         role: member && (member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent") || "Agent",
         isSuspended: false,
-        ip: req.ip || req.socket.remoteAddress || "unknown",
+        ip: typeof clientIp === 'string' ? clientIp : "unknown",
         isOnline: true,
         serverId,
         discordUserId: discordId,
