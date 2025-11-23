@@ -33,10 +33,31 @@ export default function Login() {
   const [verifying, setVerifying] = useState(false);
   const [loggedInUsername, setLoggedInUsername] = useState("");
 
-  // Handle Discord cancellation
+  // Handle Discord errors/cancellation
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("cancelled") === "true") {
+    
+    // Check for Discord callback errors
+    const discordError = params.get("discord_error");
+    if (discordError) {
+      const details = params.get("details");
+      console.error("Discord error:", discordError, details);
+      let message = "Discord authentication failed.";
+      if (discordError === "no_code") {
+        message = "No authorization code received from Discord.";
+      } else if (discordError === "server_config") {
+        message = "Server configuration error. Contact administrator.";
+      } else if (discordError === "token_exchange") {
+        message = `Failed to exchange code for token: ${details || "Unknown error"}`;
+      } else if (discordError === "user_info") {
+        message = "Failed to fetch user information from Discord.";
+      } else if (discordError === "callback") {
+        message = `Discord authentication error: ${details || "Unknown error"}`;
+      }
+      setAuthError(message);
+      // Clean up the URL
+      window.history.replaceState({}, document.title, "/");
+    } else if (params.get("cancelled") === "true") {
       setAuthError("Discord authorization cancelled. Please try again.");
       // Clean up the URL
       window.history.replaceState({}, document.title, "/");
