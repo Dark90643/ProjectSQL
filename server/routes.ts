@@ -783,12 +783,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get or create server member
       let member = await storage.getServerMember(serverId, discordId);
       if (!member) {
+        // Check if this user is the workspace owner
+        const isOwner = workspace?.ownerId === discordId;
+        
         try {
           member = await storage.createServerMember({
             serverId,
             discordUserId: discordId,
             roles: ["member"],
-            isOwner: false,
+            isOwner,
             isAdmin: false,
           });
         } catch (error: any) {
