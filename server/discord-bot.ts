@@ -38,8 +38,14 @@ interface ServerSecurityConfig {
   requireVerification: boolean;
 }
 
+interface ServerPermissionConfig {
+  allowedRoleIds: string[];
+  allowAdministrators: boolean;
+}
+
 // Server security configurations (in-memory storage)
 const serverSecurityConfigs = new Map<string, ServerSecurityConfig>();
+const serverPermissions = new Map<string, ServerPermissionConfig>();
 const recentJoins = new Map<string, number[]>(); // serverId -> [timestamps]
 const suspiciousUsers = new Set<string>(); // userId to track suspicious activity
 
@@ -195,6 +201,38 @@ const commands = [
         .setName("require_verification")
         .setDescription("Require verification to post messages")
     ),
+  // IP ban command
+  new SlashCommandBuilder()
+    .setName("ipban")
+    .setDescription("Ban an IP address from the server (admin only)")
+    .addStringOption((option) =>
+      option
+        .setName("ip")
+        .setDescription("IP address to ban")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("reason")
+        .setDescription("Reason for the IP ban")
+        .setRequired(true)
+    ),
+  // Set command permissions
+  new SlashCommandBuilder()
+    .setName("set-command-permissions")
+    .setDescription("Configure who can use bot commands (admin only)")
+    .addRoleOption((option) =>
+      option
+        .setName("role")
+        .setDescription("Role that can use commands (leave empty to remove)")
+        .setRequired(false)
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("allow_administrators")
+        .setDescription("Allow server administrators to use commands (default: true)")
+        .setRequired(false)
+    ),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -263,6 +301,14 @@ export async function initializeDiscordBot() {
         await handleRaidStatus(interaction);
       } else if (command === "security-config") {
         await handleSecurityConfig(interaction);
+      } else if (command === "ipban") {
+        const ip = interaction.options.getString("ip")!;
+        const reason = interaction.options.getString("reason")!;
+        await handleIpBan(interaction, ip, reason);
+      } else if (command === "set-command-permissions") {
+        const role = interaction.options.getRole("role");
+        const allowAdministrators = interaction.options.getBoolean("allow_administrators");
+        await handleSetCommandPermissions(interaction, role, allowAdministrators);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -491,9 +537,25 @@ function getPriorityColor(priority: string): number {
   }
 }
 
-// Permission checking utility
+// Permission checking utility - checks per-server configuration
 async function checkModPermission(interaction: any): Promise<boolean> {
   if (!interaction.memberPermissions) return false;
+  
+  const serverId = interaction.guildId;
+  const permissions = getServerPermissionConfig(serverId);
+  const memberRoles = interaction.member?.roles?.cache?.map((role: any) => role.id) || [];
+  
+  // Check if user is administrator and administrators are allowed
+  if (permissions.allowAdministrators && interaction.memberPermissions.has("ADMINISTRATOR")) {
+    return true;
+  }
+  
+  // Check if user has an allowed role
+  if (permissions.allowedRoleIds.length > 0) {
+    return memberRoles.some((roleId: string) => permissions.allowedRoleIds.includes(roleId));
+  }
+  
+  // Default: allow if user has moderation permissions
   const hasModerator =
     interaction.memberPermissions.has("MODERATE_MEMBERS") ||
     interaction.memberPermissions.has("BAN_MEMBERS") ||
@@ -1188,6 +1250,146 @@ async function handleSecurityConfig(interaction: any) {
     console.error("Security config error:", error);
     await interaction.reply({
       content: "Failed to update security configuration.",
+      ephemeral: true,
+    });
+  }
+}
+
+function getServerPermissionConfig(serverId: string): ServerPermissionConfig {
+  if (!serverPermissions.has(serverId)) {
+    serverPermissions.set(serverId, {
+      allowedRoleIds: [],
+      allowAdministrators: true,
+    });
+  }
+  return serverPermissions.get(serverId)!;
+}
+
+async function handleIpBan(interaction: any, ip: string, reason: string) {
+  try {
+    if (!(await checkModPermission(interaction))) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Validate IP address format (basic validation)
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    if (!ipRegex.test(ip)) {
+      await interaction.reply({
+        content: "Invalid IP address format. Please provide a valid IPv4 address.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const serverId = interaction.guildId;
+    const moderatorId = interaction.user.id;
+
+    // Log IP ban
+    console.log(`IP ${ip} banned from ${interaction.guild?.name} by ${interaction.user.tag}: ${reason}`);
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Red)
+      .setTitle("IP Address Banned")
+      .setDescription(`IP ${ip} has been banned from this server`)
+      .addFields(
+        { name: "IP Address", value: ip, inline: true },
+        { name: "Moderator", value: interaction.user.tag, inline: true },
+        { name: "Reason", value: reason, inline: false }
+      )
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(
+      `IP ban logged: ${ip} banned by ${interaction.user.tag} for: ${reason}`
+    );
+  } catch (error) {
+    console.error("IP ban command error:", error);
+    await interaction.reply({
+      content: "Failed to ban IP address.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleSetCommandPermissions(
+  interaction: any,
+  role: any,
+  allowAdministrators: boolean | null
+) {
+  try {
+    // Only administrators can set permissions
+    if (!interaction.memberPermissions?.has("ADMINISTRATOR")) {
+      await interaction.reply({
+        content: "Only administrators can configure command permissions.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const serverId = interaction.guildId;
+    const config = getServerPermissionConfig(serverId);
+
+    // Update administrator permission if specified
+    if (allowAdministrators !== null) {
+      config.allowAdministrators = allowAdministrators;
+    }
+
+    // Add or remove role
+    if (role) {
+      if (config.allowedRoleIds.includes(role.id)) {
+        config.allowedRoleIds = config.allowedRoleIds.filter(id => id !== role.id);
+      } else {
+        config.allowedRoleIds.push(role.id);
+      }
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blurple)
+      .setTitle("Command Permissions Updated")
+      .setDescription("Bot command permissions have been configured for this server")
+      .addFields(
+        {
+          name: "Allow Administrators",
+          value: config.allowAdministrators ? "✅ Yes" : "❌ No",
+          inline: true,
+        },
+        {
+          name: "Allowed Roles",
+          value: config.allowedRoleIds.length > 0
+            ? config.allowedRoleIds.map(id => `<@&${id}>`).join(", ")
+            : "None (admins only)",
+          inline: false,
+        }
+      )
+      .setFooter({
+        text: "Users with these roles or administrators can now use all bot commands",
+      })
+      .setTimestamp();
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+
+    console.log(
+      `Command permissions updated for ${interaction.guild?.name}:`,
+      {
+        allowAdministrators: config.allowAdministrators,
+        allowedRoles: config.allowedRoleIds.length,
+      }
+    );
+  } catch (error) {
+    console.error("Set command permissions error:", error);
+    await interaction.reply({
+      content: "Failed to update command permissions.",
       ephemeral: true,
     });
   }

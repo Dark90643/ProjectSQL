@@ -87,6 +87,24 @@ export const modLogs = pgTable("mod_logs", {
   timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
+export const modIps = pgTable("mod_ips", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull(),
+  ip: text("ip").notNull(),
+  moderatorId: text("moderator_id").notNull(),
+  reason: text("reason").notNull(),
+  bannedAt: timestamp("banned_at").notNull().defaultNow(),
+});
+
+export const serverPermissions = pgTable("server_permissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull().unique(),
+  allowedRoleIds: text("allowed_role_ids").array().notNull().default(sql`ARRAY[]::text[]`),
+  allowAdministrators: boolean("allow_administrators").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -130,6 +148,17 @@ export const insertModLogSchema = createInsertSchema(modLogs).omit({
   timestamp: true,
 });
 
+export const insertModIpSchema = createInsertSchema(modIps).omit({
+  id: true,
+  bannedAt: true,
+});
+
+export const insertServerPermissionSchema = createInsertSchema(serverPermissions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertCase = z.infer<typeof insertCaseSchema>;
@@ -146,3 +175,7 @@ export type InsertModBan = z.infer<typeof insertModBanSchema>;
 export type ModBan = typeof modBans.$inferSelect;
 export type InsertModLog = z.infer<typeof insertModLogSchema>;
 export type ModLog = typeof modLogs.$inferSelect;
+export type InsertModIp = z.infer<typeof insertModIpSchema>;
+export type ModIp = typeof modIps.$inferSelect;
+export type InsertServerPermission = z.infer<typeof insertServerPermissionSchema>;
+export type ServerPermission = typeof serverPermissions.$inferSelect;

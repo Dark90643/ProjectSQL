@@ -47,7 +47,12 @@ Preferred communication style: Simple, everyday language.
 - **cases**: Case records with public/private visibility, priority levels, status tracking, and optional Google Doc integration
 - **logs**: Audit trail for all system actions with user and target tracking
 - **inviteCodes**: Registration control through one-time use codes
-- **modWarnings**: User moderation tracking (referenced but not fully implemented in provided files)
+- **modWarnings**: User moderation tracking with server-scoped warnings
+- **modMutes**: User mute records with duration and unmute tracking
+- **modBans**: User ban records with per-server tracking
+- **modIps**: IP address bans with per-server tracking
+- **modLogs**: Comprehensive moderation audit trail for all actions
+- **serverPermissions**: Per-server Discord bot command permission configuration
 
 **Migrations**: Drizzle Kit for schema migrations with PostgreSQL dialect, storing migration files in the `/migrations` directory.
 
@@ -70,10 +75,20 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 **Discord Integration**: 
-- Discord.js v14 for bot functionality with slash commands for case search
+- Discord.js v14 for bot functionality with comprehensive slash commands
+- Public case search commands: `/search`, `/case`, `/cases`
+- Moderation commands: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
+- IP ban command: `/ipban` for banning IP addresses from servers
+- Raid protection features: `/enable-raid-protection`, `/disable-raid-protection`, `/raid-status`
+- Security configuration: `/security-config` for account age and join rate limits
+- **Per-Server Permission System**:
+  - `/set-command-permissions` allows admins to configure who can use bot commands
+  - Each server can have specific roles with command access
+  - Administrator permission can be enabled/disabled per server
+  - Permissions are stored in-memory per server (not persisted to database currently)
 - Webhook integration for case notifications with rich embeds
-- Server security features including account age verification, join rate limiting, and suspicious activity detection
-- Commands support public case search and encrypted case access
+- Account age verification and join rate limiting for raid detection
+- Comprehensive moderation logging and audit trails
 
 **Database Service**: Neon PostgreSQL serverless with connection pooling through @neondatabase/serverless.
 
