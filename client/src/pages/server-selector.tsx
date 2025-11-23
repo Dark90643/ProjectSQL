@@ -56,11 +56,32 @@ export default function ServerSelector() {
     }
   }, [servers, searchQuery]);
 
-  const handleSelectServer = async (workspaceId: string, serverId: string) => {
+  const handleSelectServer = async (workspaceId: string, serverId: string, serverName: string) => {
     setSelecting(serverId);
-    const success = await selectServer(serverId);
-    if (success) {
-      setLocation("/dashboard");
+    try {
+      // Check if bot is in the server
+      const checkResponse = await fetch(`/api/auth/discord/check-bot?serverId=${serverId}`);
+      const checkData = await checkResponse.json();
+      
+      if (!checkData.hasBotInServer) {
+        // Bot not in server - redirect to bot invite page
+        setLocation(`/bot-invite?serverId=${serverId}&serverName=${encodeURIComponent(serverName)}`);
+        setSelecting(null);
+        return;
+      }
+
+      // Bot is in server - proceed with normal flow
+      const success = await selectServer(serverId);
+      if (success) {
+        setLocation("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error checking bot status:", error);
+      // Continue anyway if check fails
+      const success = await selectServer(serverId);
+      if (success) {
+        setLocation("/dashboard");
+      }
     }
     setSelecting(null);
   };
@@ -139,7 +160,7 @@ export default function ServerSelector() {
               <div
                 key={server.serverId}
                 className="group relative overflow-hidden rounded-lg border border-primary/20 bg-black/40 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 cursor-pointer"
-                onClick={() => !selecting && handleSelectServer(server.id, server.serverId)}
+                onClick={() => !selecting && handleSelectServer(server.id, server.serverId, server.serverName)}
                 data-testid={`card-server-${server.serverId}`}
               >
                 {/* Server Icon Background */}
@@ -184,7 +205,7 @@ export default function ServerSelector() {
                     disabled={!!selecting}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSelectServer(server.id, server.serverId);
+                      handleSelectServer(server.id, server.serverId, server.serverName);
                     }}
                     data-testid={`button-select-server-${server.serverId}`}
                   >

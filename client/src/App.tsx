@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "@/lib/auth-context";
 import Login from "@/pages/login";
 import ServerSelector from "@/pages/server-selector";
 import DiscordAuth from "@/pages/discord-auth";
+import BotInvite from "@/pages/bot-invite";
 import Dashboard from "@/pages/dashboard";
 import PublicDashboard from "@/pages/public-dashboard";
 import CaseView from "@/pages/case-view";
@@ -48,6 +49,7 @@ function RouterContent() {
       <Route path="/" component={Login} />
       <Route path="/server-selector" component={ServerSelector} />
       <Route path="/discord-auth" component={DiscordAuth} />
+      <Route path="/bot-invite" component={BotInvite} />
       
       {/* Protected Routes need Layout */}
       <Route path="/dashboard">
