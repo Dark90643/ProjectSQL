@@ -37,7 +37,6 @@ export default function Dashboard() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [encryptingCaseId, setEncryptingCaseId] = useState<string | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [accessDeniedTime, setAccessDeniedTime] = useState<number>(0);
 
   useEffect(() => {
     if (!user) return;
@@ -50,57 +49,16 @@ export default function Dashboard() {
         });
         const data = await response.json();
         setHasPermission(data.hasPermission);
-        
-        if (!data.hasPermission) {
-          setAccessDeniedTime(3);
-        }
       } catch (error) {
         console.error("Error checking permissions:", error);
         setHasPermission(false);
-        setAccessDeniedTime(3);
       }
     };
     
     checkPermissions();
   }, [user]);
 
-  // Handle access denied countdown
-  useEffect(() => {
-    if (accessDeniedTime <= 0) return;
-    
-    const timer = setTimeout(() => {
-      setAccessDeniedTime(accessDeniedTime - 1);
-    }, 1000);
-    
-    if (accessDeniedTime === 1) {
-      setTimeout(() => {
-        setLocation("/public-dashboard");
-      }, 1000);
-    }
-    
-    return () => clearTimeout(timer);
-  }, [accessDeniedTime, setLocation]);
-
   if (!user) return null;
-
-  // Show access denied message if user doesn't have permission
-  if (hasPermission === false) {
-    return (
-      <div className="flex items-center justify-center h-full p-4">
-        <Card className="border-destructive/50 max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="font-mono text-destructive">ACCESS DENIED</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground font-mono text-sm">You do not have administrator or moderator permissions in this server. Only server administrators and owners can access the agent dashboard.</p>
-            <p className="text-muted-foreground font-mono text-xs">
-              Redirecting to public cases in <span className="text-destructive font-bold">{accessDeniedTime}</span> seconds...
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   // Show loading state while checking permissions
   if (hasPermission === null) {
@@ -112,6 +70,12 @@ export default function Dashboard() {
         </div>
       </div>
     );
+  }
+
+  // Redirect to login if no permission
+  if (hasPermission === false) {
+    setLocation("/");
+    return null;
   }
 
   const filteredCases = cases.filter(c => {

@@ -9,7 +9,6 @@ import DiscordAuth from "@/pages/discord-auth";
 import BotInvite from "@/pages/bot-invite";
 import SupportPanel from "@/pages/support-panel";
 import Dashboard from "@/pages/dashboard";
-import PublicDashboard from "@/pages/public-dashboard";
 import CaseView from "@/pages/case-view";
 import AdminPanel from "@/pages/admin";
 import SettingsPage from "@/pages/settings";
@@ -47,7 +46,6 @@ function RouterContent() {
 
   return (
     <Switch>
-      <Route path="/public" component={PublicDashboard} />
       <Route path="/" component={Login} />
       <Route path="/server-selector" component={ServerSelector} />
       <Route path="/discord-auth" component={DiscordAuth} />
