@@ -56,30 +56,19 @@ export default function CaseView() {
   // Check create permissions for new cases
   useEffect(() => {
     if (isNew) {
-      const checkPermissions = async () => {
-        try {
-          const response = await fetch("/api/auth/server-permissions", {
-            credentials: "include",
-          });
-          const data = await response.json();
-          setHasCreatePermission(data.hasPermission);
-          
-          if (!data.hasPermission) {
-            // Redirect if no permission
-            setTimeout(() => {
-              setLocation("/dashboard");
-              toast({ variant: "destructive", title: "Access Denied", description: "Only administrators and owners can create cases" });
-            }, 100);
-          }
-        } catch (error) {
-          console.error("Error checking permissions:", error);
-          setHasCreatePermission(false);
+      // Check if user has Agent, Management, or Overseer role
+      const hasPermission = user && ["Agent", "Management", "Overseer"].includes(user.role);
+      setHasCreatePermission(hasPermission || false);
+      
+      if (!hasPermission) {
+        // Redirect if no permission
+        setTimeout(() => {
           setLocation("/dashboard");
-        }
-      };
-      checkPermissions();
+          toast({ variant: "destructive", title: "Access Denied", description: "Only authorized users can create cases" });
+        }, 100);
+      }
     }
-  }, [isNew, setLocation, toast]);
+  }, [isNew, user, setLocation, toast]);
 
   // Fetch fresh case data on mount and when case ID changes
   useEffect(() => {
