@@ -65,6 +65,9 @@ interface CasesPaginationData {
 }
 const casesPagination = new Map<string, CasesPaginationData>(); // messageId -> pagination data
 
+// Export the Discord client so it can be accessed from routes
+export let discordClient: Client | null = null;
+
 const commands = [
   new SlashCommandBuilder()
     .setName("search")
@@ -375,6 +378,7 @@ export async function initializeDiscordBot() {
   }
 
   const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+  discordClient = client; // Store globally so routes can access it
 
   // Register commands with Discord
   try {

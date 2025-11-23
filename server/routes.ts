@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { sendCaseDiscordEmbed, sendCasePublicDiscordEmbed } from "./discord-webhook";
+import { discordClient } from "./discord-bot";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
@@ -543,12 +544,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Server ID required" });
       }
 
-      // Check if bot user exists in server members
-      // The bot has a specific Discord ID: 1442053672694714529
-      const botDiscordId = "1442053672694714529";
-      const botMember = await storage.getServerMember(serverId as string, botDiscordId);
+      // Check if bot is actually in the Discord server using the bot client
+      let hasBotInServer = false;
       
-      res.json({ hasBotInServer: !!botMember });
+      if (discordClient && discordClient.isReady()) {
+        // Use the actual Discord bot client to check if it's in the guild
+        const guild = discordClient.guilds.cache.get(serverId as string);
+        hasBotInServer = !!guild;
+      } else {
+        // Fallback to database check if bot client is not ready
+        const botDiscordId = "1442053672694714529";
+        const botMember = await storage.getServerMember(serverId as string, botDiscordId);
+        hasBotInServer = !!botMember;
+      }
+      
+      res.json({ hasBotInServer });
     } catch (error: any) {
       console.error("Check bot error:", error);
       res.status(500).json({ error: "Failed to check bot status" });
