@@ -28,7 +28,7 @@ interface ServerStats {
 }
 
 export default function SupportPanel() {
-  const { discordUser, isSupportTeam, logout } = useAuth();
+  const { user, isSupportTeam, logout } = useAuth();
   const [, setLocation] = useLocation();
   const [cases, setCases] = useState<CaseData[]>([]);
   const [servers, setServers] = useState<ServerStats[]>([]);
@@ -37,7 +37,7 @@ export default function SupportPanel() {
   const [selectedServer, setSelectedServer] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!discordUser || !isSupportTeam) {
+    if (!user || !isSupportTeam) {
       setLocation("/");
       return;
     }
@@ -54,7 +54,7 @@ export default function SupportPanel() {
         console.error("Failed to fetch cases:", err);
         setLoading(false);
       });
-  }, [discordUser, isSupportTeam, setLocation]);
+  }, [user, isSupportTeam, setLocation]);
 
   const filteredCases = selectedServer
     ? cases.filter(c => c.serverId === selectedServer && c.title.toLowerCase().includes(searchQuery.toLowerCase()))
