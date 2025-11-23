@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { sendCaseDiscordEmbed, sendCasePublicDiscordEmbed } from "./discord-webhook";
-import { discordClient } from "./discord-bot";
+import { discordClient, checkUserGuildPermissions } from "./discord-bot";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
@@ -264,17 +264,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
       console.log("Permission check - req.user:", { id: user?.id, serverId: user?.serverId, discordUserId: user?.discordUserId });
       
-      if (!user?.serverId) {
+      if (!user?.serverId || !user?.discordUserId) {
         console.log("No server context! User:", user);
         return res.status(400).json({ error: "No server context" });
       }
 
-      const member = await storage.getServerMember(user.serverId, user.discordUserId || "");
-      console.log("Permission check - found member:", { serverId: user.serverId, discordUserId: user.discordUserId, isOwner: member?.isOwner, isAdmin: member?.isAdmin });
+      // Check permissions via Discord bot (real-time)
+      const { isOwner, isAdmin } = await checkUserGuildPermissions(user.serverId, user.discordUserId);
+      console.log("Permission check - bot result:", { serverId: user.serverId, discordUserId: user.discordUserId, isOwner, isAdmin });
       
-      const hasPermission = !!(member && (member.isOwner || member.isAdmin));
+      const hasPermission = isOwner || isAdmin;
       
-      res.json({ hasPermission, isOwner: member?.isOwner || false, isAdmin: member?.isAdmin || false });
+      res.json({ hasPermission, isOwner, isAdmin });
     } catch (error: any) {
       console.error("Check server permissions error:", error);
       res.status(500).json({ error: "Failed to check permissions" });

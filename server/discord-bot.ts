@@ -2624,3 +2624,31 @@ async function handleUserLookup(
     });
   }
 }
+
+// Helper function to check user permissions in a Discord guild
+export async function checkUserGuildPermissions(guildId: string, userId: string) {
+  try {
+    if (!discordClient) {
+      console.log("Discord client not initialized");
+      return { isOwner: false, isAdmin: false };
+    }
+
+    const guild = await discordClient.guilds.fetch(guildId);
+    if (!guild) {
+      console.log("Guild not found:", guildId);
+      return { isOwner: false, isAdmin: false };
+    }
+
+    // Check if user is guild owner
+    const isOwner = guild.ownerId === userId;
+
+    // Check if user has admin permissions
+    const member = await guild.members.fetch(userId).catch(() => null);
+    const isAdmin = member ? member.permissions.has("Administrator") : false;
+
+    return { isOwner, isAdmin };
+  } catch (error) {
+    console.error("Error checking guild permissions:", error);
+    return { isOwner: false, isAdmin: false };
+  }
+}
