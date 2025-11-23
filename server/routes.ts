@@ -1174,17 +1174,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const caseData = req.body;
     const { serverId } = caseData;
     
-    // If serverId is provided, verify user is admin or owner
-    if (serverId) {
-      const discordUserId = req.user!.discordUserId || req.user!.id;
-      const serverMember = await storage.getServerMember(serverId, discordUserId);
-      if (!serverMember) {
-        return res.status(403).json({ error: "Not a member of this server" });
-      }
-      // Only admins and owners can create cases
-      if (!serverMember.isAdmin && !serverMember.isOwner) {
-        return res.status(403).json({ error: "Only administrators and owners can create cases" });
-      }
+    // Only Agent, Management, and Overseer roles can create cases
+    if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
+      return res.status(403).json({ error: "Only authorized users can create cases" });
     }
     
     const id = `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`;

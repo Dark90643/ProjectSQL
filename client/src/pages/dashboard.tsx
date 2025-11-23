@@ -36,47 +36,11 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [encryptingCaseId, setEncryptingCaseId] = useState<string | null>(null);
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (!user) return;
-    
-    // Check server permissions
-    const checkPermissions = async () => {
-      try {
-        const response = await fetch("/api/auth/server-permissions", {
-          credentials: "include",
-        });
-        const data = await response.json();
-        setHasPermission(data.hasPermission);
-      } catch (error) {
-        console.error("Error checking permissions:", error);
-        setHasPermission(false);
-      }
-    };
-    
-    checkPermissions();
-  }, [user]);
 
   if (!user) return null;
 
-  // Show loading state while checking permissions
-  if (hasPermission === null) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-sm text-muted-foreground font-mono">CHECKING PERMISSIONS...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Redirect to login if no permission
-  if (hasPermission === false) {
-    setLocation("/");
-    return null;
-  }
+  // Check if user can create cases (Agent, Management, Overseer)
+  const canCreateCase = ["Agent", "Management", "Overseer"].includes(user.role);
 
   const filteredCases = cases.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || 
@@ -191,7 +155,7 @@ export default function Dashboard() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {hasPermission && (
+          {canCreateCase && (
             <Link href="/cases/new">
               <Button className="font-mono gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
                 <Plus size={16} />
