@@ -49,6 +49,7 @@ export interface IStorage {
   getServerWorkspace(serverId: string): Promise<ServerWorkspace | undefined>;
   createServerWorkspace(workspace: InsertServerWorkspace): Promise<ServerWorkspace>;
   getServersByUser(discordUserId: string): Promise<ServerWorkspace[]>;
+  getAllServerWorkspaces(): Promise<ServerWorkspace[]>;
   
   // Server member operations
   getServerMember(serverId: string, discordUserId: string): Promise<ServerMember | undefined>;
@@ -138,6 +139,10 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(serverWorkspaces, eq(serverMembers.serverId, serverWorkspaces.serverId))
       .where(eq(serverMembers.discordUserId, discordUserId))
       .then(results => results.map(r => r.workspace));
+  }
+
+  async getAllServerWorkspaces(): Promise<ServerWorkspace[]> {
+    return await db.select().from(serverWorkspaces).orderBy(desc(serverWorkspaces.createdAt));
   }
 
   // Server member operations

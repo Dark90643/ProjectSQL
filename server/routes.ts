@@ -573,37 +573,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ error: "Not authorized to access support panel" });
       }
 
+      // Get all servers first
+      const allWorkspaces = await storage.getAllServerWorkspaces();
+      
       // Get all cases from all servers
       const allCases = await storage.getAllCases();
       
-      // Group by server and get statistics
+      // Initialize serverStats for all servers (even if no cases)
       const serverStats: any = {};
-      const casesWithServer: any[] = [];
+      allWorkspaces.forEach(workspace => {
+        serverStats[workspace.serverId] = {
+          serverId: workspace.serverId,
+          serverName: workspace.serverName,
+          totalCases: 0,
+          activeCases: 0,
+          closedCases: 0,
+        };
+      });
 
+      // Add cases to the stats
+      const casesWithServer: any[] = [];
       for (const caseData of allCases) {
-        const workspace = await storage.getServerWorkspace(caseData.serverId || "");
-        const serverName = workspace?.serverName || `Server ${caseData.serverId}`;
+        const serverName = serverStats[caseData.serverId || ""]?.serverName || `Server ${caseData.serverId}`;
         
         casesWithServer.push({
           ...caseData,
           serverName,
         });
 
-        if (!serverStats[caseData.serverId]) {
-          serverStats[caseData.serverId] = {
-            serverId: caseData.serverId || "",
-            serverName,
-            totalCases: 0,
-            activeCases: 0,
-            closedCases: 0,
-          };
-        }
-
-        serverStats[caseData.serverId].totalCases++;
-        if (caseData.status === "Active") {
-          serverStats[caseData.serverId].activeCases++;
-        } else if (caseData.status === "Closed") {
-          serverStats[caseData.serverId].closedCases++;
+        if (serverStats[caseData.serverId]) {
+          serverStats[caseData.serverId].totalCases++;
+          if (caseData.status === "Active") {
+            serverStats[caseData.serverId].activeCases++;
+          } else if (caseData.status === "Closed") {
+            serverStats[caseData.serverId].closedCases++;
+          }
         }
       }
 
