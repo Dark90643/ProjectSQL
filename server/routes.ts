@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { sendCaseDiscordEmbed } from "./discord-webhook";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
@@ -514,6 +515,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       targetId: newCase.id,
       details: `Created case ${newCase.title}`,
     });
+
+    // Send Discord notification
+    await sendCaseDiscordEmbed(newCase);
 
     res.json(newCase);
   });
