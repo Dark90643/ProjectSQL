@@ -262,11 +262,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/server-permissions", requireAuth, async (req: Request, res: Response) => {
     try {
       const user = req.user;
+      console.log("Permission check - req.user:", { id: user?.id, serverId: user?.serverId, discordUserId: user?.discordUserId });
+      
       if (!user?.serverId) {
+        console.log("No server context! User:", user);
         return res.status(400).json({ error: "No server context" });
       }
 
       const member = await storage.getServerMember(user.serverId, user.discordUserId || "");
+      console.log("Permission check - found member:", { serverId: user.serverId, discordUserId: user.discordUserId, isOwner: member?.isOwner, isAdmin: member?.isAdmin });
+      
       const hasPermission = !!(member && (member.isOwner || member.isAdmin));
       
       res.json({ hasPermission, isOwner: member?.isOwner || false, isAdmin: member?.isAdmin || false });
