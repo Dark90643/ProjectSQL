@@ -271,8 +271,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!tokenResponse.ok) {
         const text = await tokenResponse.text();
-        console.error("Discord token exchange failed:", text);
-        return res.status(400).json({ error: "Failed to exchange code for token" });
+        console.error("Discord token exchange failed:", tokenResponse.status, text);
+        return res.status(400).json({ error: `Failed to exchange code for token: ${text}` });
       }
 
       const tokenData = await tokenResponse.json();
