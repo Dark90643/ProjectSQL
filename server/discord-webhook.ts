@@ -14,9 +14,15 @@ export async function sendCaseDiscordEmbed(caseData: {
   createdAt: Date;
 }) {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-  if (!webhookUrl) return; // Silently ignore if no webhook configured
+  console.log("Discord webhook URL:", webhookUrl ? "SET" : "NOT SET");
+  
+  if (!webhookUrl) {
+    console.log("No webhook URL configured, skipping Discord notification");
+    return;
+  }
 
   try {
+    console.log("Sending Discord webhook for case:", caseData.id);
     const embed = {
       title: `📋 New Case Released: ${caseData.title}`,
       description: caseData.description,
@@ -76,11 +82,19 @@ export async function sendCaseDiscordEmbed(caseData: {
       timestamp: new Date().toISOString(),
     };
 
-    await fetch(webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ embeds: [embed] }),
     });
+    
+    if (!response.ok) {
+      console.error("Discord webhook failed:", response.status, response.statusText);
+      const text = await response.text();
+      console.error("Discord response:", text);
+    } else {
+      console.log("Discord webhook sent successfully");
+    }
   } catch (error) {
     console.error("Discord webhook error:", error);
   }
