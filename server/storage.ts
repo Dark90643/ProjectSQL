@@ -17,6 +17,12 @@ import {
   type ModLog,
   type InsertModLog,
   type ModIp,
+  type DiscordAccount,
+  type InsertDiscordAccount,
+  type ServerWorkspace,
+  type InsertServerWorkspace,
+  type ServerMember,
+  type InsertServerMember,
   users,
   cases,
   logs,
@@ -26,11 +32,30 @@ import {
   modBans,
   modLogs,
   modIps,
+  discordAccounts,
+  serverWorkspaces,
+  serverMembers,
 } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { sendAuditTrailDiscordEmbed } from "./discord-webhook";
 
 export interface IStorage {
+  // Discord operations
+  getDiscordAccount(discordId: string): Promise<DiscordAccount | undefined>;
+  createDiscordAccount(account: InsertDiscordAccount): Promise<DiscordAccount>;
+  updateDiscordAccount(id: string, updates: Partial<DiscordAccount>): Promise<DiscordAccount | undefined>;
+  
+  // Server workspace operations
+  getServerWorkspace(serverId: string): Promise<ServerWorkspace | undefined>;
+  createServerWorkspace(workspace: InsertServerWorkspace): Promise<ServerWorkspace>;
+  getServersByUser(discordUserId: string): Promise<ServerWorkspace[]>;
+  
+  // Server member operations
+  getServerMember(serverId: string, discordUserId: string): Promise<ServerMember | undefined>;
+  createServerMember(member: InsertServerMember): Promise<ServerMember>;
+  updateServerMember(serverId: string, discordUserId: string, updates: Partial<ServerMember>): Promise<ServerMember | undefined>;
+  getServerMembers(serverId: string): Promise<ServerMember[]>;
+  
   // User operations
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -77,6 +102,68 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // Discord operations
+  async getDiscordAccount(discordId: string): Promise<DiscordAccount | undefined> {
+    const [account] = await db.select().from(discordAccounts).where(eq(discordAccounts.discordId, discordId));
+    return account;
+  }
+
+  async createDiscordAccount(account: InsertDiscordAccount): Promise<DiscordAccount> {
+    const [newAccount] = await db.insert(discordAccounts).values(account).returning();
+    return newAccount;
+  }
+
+  async updateDiscordAccount(id: string, updates: Partial<DiscordAccount>): Promise<DiscordAccount | undefined> {
+    const [account] = await db
+      .update(discordAccounts)
+      .set(updates)
+      .where(eq(discordAccounts.id, id))
+      .returning();
+    return account;
+  }
+
+  // Server workspace operations
+  async getServerWorkspace(serverId: string): Promise<ServerWorkspace | undefined> {
+    const [workspace] = await db.select().from(serverWorkspaces).where(eq(serverWorkspaces.serverId, serverId));
+    return workspace;
+  }
+
+  async createServerWorkspace(workspace: InsertServerWorkspace): Promise<ServerWorkspace> {
+    const [newWorkspace] = await db.insert(serverWorkspaces).values(workspace).returning();
+    return newWorkspace;
+  }
+
+  async getServersByUser(discordUserId: string): Promise<ServerWorkspace[]> {
+    return await db.select({ workspace: serverWorkspaces }).from(serverMembers)
+      .innerJoin(serverWorkspaces, eq(serverMembers.serverId, serverWorkspaces.serverId))
+      .where(eq(serverMembers.discordUserId, discordUserId))
+      .then(results => results.map(r => r.workspace));
+  }
+
+  // Server member operations
+  async getServerMember(serverId: string, discordUserId: string): Promise<ServerMember | undefined> {
+    const [member] = await db.select().from(serverMembers)
+      .where(and(eq(serverMembers.serverId, serverId), eq(serverMembers.discordUserId, discordUserId)));
+    return member;
+  }
+
+  async createServerMember(member: InsertServerMember): Promise<ServerMember> {
+    const [newMember] = await db.insert(serverMembers).values(member).returning();
+    return newMember;
+  }
+
+  async updateServerMember(serverId: string, discordUserId: string, updates: Partial<ServerMember>): Promise<ServerMember | undefined> {
+    const [member] = await db.update(serverMembers)
+      .set(updates)
+      .where(and(eq(serverMembers.serverId, serverId), eq(serverMembers.discordUserId, discordUserId)))
+      .returning();
+    return member;
+  }
+
+  async getServerMembers(serverId: string): Promise<ServerMember[]> {
+    return await db.select().from(serverMembers).where(eq(serverMembers.serverId, serverId));
+  }
+
   // User operations
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));

@@ -3,13 +3,47 @@ import { pgTable, text, varchar, boolean, timestamp } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const discordAccounts = pgTable("discord_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  discordId: text("discord_id").notNull().unique(),
+  username: text("username").notNull(),
+  discriminator: text("discriminator"),
+  avatar: text("avatar"),
+  email: text("email"),
+  accessToken: text("access_token").notNull(),
+  refreshToken: text("refresh_token").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const serverWorkspaces = pgTable("server_workspaces", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull().unique(),
+  serverName: text("server_name").notNull(),
+  serverIcon: text("server_icon"),
+  ownerId: text("owner_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const serverMembers = pgTable("server_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id").notNull(),
+  discordUserId: text("discord_user_id").notNull(),
+  roles: text("roles").array().notNull().default(sql`ARRAY[]::text[]`),
+  isOwner: boolean("is_owner").notNull().default(false),
+  isAdmin: boolean("is_admin").notNull().default(false),
+  joinedAt: timestamp("joined_at").notNull().defaultNow(),
+});
+
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"),
   role: text("role", { enum: ["Agent", "Management", "Overseer"] }).notNull().default("Agent"),
   isSuspended: boolean("is_suspended").notNull().default(false),
-  ip: text("ip").notNull(),
+  ip: text("ip"),
   isOnline: boolean("is_online").notNull().default(false),
   requiresInviteVerification: boolean("requires_invite_verification").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -17,6 +51,8 @@ export const users = pgTable("users", {
 
 export const cases = pgTable("cases", {
   id: varchar("id").primaryKey(),
+  serverId: text("server_id"),
+  userId: text("user_id"),
   title: text("title").notNull(),
   description: text("description").notNull(),
   status: text("status", { enum: ["Active", "Closed", "Redacted"] }).notNull().default("Active"),
@@ -105,6 +141,23 @@ export const serverPermissions = pgTable("server_permissions", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const insertDiscordAccountSchema = createInsertSchema(discordAccounts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertServerWorkspaceSchema = createInsertSchema(serverWorkspaces).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertServerMemberSchema = createInsertSchema(serverMembers).omit({
+  id: true,
+  joinedAt: true,
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -159,6 +212,12 @@ export const insertServerPermissionSchema = createInsertSchema(serverPermissions
   updatedAt: true,
 });
 
+export type InsertDiscordAccount = z.infer<typeof insertDiscordAccountSchema>;
+export type DiscordAccount = typeof discordAccounts.$inferSelect;
+export type InsertServerWorkspace = z.infer<typeof insertServerWorkspaceSchema>;
+export type ServerWorkspace = typeof serverWorkspaces.$inferSelect;
+export type InsertServerMember = z.infer<typeof insertServerMemberSchema>;
+export type ServerMember = typeof serverMembers.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertCase = z.infer<typeof insertCaseSchema>;
