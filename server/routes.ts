@@ -250,15 +250,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
           refreshToken: "",
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         });
-      } else {
-        await storage.updateDiscordAccount(discordAccount.id, {
-          username: discordUser.username,
-          email: discordUser.email || null,
-          avatar: discordUser.avatar || null,
-          accessToken,
-          refreshToken: "",
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        });
+
+        // Create mock servers for new Discord users
+        const mockServers = [
+          { id: "123456789", name: "AEGIS Operations", icon: "🏛️" },
+          { id: "987654321", name: "Intelligence Division", icon: "🕵️" },
+          { id: "555444333", name: "Field Agents", icon: "🔐" }
+        ];
+
+        for (const mockServer of mockServers) {
+          let workspace = await storage.getServerWorkspace(mockServer.id);
+          if (!workspace) {
+            workspace = await storage.createServerWorkspace({
+              serverId: mockServer.id,
+              serverName: mockServer.name,
+              ownerId: discordUser.id,
+            });
+          }
+
+          let member = await storage.getServerMember(mockServer.id, discordUser.id);
+          if (!member) {
+            await storage.createServerMember({
+              serverId: mockServer.id,
+              discordUserId: discordUser.id,
+              roles: ["member"],
+              isOwner: true,
+              isAdmin: true,
+            });
+          }
+        }
       }
 
       // Return Discord account info so frontend can show server selector
