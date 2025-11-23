@@ -74,8 +74,9 @@ passport.deserializeUser(async (id: any, done) => {
     
     // If ID contains ":", it's a Discord user (format: discordId:serverId)
     if (id.includes(":")) {
-      // For Discord users, we can't look them up in the users table
-      // Return null and let the session handle it
+      // For Discord users, parse the composite ID and restore from session
+      // The session should have the full user object with serverId
+      // If session doesn't have it, we can't restore without making DB calls
       return done(null, false);
     }
     
@@ -98,14 +99,23 @@ passport.deserializeUser(async (id: any, done) => {
 
 // Middleware
 const requireAuth = (req: Request, res: Response, next: Function) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: "Unauthorized" });
+  // First, try to get user from req.user (set by Passport)
+  if (req.user) {
+    // If user is missing serverId but session has it, restore it
+    if (!req.user.serverId && req.session?.passport?.user?.serverId) {
+      req.user.serverId = req.session.passport.user.serverId;
+      req.user.discordUserId = req.session.passport.user.discordUserId;
+    }
+    return next();
   }
-  // For Discord users, restore from session if needed
-  if (!req.user && req.session?.passport?.user) {
+  
+  // For Discord users, restore from session if deserializeUser didn't work
+  if (req.session?.passport?.user) {
     req.user = req.session.passport.user;
+    return next();
   }
-  next();
+  
+  return res.status(401).json({ error: "Unauthorized" });
 };
 
 const requireRole = (...roles: string[]) => {
