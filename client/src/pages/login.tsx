@@ -24,7 +24,7 @@ const registerSchema = z.object({
 });
 
 export default function Login() {
-  const { login, register, isIpBanned, clientIp } = useAuth();
+  const { login, register, discordLogin, isIpBanned, clientIp } = useAuth();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -349,6 +349,38 @@ export default function Login() {
                   <Globe size={12} /> ACCESS PUBLIC DISCLOSURE TERMINAL
                 </Button>
               </Link>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <Button 
+                type="button"
+                className="w-full font-mono bg-indigo-600 text-white hover:bg-indigo-700"
+                disabled={isLoading || isIpBanned}
+                onClick={async () => {
+                  setIsLoading(true);
+                  setAuthError("");
+                  try {
+                    const mockDiscordUser = {
+                      id: `discord_${Date.now()}`,
+                      username: `discord_user_${Math.random().toString(36).substr(2, 9)}`,
+                      email: "user@discord.com",
+                      avatar: null,
+                    };
+                    const success = await discordLogin("mock_access_token", mockDiscordUser);
+                    if (success) {
+                      setLocation("/server-selector");
+                    } else {
+                      setAuthError("Discord authentication failed");
+                    }
+                  } catch (error) {
+                    setAuthError("Discord login failed. Please try again.");
+                  }
+                  setIsLoading(false);
+                }}
+                data-testid="button-discord-login"
+              >
+                {isLoading ? "AUTHENTICATING..." : "LOGIN WITH DISCORD"}
+              </Button>
             </div>
           </CardContent>
         </Card>

@@ -229,6 +229,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ ip: clientIp, isBanned });
   });
 
+  // Discord OAuth routes
+  app.post("/api/auth/discord/callback", checkIpBan, async (req: Request, res: Response) => {
+    try {
+      const { accessToken, user: discordUser } = req.body;
+      
+      if (!accessToken || !discordUser || !discordUser.id) {
+        return res.status(400).json({ error: "Missing Discord user data" });
+      }
+
+      // Get or create Discord account
+      let discordAccount = await storage.getDiscordAccount(discordUser.id);
+      if (!discordAccount) {
+        discordAccount = await storage.createDiscordAccount({
+          discordId: discordUser.id,
+          username: discordUser.username,
+          email: discordUser.email || null,
+          avatar: discordUser.avatar || null,
+          accessToken,
+          refreshToken: "",
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
+      } else {
+        await storage.updateDiscordAccount(discordAccount.id, {
+          username: discordUser.username,
+          email: discordUser.email || null,
+          avatar: discordUser.avatar || null,
+          accessToken,
+          refreshToken: "",
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
+      }
+
+      // Return Discord account info so frontend can show server selector
+      res.json({ discordId: discordUser.id, username: discordUser.username });
+    } catch (error: any) {
+      console.error("Discord callback error:", error);
+      res.status(500).json({ error: "Discord authentication failed" });
+    }
+  });
+
+  app.get("/api/auth/discord/servers", async (req: Request, res: Response) => {
+    try {
+      const { discordId } = req.query;
+      if (!discordId) {
+        return res.status(400).json({ error: "Discord ID required" });
+      }
+
+      const servers = await storage.getServersByUser(discordId as string);
+      res.json(servers);
+    } catch (error: any) {
+      console.error("Get servers error:", error);
+      res.status(500).json({ error: "Failed to get servers" });
+    }
+  });
+
+  app.post("/api/auth/discord/select-server", checkIpBan, async (req: Request, res: Response) => {
+    try {
+      const { discordId, serverId } = req.body;
+      if (!discordId || !serverId) {
+        return res.status(400).json({ error: "Discord ID and server ID required" });
+      }
+
+      // Get or create server workspace
+      let workspace = await storage.getServerWorkspace(serverId);
+      if (!workspace) {
+        workspace = await storage.createServerWorkspace({
+          serverId,
+          serverName: `Server ${serverId}`,
+          ownerId: discordId,
+        });
+      }
+
+      // Get or create server member
+      let member = await storage.getServerMember(serverId, discordId);
+      if (!member) {
+        member = await storage.createServerMember({
+          serverId,
+          discordUserId: discordId,
+          roles: ["member"],
+          isOwner: false,
+          isAdmin: false,
+        });
+      }
+
+      // Create a session user for this workspace
+      const user: Express.User = {
+        id: `${discordId}:${serverId}`,
+        username: discordId,
+        role: member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent",
+        isSuspended: false,
+        ip: req.ip || req.socket.remoteAddress || "unknown",
+        isOnline: true,
+      };
+
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ error: "Login failed" });
+        }
+        res.json(user);
+      });
+    } catch (error: any) {
+      console.error("Select server error:", error);
+      res.status(500).json({ error: "Failed to select server" });
+    }
+  });
+
   // User routes
   app.get("/api/users", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     const users = await storage.getAllUsers();

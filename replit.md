@@ -1,6 +1,6 @@
 # Overview
 
-AEGIS_NET is a secure case management system designed for handling classified information and investigations. The application provides role-based access control with three user levels (Agent, Management, Overseer), case tracking with public/private visibility, Discord integration for notifications and bot commands, and comprehensive audit logging. The system features a government/intelligence agency aesthetic with a focus on security and controlled information dissemination.
+AEGIS_NET is a multi-tenant, Discord-integrated secure case management system. It supports both traditional username/password authentication and Discord OAuth2 login. Each Discord server gets its own workspace with independent case management, agent rosters, and data storage. Users authenticate via Discord OAuth and permissions are verified based on Discord server ownership and roles. The application provides role-based access control with three user levels (Agent, Management, Overseer), case tracking with public/private visibility, Discord bot with moderation capabilities, and comprehensive audit logging. The system features a government/intelligence agency aesthetic with a focus on security and controlled information dissemination.
 
 # User Preferences
 
@@ -71,6 +71,25 @@ Preferred communication style: Simple, everyday language.
 - IP tracking for user sessions
 - Optional invite verification requirement per user
 - Online status tracking
+
+## Multi-Tenant Architecture
+
+**Server Workspaces**: Each Discord server gets an isolated workspace with:
+- Server-specific case management and audit logs
+- Server members with role-based permissions
+- Independent data storage and access control
+
+**Discord OAuth2 Authentication**:
+- `/api/auth/discord/callback` - Handles Discord OAuth callback and account creation
+- `/api/auth/discord/servers` - Returns list of user's Discord servers
+- `/api/auth/discord/select-server` - Creates workspace context and logs user in
+- Frontend routes: `/server-selector` for server selection after Discord login
+- Supports both Discord OAuth and traditional username/password login
+
+**Server Member Roles**:
+- Owner → Overseer role (full system access)
+- Admin → Management role (administrative functions)
+- Member → Agent role (basic case access)
 
 ## External Dependencies
 

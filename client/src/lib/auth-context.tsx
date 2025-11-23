@@ -46,7 +46,10 @@ interface AuthContextType {
   clientIp: string;
   isIpBanned: boolean;
   loading: boolean;
+  discordUser: { discordId: string; username: string } | null;
   login: (username: string, password: string) => Promise<boolean>;
+  discordLogin: (accessToken: string, user: any) => Promise<boolean>;
+  selectServer: (serverId: string) => Promise<boolean>;
   register: (username: string, password: string, inviteCode: string) => Promise<boolean>;
   logout: () => Promise<void>;
   createCase: (newCase: Omit<Case, "id" | "createdAt" | "updatedAt" | "assignedAgent" | "isPublic">) => Promise<void>;
@@ -70,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [clientIp, setClientIp] = useState("");
   const [isIpBanned, setIsIpBanned] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [discordUser, setDiscordUser] = useState<{ discordId: string; username: string } | null>(null);
   const { toast } = useToast();
 
   // Check auth status on mount
@@ -156,6 +160,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const discordLogin = async (accessToken: string, discordUserData: any): Promise<boolean> => {
+    try {
+      const response = await fetch("/api/auth/discord/callback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ accessToken, user: discordUserData }),
+      });
+      if (!response.ok) {
+        throw new Error("Discord login failed");
+      }
+      const data = await response.json();
+      setDiscordUser({ discordId: data.discordId, username: data.username });
+      return true;
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Discord login failed" });
+      return false;
+    }
+  };
+
+  const selectServer = async (serverId: string): Promise<boolean> => {
+    if (!discordUser) {
+      toast({ variant: "destructive", title: "Error", description: "No Discord user selected" });
+      return false;
+    }
+
+    try {
+      const response = await fetch("/api/auth/discord/select-server", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ discordId: discordUser.discordId, serverId }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to select server");
+      }
+      const userData = await response.json();
+      setUser(userData);
+      setDiscordUser(null);
+      await loadUserData();
+      return true;
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message || "Failed to select server" });
+      return false;
+    }
+  };
+
   const logout = async () => {
     try {
       await api.auth.logout();
@@ -167,6 +218,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUsers([]);
       setCases([]);
       setLogs([]);
+      setDiscordUser(null);
     }
   };
 
@@ -292,8 +344,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ 
-      user, users, cases, logs, clientIp, isIpBanned, loading,
-      login, register, logout, 
+      user, users, cases, logs, clientIp, isIpBanned, loading, discordUser,
+      login, discordLogin, selectServer, register, logout, 
       createCase, updateCase, deleteCase, 
       suspendUser, unsuspendUser, editUser, createUserWithInvite, toggleCasePublic,
       refreshData
