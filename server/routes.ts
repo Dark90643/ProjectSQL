@@ -160,13 +160,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Update user to online
         storage.updateUser(user.id, { isOnline: true, ip: clientIp });
         
-        res.json({
-          id: user.id,
-          username: user.username,
-          role: user.role,
-          isSuspended: user.isSuspended,
-          ip: user.ip,
-          isOnline: true,
+        // Save session before responding
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            return res.status(500).json({ error: "Session save failed" });
+          }
+          
+          res.json({
+            id: user.id,
+            username: user.username,
+            role: user.role,
+            isSuspended: user.isSuspended,
+            ip: user.ip,
+            isOnline: true,
+          });
         });
       });
     } catch (error) {
@@ -194,9 +201,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const fullUser = await storage.getUser(user.id);
         await storage.updateUser(user.id, { isOnline: true, ip: clientIp });
 
-        res.json({
-          ...user,
-          requiresInviteVerification: fullUser?.requiresInviteVerification || false,
+        // Save session before responding
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            return res.status(500).json({ error: "Session save failed" });
+          }
+          
+          res.json({
+            ...user,
+            requiresInviteVerification: fullUser?.requiresInviteVerification || false,
+          });
         });
       });
     })(req, res, next);
