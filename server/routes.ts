@@ -230,7 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Discord OAuth login - start the OAuth flow
-  app.get("/api/auth/discord/login", checkIpBan, (req: Request, res: Response) => {
+  app.get("/api/auth/discord/login", (req: Request, res: Response) => {
     try {
       const clientId = process.env.DISCORD_CLIENT_ID;
       const apiUrl = process.env.API_URL || "http://localhost:5000";
@@ -250,7 +250,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Discord OAuth callback - exchange code for token
-  app.get("/api/auth/discord/callback", checkIpBan, async (req: Request, res: Response) => {
+  app.get("/api/auth/discord/callback", async (req: Request, res: Response) => {
     try {
       const { code } = req.query;
       if (!code) {
@@ -370,7 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Legacy endpoint for mock data during testing
-  app.post("/api/auth/discord/mock-callback", checkIpBan, async (req: Request, res: Response) => {
+  app.post("/api/auth/discord/mock-callback", async (req: Request, res: Response) => {
     try {
       const { accessToken, user: discordUser } = req.body;
       
