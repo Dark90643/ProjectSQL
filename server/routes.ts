@@ -252,8 +252,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Discord OAuth callback - exchange code for token
   app.get("/api/auth/discord/callback", async (req: Request, res: Response) => {
     try {
+      console.log("=== Discord OAuth Callback Started ===");
       const { code } = req.query;
       if (!code) {
+        console.error("Discord callback: No code provided");
         return res.status(400).json({ error: "Missing authorization code" });
       }
 
@@ -262,17 +264,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const apiUrl = process.env.API_URL || "http://localhost:5000";
       const redirectUri = `${apiUrl}/api/auth/discord/callback`;
       
-      console.log("Discord callback - API_URL:", apiUrl);
-      console.log("Discord callback - clientId:", clientId);
+      console.log("Discord callback - clientId exists:", !!clientId);
+      console.log("Discord callback - clientSecret exists:", !!clientSecret);
       console.log("Discord callback - code:", code);
+      console.log("Discord callback - redirectUri:", redirectUri);
+
+      if (!clientId || !clientSecret) {
+        console.error("Discord callback: Missing CLIENT_ID or CLIENT_SECRET");
+        return res.status(500).json({ error: "Server configuration error" });
+      }
 
       // Exchange code for access token
+      console.log("Exchanging code for token...");
       const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          client_id: clientId!,
-          client_secret: clientSecret!,
+          client_id: clientId,
+          client_secret: clientSecret,
           code: code as string,
           grant_type: "authorization_code",
           redirect_uri: redirectUri,
@@ -287,20 +296,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
+      console.log("Token obtained successfully");
 
       // Get user info from Discord
+      console.log("Fetching user info...");
       const userResponse = await fetch("https://discord.com/api/users/@me", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       if (!userResponse.ok) {
-        console.error("Failed to fetch Discord user info");
+        console.error("Failed to fetch Discord user info:", userResponse.status);
         return res.status(400).json({ error: "Failed to fetch user info" });
       }
 
       const discordUser = await userResponse.json();
+      console.log("User info obtained:", discordUser.id, discordUser.username);
 
       // Get user's guilds (servers)
+      console.log("Fetching user guilds...");
       const guildsResponse = await fetch("https://discord.com/api/users/@me/guilds", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -308,11 +321,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userGuilds = [];
       if (guildsResponse.ok) {
         userGuilds = await guildsResponse.json();
+        console.log("User has", userGuilds.length, "guilds");
+      } else {
+        console.warn("Failed to fetch user guilds:", guildsResponse.status);
       }
 
       // Get or create Discord account
+      console.log("Getting or creating Discord account...");
       let discordAccount = await storage.getDiscordAccount(discordUser.id);
       if (!discordAccount) {
+        console.log("Creating new Discord account");
         discordAccount = await storage.createDiscordAccount({
           discordId: discordUser.id,
           username: discordUser.username,
@@ -323,6 +341,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           expiresAt: new Date(Date.now() + tokenData.expires_in * 1000),
         });
       } else {
+        console.log("Updating existing Discord account");
         await storage.updateDiscordAccount(discordAccount.id, {
           username: discordUser.username,
           email: discordUser.email || null,
@@ -334,9 +353,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create server workspaces and memberships for user's guilds
+      console.log("Creating server workspaces and memberships...");
       for (const guild of userGuilds) {
         let workspace = await storage.getServerWorkspace(guild.id);
         if (!workspace) {
+          console.log("Creating workspace for guild:", guild.id, guild.name);
           workspace = await storage.createServerWorkspace({
             serverId: guild.id,
             serverName: guild.name,
@@ -350,6 +371,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const isOwner = guild.owner === true;
           const isAdmin = (guild.permissions & 8) !== 0; // 8 = ADMINISTRATOR permission
           
+          console.log("Creating member for guild:", guild.id, "isOwner:", isOwner, "isAdmin:", isAdmin);
           await storage.createServerMember({
             serverId: guild.id,
             discordUserId: discordUser.id,
@@ -362,9 +384,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Redirect to frontend with user info
       const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5000";
-      res.redirect(`${frontendUrl}/discord-auth?discordId=${discordUser.id}&username=${encodeURIComponent(discordUser.username)}`);
+      const redirectUrl = `${frontendUrl}/discord-auth?discordId=${discordUser.id}&username=${encodeURIComponent(discordUser.username)}`;
+      console.log("Redirecting to:", redirectUrl);
+      res.redirect(redirectUrl);
     } catch (error: any) {
-      console.error("Discord callback error:", error);
+      console.error("=== Discord callback error ===", error);
+      console.error("Error stack:", error.stack);
+      res.status(500).json({ error: "Discord authentication failed", details: error.message });
+    }
+  });
+
+  // Discord OAuth callback - POST endpoint for frontend to complete auth
+  app.post("/api/auth/discord/callback", async (req: Request, res: Response) => {
+    try {
+      const { user: discordUser } = req.body;
+      
+      if (!discordUser || !discordUser.id) {
+        return res.status(400).json({ error: "Missing Discord user data" });
+      }
+
+      console.log("Discord POST callback - user:", discordUser.id, discordUser.username);
+
+      // Get Discord account - should already exist from GET callback
+      let discordAccount = await storage.getDiscordAccount(discordUser.id);
+      if (!discordAccount) {
+        console.error("Discord account not found - likely the GET callback didn't complete");
+        return res.status(400).json({ error: "Discord authentication incomplete - try logging in again" });
+      }
+
+      // Create session
+      if (req.session) {
+        req.session.userId = discordUser.id;
+        req.session.discordUserId = discordUser.id;
+        req.session.username = discordUser.username;
+      }
+
+      console.log("Discord authentication complete for:", discordUser.id);
+      res.json({ discordId: discordUser.id, username: discordUser.username });
+    } catch (error: any) {
+      console.error("Discord POST callback error:", error);
       res.status(500).json({ error: "Discord authentication failed" });
     }
   });
