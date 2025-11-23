@@ -11,6 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
+import { storage } from "./storage";
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const clientId = "1442053672694714529"; // Your bot's client ID from Discord Developer Portal
@@ -245,6 +246,43 @@ const commands = [
         .setDescription("Allow server administrators to use commands (default: true)")
         .setRequired(false)
     ),
+  // User history tracking commands
+  new SlashCommandBuilder()
+    .setName("userhistory")
+    .setDescription("View complete moderation history for a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to check moderation history for")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("userwarnings")
+    .setDescription("View all warnings for a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to check warnings for")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("userbans")
+    .setDescription("View all bans for a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to check bans for")
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("usermutes")
+    .setDescription("View all mutes for a user")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to check mutes for")
+        .setRequired(true)
+    ),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -409,6 +447,18 @@ export async function initializeDiscordBot() {
         const role = interaction.options.getRole("role");
         const allowAdministrators = interaction.options.getBoolean("allow_administrators");
         await handleSetCommandPermissions(interaction, role, allowAdministrators);
+      } else if (command === "userhistory") {
+        const user = interaction.options.getUser("user")!;
+        await handleUserHistory(interaction, user);
+      } else if (command === "userwarnings") {
+        const user = interaction.options.getUser("user")!;
+        await handleUserWarnings(interaction, user);
+      } else if (command === "userbans") {
+        const user = interaction.options.getUser("user")!;
+        await handleUserBans(interaction, user);
+      } else if (command === "usermutes") {
+        const user = interaction.options.getUser("user")!;
+        await handleUserMutes(interaction, user);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -1530,6 +1580,231 @@ async function handleSetCommandPermissions(
     console.error("Set command permissions error:", error);
     await interaction.reply({
       content: "Failed to update command permissions.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleUserHistory(interaction: any, user: any) {
+  try {
+    const serverId = interaction.guildId;
+    const userId = user.id;
+    
+    // Fetch all moderation data
+    const [warnings, mutes, bans, logs] = await Promise.all([
+      storage.getUserWarnings(serverId, userId),
+      storage.getUserMutes(serverId, userId),
+      storage.getUserBans(serverId, userId),
+      storage.getUserModLogs(serverId, userId),
+    ]);
+    
+    const totalActions = warnings.length + mutes.length + bans.length + logs.length;
+    
+    if (totalActions === 0) {
+      await interaction.reply({
+        content: `No moderation history found for ${user.tag}.`,
+        ephemeral: true,
+      });
+      return;
+    }
+    
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Red)
+      .setTitle(`Moderation History for ${user.tag}`)
+      .setDescription(`User ID: ${userId}`)
+      .addFields(
+        {
+          name: "📋 Warnings",
+          value: warnings.length > 0 ? `${warnings.length} warning(s)` : "None",
+          inline: true,
+        },
+        {
+          name: "🔇 Mutes",
+          value: mutes.length > 0 ? `${mutes.length} mute(s)` : "None",
+          inline: true,
+        },
+        {
+          name: "🚫 Bans",
+          value: bans.length > 0 ? `${bans.length} ban(s)` : "None",
+          inline: true,
+        },
+        {
+          name: "📝 Total Actions",
+          value: `${totalActions} action(s)`,
+          inline: true,
+        }
+      );
+    
+    if (warnings.length > 0) {
+      const recentWarnings = warnings.slice(0, 3).map(w => 
+        `**${new Date(w.timestamp).toLocaleDateString()}** - ${w.reason}`
+      ).join("\n");
+      embed.addFields({
+        name: "Recent Warnings",
+        value: recentWarnings || "None",
+        inline: false,
+      });
+    }
+    
+    if (bans.length > 0) {
+      const recentBans = bans.slice(0, 3).map(b => 
+        `**${new Date(b.bannedAt).toLocaleDateString()}** - ${b.reason}`
+      ).join("\n");
+      embed.addFields({
+        name: "Recent Bans",
+        value: recentBans || "None",
+        inline: false,
+      });
+    }
+    
+    embed.setFooter({ text: `Use /userwarnings, /userbans, or /usermutes for detailed information` });
+    embed.setTimestamp();
+    
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+    
+    console.log(`Moderation history retrieved for ${user.tag} by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("User history error:", error);
+    await interaction.reply({
+      content: "Failed to retrieve user moderation history.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleUserWarnings(interaction: any, user: any) {
+  try {
+    const serverId = interaction.guildId;
+    const userId = user.id;
+    
+    const warnings = await storage.getUserWarnings(serverId, userId);
+    
+    if (warnings.length === 0) {
+      await interaction.reply({
+        content: `No warnings found for ${user.tag}.`,
+        ephemeral: true,
+      });
+      return;
+    }
+    
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Orange)
+      .setTitle(`Warnings for ${user.tag}`)
+      .setDescription(`Total: ${warnings.length} warning(s)`)
+      .addFields(
+        ...warnings.slice(0, 10).map((w, idx) => ({
+          name: `Warning #${idx + 1}`,
+          value: `**Date:** ${new Date(w.timestamp).toLocaleDateString()}\n**Reason:** ${w.reason}`,
+          inline: false,
+        }))
+      )
+      .setFooter({ text: warnings.length > 10 ? `Showing 10 of ${warnings.length} warnings` : `` })
+      .setTimestamp();
+    
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+    
+    console.log(`Warnings retrieved for ${user.tag} by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("User warnings error:", error);
+    await interaction.reply({
+      content: "Failed to retrieve user warnings.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleUserBans(interaction: any, user: any) {
+  try {
+    const serverId = interaction.guildId;
+    const userId = user.id;
+    
+    const bans = await storage.getUserBans(serverId, userId);
+    
+    if (bans.length === 0) {
+      await interaction.reply({
+        content: `No bans found for ${user.tag}.`,
+        ephemeral: true,
+      });
+      return;
+    }
+    
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Red)
+      .setTitle(`Bans for ${user.tag}`)
+      .setDescription(`Total: ${bans.length} ban(s)`)
+      .addFields(
+        ...bans.slice(0, 10).map((b, idx) => ({
+          name: `Ban #${idx + 1}`,
+          value: `**Date:** ${new Date(b.bannedAt).toLocaleDateString()}\n**Reason:** ${b.reason}`,
+          inline: false,
+        }))
+      )
+      .setFooter({ text: bans.length > 10 ? `Showing 10 of ${bans.length} bans` : `` })
+      .setTimestamp();
+    
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+    
+    console.log(`Bans retrieved for ${user.tag} by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("User bans error:", error);
+    await interaction.reply({
+      content: "Failed to retrieve user bans.",
+      ephemeral: true,
+    });
+  }
+}
+
+async function handleUserMutes(interaction: any, user: any) {
+  try {
+    const serverId = interaction.guildId;
+    const userId = user.id;
+    
+    const mutes = await storage.getUserMutes(serverId, userId);
+    
+    if (mutes.length === 0) {
+      await interaction.reply({
+        content: `No mutes found for ${user.tag}.`,
+        ephemeral: true,
+      });
+      return;
+    }
+    
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blurple)
+      .setTitle(`Mutes for ${user.tag}`)
+      .setDescription(`Total: ${mutes.length} mute(s)`)
+      .addFields(
+        ...mutes.slice(0, 10).map((m, idx) => {
+          const status = m.unmutedAt ? "✅ Unmuted" : "🔇 Active";
+          return {
+            name: `Mute #${idx + 1} ${status}`,
+            value: `**Date:** ${new Date(m.mutedAt).toLocaleDateString()}\n**Duration:** ${m.duration}\n**Reason:** ${m.reason}`,
+            inline: false,
+          };
+        })
+      )
+      .setFooter({ text: mutes.length > 10 ? `Showing 10 of ${mutes.length} mutes` : `` })
+      .setTimestamp();
+    
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: false,
+    });
+    
+    console.log(`Mutes retrieved for ${user.tag} by ${interaction.user.tag}`);
+  } catch (error) {
+    console.error("User mutes error:", error);
+    await interaction.reply({
+      content: "Failed to retrieve user mutes.",
       ephemeral: true,
     });
   }

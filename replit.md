@@ -76,9 +76,10 @@ Preferred communication style: Simple, everyday language.
 
 **Discord Integration**: 
 - Discord.js v14 for bot functionality with comprehensive slash commands
-- Public case search commands: `/search`, `/case`, `/cases`
+- Public case search commands: `/search`, `/case`, `/cases` with pagination (Previous/Next buttons)
 - Moderation commands: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
 - IP ban command: `/ipban` for banning IP addresses from servers
+- User tracking commands: `/userhistory`, `/userwarnings`, `/userbans`, `/usermutes` for viewing individual moderation records
 - Raid protection features: `/enable-raid-protection`, `/disable-raid-protection`, `/raid-status`
 - Security configuration: `/security-config` for account age and join rate limits
 - **Per-Server Permission System**:

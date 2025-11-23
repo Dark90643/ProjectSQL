@@ -8,10 +8,18 @@ import {
   type InsertLog,
   type InviteCode,
   type InsertInviteCode,
+  type ModWarning,
+  type ModMute,
+  type ModBan,
+  type ModLog,
   users,
   cases,
   logs,
   inviteCodes,
+  modWarnings,
+  modMutes,
+  modBans,
+  modLogs,
 } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { sendAuditTrailDiscordEmbed } from "./discord-webhook";
@@ -44,6 +52,12 @@ export interface IStorage {
   createInviteCode(code: InsertInviteCode): Promise<InviteCode>;
   useInviteCode(code: string, userId: string): Promise<InviteCode | undefined>;
   getAvailableInviteCodes(): Promise<InviteCode[]>;
+  
+  // Moderation operations
+  getUserWarnings(serverId: string, userId: string): Promise<ModWarning[]>;
+  getUserMutes(serverId: string, userId: string): Promise<ModMute[]>;
+  getUserBans(serverId: string, userId: string): Promise<ModBan[]>;
+  getUserModLogs(serverId: string, userId: string): Promise<ModLog[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -155,6 +169,39 @@ export class DatabaseStorage implements IStorage {
 
   async getAvailableInviteCodes(): Promise<InviteCode[]> {
     return await db.select().from(inviteCodes).where(eq(inviteCodes.isUsed, false));
+  }
+  
+  // Moderation operations
+  async getUserWarnings(serverId: string, userId: string): Promise<ModWarning[]> {
+    return await db
+      .select()
+      .from(modWarnings)
+      .where(and(eq(modWarnings.serverId, serverId), eq(modWarnings.userId, userId)))
+      .orderBy(desc(modWarnings.timestamp));
+  }
+  
+  async getUserMutes(serverId: string, userId: string): Promise<ModMute[]> {
+    return await db
+      .select()
+      .from(modMutes)
+      .where(and(eq(modMutes.serverId, serverId), eq(modMutes.userId, userId)))
+      .orderBy(desc(modMutes.mutedAt));
+  }
+  
+  async getUserBans(serverId: string, userId: string): Promise<ModBan[]> {
+    return await db
+      .select()
+      .from(modBans)
+      .where(and(eq(modBans.serverId, serverId), eq(modBans.userId, userId)))
+      .orderBy(desc(modBans.bannedAt));
+  }
+  
+  async getUserModLogs(serverId: string, userId: string): Promise<ModLog[]> {
+    return await db
+      .select()
+      .from(modLogs)
+      .where(and(eq(modLogs.serverId, serverId), eq(modLogs.targetId, userId)))
+      .orderBy(desc(modLogs.timestamp));
   }
 }
 
