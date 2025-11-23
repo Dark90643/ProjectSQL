@@ -1424,6 +1424,7 @@ async function handleDisableRaidProtection(interaction: any) {
 
 async function handleRaidStatus(interaction: any) {
   try {
+    await interaction.deferReply({ ephemeral: true });
     const serverId = interaction.guildId;
     const config = getServerConfig(serverId);
 
@@ -1468,22 +1469,26 @@ async function handleRaidStatus(interaction: any) {
       })
       .setTimestamp();
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.editReply({ embeds: [embed] });
   } catch (error) {
     console.error("Raid status error:", error);
-    await interaction.reply({
-      content: "Failed to retrieve raid protection status.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to retrieve raid protection status.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
 async function handleSecurityConfig(interaction: any) {
   try {
+    await interaction.deferReply({ ephemeral: false });
+    
     if (!(await checkModPermission(interaction))) {
-      await interaction.reply({
+      await interaction.editReply({
         content: "You do not have permission to use this command.",
-        ephemeral: true,
       });
       return;
     }
@@ -1538,17 +1543,20 @@ async function handleSecurityConfig(interaction: any) {
       )
       .setTimestamp();
 
-    await interaction.reply({ embeds: [embed], ephemeral: false });
+    await interaction.editReply({ embeds: [embed] });
     console.log(
       `Security configuration updated for ${interaction.guild?.name}:`,
       config
     );
   } catch (error) {
     console.error("Security config error:", error);
-    await interaction.reply({
-      content: "Failed to update security configuration.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.editReply({
+        content: "Failed to update security configuration.",
+      });
+    } catch (replyError) {
+      console.error("Failed to send error reply:", replyError);
+    }
   }
 }
 
