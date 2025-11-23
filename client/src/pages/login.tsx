@@ -63,8 +63,8 @@ export default function Login() {
         return;
       }
 
-      // Auto-refresh on successful login to establish session
-      window.location.reload();
+      // Navigate to dashboard on successful login
+      setLocation("/dashboard");
     } catch (error: any) {
       setAuthError("Authentication error. Please try again.");
       setIsLoading(false);
