@@ -314,6 +314,28 @@ const commands = [
         .setDescription("Reason for server lockdown (optional)")
         .setRequired(false)
     ),
+  // Intel research command
+  new SlashCommandBuilder()
+    .setName("user-lookup")
+    .setDescription("Search for user information (Discord, Roblox, etc.)")
+    .addUserOption((option) =>
+      option
+        .setName("discord_user")
+        .setDescription("Discord user to look up")
+        .setRequired(false)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("username")
+        .setDescription("Roblox username to look up")
+        .setRequired(false)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("user_id")
+        .setDescription("Roblox user ID to look up")
+        .setRequired(false)
+    ),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -498,6 +520,11 @@ export async function initializeDiscordBot() {
         const lock = interaction.options.getBoolean("lock")!;
         const reason = interaction.options.getString("reason");
         await handleServerLockdown(interaction, lock, reason);
+      } else if (command === "user-lookup") {
+        const discordUser = interaction.options.getUser("discord_user");
+        const robloxUsername = interaction.options.getString("username");
+        const robloxUserId = interaction.options.getString("user_id");
+        await handleUserLookup(interaction, discordUser, robloxUsername, robloxUserId);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -2056,6 +2083,176 @@ async function handleServerLockdown(interaction: any, lock: boolean, reason?: st
     await interaction.reply({
       content: "Failed to execute server lockdown.",
       ephemeral: true,
+    });
+  }
+}
+
+async function handleUserLookup(
+  interaction: any,
+  discordUser: any,
+  robloxUsername?: string | null,
+  robloxUserId?: string | null
+) {
+  try {
+    await interaction.deferReply({ ephemeral: false });
+    
+    // Must provide at least one search parameter
+    if (!discordUser && !robloxUsername && !robloxUserId) {
+      await interaction.editReply({
+        content: "Please provide either a Discord user, Roblox username, or Roblox user ID to look up.",
+      });
+      return;
+    }
+    
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blurple)
+      .setTitle("User Lookup Results")
+      .setTimestamp();
+    
+    // Search Discord user if provided
+    if (discordUser) {
+      embed.addFields(
+        { name: "Discord Username", value: discordUser.tag, inline: true },
+        { name: "Discord ID", value: discordUser.id, inline: true },
+        {
+          name: "Account Created",
+          value: new Date(discordUser.createdTimestamp).toLocaleDateString(),
+          inline: true,
+        },
+        {
+          name: "Bot Account",
+          value: discordUser.bot ? "Yes" : "No",
+          inline: true,
+        }
+      );
+    }
+    
+    // Search Roblox if username or ID provided
+    if (robloxUsername) {
+      try {
+        // Roblox API to get user ID from username
+        const robloxResponse = await fetch(
+          `https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(robloxUsername)}`
+        );
+        
+        if (robloxResponse.ok) {
+          const robloxData = await robloxResponse.json();
+          
+          if (robloxData.Id) {
+            embed.addFields(
+              { name: "Roblox Username", value: robloxData.Username || "N/A", inline: true },
+              { name: "Roblox User ID", value: robloxData.Id.toString(), inline: true },
+              {
+                name: "Roblox Profile URL",
+                value: `https://www.roblox.com/users/${robloxData.Id}/profile`,
+                inline: false,
+              }
+            );
+          } else {
+            embed.addFields({
+              name: "Roblox Lookup",
+              value: `No user found with username: ${robloxUsername}`,
+              inline: false,
+            });
+          }
+        } else {
+          embed.addFields({
+            name: "Roblox Lookup",
+            value: `Could not look up Roblox username: ${robloxUsername}`,
+            inline: false,
+          });
+        }
+      } catch (error) {
+        console.error("Roblox username lookup error:", error);
+        embed.addFields({
+          name: "Roblox Lookup",
+          value: "Error searching Roblox API",
+          inline: false,
+        });
+      }
+    }
+    
+    if (robloxUserId) {
+      try {
+        // Roblox API to get user info from user ID
+        const robloxResponse = await fetch(
+          `https://users.roblox.com/v1/users/${robloxUserId}`
+        );
+        
+        if (robloxResponse.ok) {
+          const robloxData = await robloxResponse.json();
+          
+          embed.addFields(
+            { name: "Roblox Username", value: robloxData.name || "N/A", inline: true },
+            { name: "Roblox User ID", value: robloxUserId, inline: true },
+            {
+              name: "Display Name",
+              value: robloxData.displayName || "N/A",
+              inline: true,
+            },
+            {
+              name: "Account Created",
+              value: new Date(robloxData.created).toLocaleDateString(),
+              inline: true,
+            },
+            {
+              name: "Roblox Profile URL",
+              value: `https://www.roblox.com/users/${robloxUserId}/profile`,
+              inline: false,
+            }
+          );
+          
+          // Try to fetch additional info
+          try {
+            const statusResponse = await fetch(
+              `https://www.roblox.com/mobileapi/userblock/getStatus?targetUserIds=${robloxUserId}`
+            );
+            if (statusResponse.ok) {
+              const statusData = await statusResponse.json();
+              if (statusData.userBlockStatuses && statusData.userBlockStatuses.length > 0) {
+                const status = statusData.userBlockStatuses[0];
+                embed.addFields({
+                  name: "Account Status",
+                  value: status.isBlocked ? "Blocked/Suspended" : "Active",
+                  inline: true,
+                });
+              }
+            }
+          } catch {
+            // Status check optional
+          }
+        } else {
+          embed.addFields({
+            name: "Roblox Lookup",
+            value: `Could not find Roblox user with ID: ${robloxUserId}`,
+            inline: false,
+          });
+        }
+      } catch (error) {
+        console.error("Roblox user ID lookup error:", error);
+        embed.addFields({
+          name: "Roblox Lookup",
+          value: "Error searching Roblox API",
+          inline: false,
+        });
+      }
+    }
+    
+    embed.setFooter({
+      text: "User lookup results | Information from public APIs",
+    });
+    
+    await interaction.editReply({
+      embeds: [embed],
+    });
+    
+    console.log(
+      `User lookup performed by ${interaction.user.tag}: Discord=${discordUser?.tag || "N/A"}, Roblox=${robloxUsername || robloxUserId || "N/A"}`
+    );
+  } catch (error) {
+    console.error("User lookup error:", error);
+    await interaction.editReply({
+      content: "Failed to perform user lookup. Please try again.",
     });
   }
 }

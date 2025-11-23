@@ -80,6 +80,11 @@ Preferred communication style: Simple, everyday language.
 - **Moderation Commands**: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
 - **IP Ban Command**: `/ipban` for banning IP addresses from servers
 - **User Tracking Commands**: `/userhistory`, `/userwarnings`, `/userbans`, `/usermutes` for viewing individual moderation records
+- **Intel Research Command**: `/user-lookup` for searching Discord users and Roblox accounts
+  - Can search by Discord user mention/ID
+  - Can search by Roblox username or user ID
+  - Returns account creation dates, profile URLs, and status information
+  - Uses public Roblox API (no authentication required)
 - **Lockdown Features**:
   - `/lockdown` - Lock/unlock individual channels to prevent message sending
   - `/server-lockdown` - Lock/unlock entire server (all text channels)
