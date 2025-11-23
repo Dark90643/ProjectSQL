@@ -120,7 +120,8 @@ async function handleSearch(
     );
     
     if (!response.ok) {
-      console.error("API response not ok:", response.status);
+      const text = await response.text();
+      console.error("API response not ok:", response.status, text.substring(0, 200));
       throw new Error(`API error: ${response.status}`);
     }
 
@@ -176,6 +177,8 @@ async function handleCaseDetails(
     );
     
     if (!response.ok) {
+      const text = await response.text();
+      console.error(`API error for case ${caseId}:`, response.status, text.substring(0, 200));
       await interaction.reply(`Case with ID "${caseId}" not found.`);
       return;
     }
@@ -212,6 +215,8 @@ async function handleListCases(interaction: any) {
     );
     
     if (!response.ok) {
+      const text = await response.text();
+      console.error("API response not ok:", response.status, text.substring(0, 200));
       throw new Error(`API error: ${response.status}`);
     }
 
