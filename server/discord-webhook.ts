@@ -199,3 +199,87 @@ export async function sendCasePublicDiscordEmbed(caseData: {
     console.error("Public case Discord webhook error:", error);
   }
 }
+
+// Discord Webhook for Audit Trail Logs
+export async function sendAuditTrailDiscordEmbed(logData: {
+  id: string;
+  action: string;
+  userId?: string | null;
+  targetId?: string | null;
+  details: string;
+  timestamp: Date;
+}) {
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL_AUDIT;
+  
+  if (!webhookUrl) {
+    return; // Silently ignore if no webhook configured
+  }
+
+  try {
+    // Format action name nicely
+    const actionLabel = logData.action
+      .split('_')
+      .map(word => word.charAt(0) + word.slice(1).toLowerCase())
+      .join(' ');
+
+    const embed = {
+      title: `🔍 ${actionLabel}`,
+      description: logData.details || "Action performed",
+      color: getAuditColorForAction(logData.action),
+      fields: [
+        {
+          name: "Log ID",
+          value: logData.id,
+          inline: true,
+        },
+        {
+          name: "Action",
+          value: logData.action,
+          inline: true,
+        },
+        ...(logData.userId ? [{
+          name: "User ID",
+          value: logData.userId,
+          inline: true,
+        }] : []),
+        ...(logData.targetId ? [{
+          name: "Target ID",
+          value: logData.targetId,
+          inline: true,
+        }] : []),
+        {
+          name: "Timestamp",
+          value: new Date(logData.timestamp).toISOString(),
+          inline: false,
+        },
+      ],
+      footer: {
+        text: "AEGIS_NET Audit Trail",
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ embeds: [embed] }),
+    });
+    
+    if (!response.ok) {
+      console.error("Audit trail Discord webhook failed:", response.status);
+    }
+  } catch (error) {
+    console.error("Audit trail Discord webhook error:", error);
+  }
+}
+
+// Helper function to get color based on action type
+function getAuditColorForAction(action: string): number {
+  if (action.includes("DELETE")) return 0xFF0000; // Red for deletions
+  if (action.includes("CREATE")) return 0x00FF00; // Green for creations
+  if (action.includes("UPDATE") || action.includes("EDIT")) return 0x0099FF; // Blue for updates
+  if (action.includes("SUSPEND")) return 0xFF9900; // Orange for suspensions
+  if (action.includes("PUBLIC") || action.includes("DECRYPT")) return 0xFFCC00; // Yellow for public/decrypt
+  if (action.includes("ENCRYPT")) return 0x9900FF; // Purple for encryption
+  return 0x808080; // Gray for others
+}

@@ -14,6 +14,7 @@ import {
   inviteCodes,
 } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
+import { sendAuditTrailDiscordEmbed } from "./discord-webhook";
 
 export interface IStorage {
   // User operations
@@ -115,6 +116,8 @@ export class DatabaseStorage implements IStorage {
   // Log operations
   async createLog(log: InsertLog): Promise<Log> {
     const [newLog] = await db.insert(logs).values(log).returning();
+    // Send to Discord audit trail webhook
+    await sendAuditTrailDiscordEmbed(newLog);
     return newLog;
   }
 
