@@ -65,8 +65,13 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id: string, done) => {
+passport.deserializeUser(async (id: any, done) => {
   try {
+    // Ensure id is a string
+    if (!id || typeof id !== 'string') {
+      return done(null, false);
+    }
+    
     // If ID contains ":", it's a Discord user (format: discordId:serverId)
     if (id.includes(":")) {
       // For Discord users, we can't look them up in the users table
