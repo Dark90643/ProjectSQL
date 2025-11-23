@@ -48,27 +48,13 @@ export default function Login() {
     setIsLoading(true);
     setAuthError("");
     
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        setAuthError(error.error || "Identity verification failed. Access denied.");
-        setIsLoading(false);
-        return;
-      }
-
-      // Navigate to dashboard on successful login
+    const success = await login(values.username, values.password);
+    if (success) {
       setLocation("/dashboard");
-    } catch (error: any) {
-      setAuthError("Authentication error. Please try again.");
-      setIsLoading(false);
+    } else {
+      setAuthError("Identity verification failed. Access denied.");
     }
+    setIsLoading(false);
   }
 
   async function onVerifyInvite() {
