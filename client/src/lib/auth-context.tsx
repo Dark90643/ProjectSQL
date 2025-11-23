@@ -128,22 +128,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  // Load user data when currentServerId becomes available
+  // Load user data when user is authenticated
   useEffect(() => {
-    if (user && currentServerId) {
+    if (user) {
       loadUserData();
     }
-  }, [currentServerId, user]);
+  }, [user]);
 
   const loadUserData = async () => {
-    if (!currentServerId) {
-      setCases([]);
-      return;
-    }
-    
     try {
+      // For Discord OAuth users with currentServerId, load server-specific cases
+      // For traditional login users without serverId, load all cases
       const [casesData, usersData, logsData] = await Promise.all([
-        api.cases.getAll(currentServerId),
+        api.cases.getAll(currentServerId || undefined),
         api.users.getAll().catch(() => []), // May not have permission
         api.logs.getAll().catch(() => []), // May not have permission
       ]);
