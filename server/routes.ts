@@ -1043,7 +1043,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // If serverId is provided (Discord OAuth flow), filter by that server
     if (serverId) {
       // Verify user is a member of this server
-      const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+      const discordUserId = req.user!.discordUserId || req.user!.id;
+      const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
       if (!isServerMember) {
         return res.status(403).json({ error: "Not a member of this server" });
       }
@@ -1128,7 +1129,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // If serverId is provided, verify user is admin or owner
     if (serverId) {
-      const serverMember = await storage.getServerMember(serverId, req.user!.id);
+      const discordUserId = req.user!.discordUserId || req.user!.id;
+      const serverMember = await storage.getServerMember(serverId, discordUserId);
       if (!serverMember) {
         return res.status(403).json({ error: "Not a member of this server" });
       }
@@ -1178,7 +1180,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // If serverId is provided, verify user is a member
     if (serverId) {
-      const isServerMember = await storage.getServerMember(serverId, req.user!.id);
+      const discordUserId = req.user!.discordUserId || req.user!.id;
+      const isServerMember = await storage.getServerMember(serverId, discordUserId);
       if (!isServerMember) {
         return res.status(403).json({ error: "Not a member of this server" });
       }
@@ -1215,7 +1218,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // If serverId is provided, verify user is a member
     if (serverId) {
-      const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+      const discordUserId = req.user!.discordUserId || req.user!.id;
+      const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
       if (!isServerMember) {
         return res.status(403).json({ error: "Not a member of this server" });
       }
@@ -1252,7 +1256,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // If serverId is provided, verify user is a member
     if (serverId) {
-      const isServerMember = await storage.getServerMember(serverId as string, req.user!.id);
+      const discordUserId = req.user!.discordUserId || req.user!.id;
+      const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
       if (!isServerMember) {
         return res.status(403).json({ error: "Not a member of this server" });
       }
