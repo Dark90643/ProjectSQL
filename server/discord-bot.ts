@@ -77,6 +77,12 @@ export async function initializeDiscordBot() {
     const command = interaction.commandName;
 
     try {
+      // Immediately defer the reply to prevent timeout
+      await interaction.deferReply().catch(() => {
+        // If defer fails, the interaction might be expired
+        console.error("Failed to defer reply for command:", command);
+      });
+
       if (command === "search") {
         const query = interaction.options.getString("query")!.toLowerCase();
         await handleSearch(interaction, query);
@@ -88,10 +94,13 @@ export async function initializeDiscordBot() {
       }
     } catch (error) {
       console.error("Error handling command:", error);
-      await interaction.reply({
-        content: "An error occurred while processing your request.",
-        ephemeral: true,
-      });
+      try {
+        await interaction.editReply({
+          content: "An error occurred while processing your request.",
+        });
+      } catch (replyError) {
+        console.error("Failed to send error reply:", replyError);
+      }
     }
   });
 
@@ -107,15 +116,20 @@ async function handleSearch(
   interaction: any,
   query: string
 ) {
-  await interaction.deferReply();
-
   try {
+    console.log("Fetching cases for search...");
     const response = await fetch(
-      "http://localhost:5000/api/cases/public"
+      "http://localhost:5000/api/cases/public",
+      { timeout: 10000 }
     );
-    if (!response.ok) throw new Error("Failed to fetch cases");
+    
+    if (!response.ok) {
+      console.error("API response not ok:", response.status);
+      throw new Error(`API error: ${response.status}`);
+    }
 
     const cases: CaseData[] = await response.json();
+    console.log(`Found ${cases.length} public cases`);
 
     // Filter cases by title or description matching the query
     const results = cases.filter(
@@ -146,8 +160,9 @@ async function handleSearch(
     });
   } catch (error) {
     console.error("Search error:", error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
     await interaction.editReply(
-      "Failed to search cases. Please try again later."
+      `Failed to search cases: ${errorMsg}`
     );
   }
 }
@@ -156,18 +171,20 @@ async function handleCaseDetails(
   interaction: any,
   caseId: string
 ) {
-  await interaction.deferReply();
-
   try {
+    console.log(`Fetching case details for ${caseId}...`);
     const response = await fetch(
-      `http://localhost:5000/api/cases/${caseId}`
+      `http://localhost:5000/api/cases/${caseId}`,
+      { timeout: 10000 }
     );
+    
     if (!response.ok) {
       await interaction.editReply(`Case with ID "${caseId}" not found.`);
       return;
     }
 
     const caseData: CaseData = await response.json();
+    console.log(`Retrieved case: ${caseData.title}`);
 
     // Only show if public
     if (!caseData.isPublic) {
@@ -181,22 +198,27 @@ async function handleCaseDetails(
     await interaction.editReply({ embeds: [embed] });
   } catch (error) {
     console.error("Case details error:", error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
     await interaction.editReply(
-      "Failed to fetch case details. Please try again later."
+      `Failed to fetch case details: ${errorMsg}`
     );
   }
 }
 
 async function handleListCases(interaction: any) {
-  await interaction.deferReply();
-
   try {
+    console.log("Fetching all public cases...");
     const response = await fetch(
-      "http://localhost:5000/api/cases/public"
+      "http://localhost:5000/api/cases/public",
+      { timeout: 10000 }
     );
-    if (!response.ok) throw new Error("Failed to fetch cases");
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
 
     const cases: CaseData[] = await response.json();
+    console.log(`Retrieved ${cases.length} public cases`);
 
     if (cases.length === 0) {
       await interaction.editReply("No public cases available.");
@@ -229,8 +251,9 @@ async function handleListCases(interaction: any) {
     });
   } catch (error) {
     console.error("List cases error:", error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
     await interaction.editReply(
-      "Failed to fetch cases. Please try again later."
+      `Failed to fetch cases: ${errorMsg}`
     );
   }
 }
