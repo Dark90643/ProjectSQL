@@ -1206,6 +1206,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { id } = req.params;
     const { serverId, ...updates } = req.body;
     
+    // Only Agent, Management, and Overseer roles can update cases
+    if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
+      return res.status(403).json({ error: "Only authorized users can update cases" });
+    }
+    
     // Get the case first to validate
     const caseData = await storage.getCase(id);
     if (!caseData) {
