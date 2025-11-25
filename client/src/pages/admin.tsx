@@ -86,12 +86,21 @@ export default function AdminPanel() {
 
   // Filter logs for current server only
   const filteredLogs = logs.filter(log => {
-    if (!log.serverId) {
+    // If we have a currentServerId, filter logs
+    if (currentServerId) {
+      // First check if log.serverId matches
+      if (log.serverId === currentServerId) {
+        return true;
+      }
       // If log doesn't have serverId, check if it's related to a case in this server
-      const relatedCase = cases.find(c => c.id === log.targetId);
-      return relatedCase?.serverId === currentServerId;
+      if (!log.serverId) {
+        const relatedCase = cases.find(c => c.id === log.targetId);
+        return relatedCase?.serverId === currentServerId;
+      }
+      return false;
     }
-    return log.serverId === currentServerId;
+    // If no currentServerId, show all logs (for traditional users)
+    return true;
   });
 
   const sortedLogs = [...filteredLogs].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -303,18 +312,22 @@ export default function AdminPanel() {
                              )}
                           </TableCell>
                           <TableCell className="text-right">
-                            {user?.role === "Overseer" && user.id !== member.discordUserId && (
-                              <div className="flex gap-1">
-                                {member.isSuspended ? (
-                                  <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => suspendUser(member.id)}>
-                                    <UserCheck size={12} className="mr-1" /> RESTORE
-                                  </Button>
-                                ) : (
-                                  <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-destructive/50 hover:bg-destructive/10 text-destructive" onClick={() => suspendUser(member.id)}>
-                                    <UserX size={12} className="mr-1" /> SUSPEND
-                                  </Button>
-                                )}
-                              </div>
+                            {user?.role === "Overseer" && (
+                              user.discordUserId === member.discordUserId ? (
+                                <span className="text-xs text-muted-foreground font-mono">CANNOT SELF-SUSPEND</span>
+                              ) : (
+                                <div className="flex gap-1">
+                                  {member.isSuspended ? (
+                                    <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => suspendUser(member.id)} data-testid="button-restore-user">
+                                      <UserCheck size={12} className="mr-1" /> RESTORE
+                                    </Button>
+                                  ) : (
+                                    <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-destructive/50 hover:bg-destructive/10 text-destructive" onClick={() => suspendUser(member.id)} data-testid="button-suspend-user">
+                                      <UserX size={12} className="mr-1" /> SUSPEND
+                                    </Button>
+                                  )}
+                                </div>
+                              )
                             )}
                           </TableCell>
                         </TableRow>
