@@ -142,6 +142,32 @@ const checkIpBan = async (req: Request, res: Response, next: Function) => {
   next();
 };
 
+const requireRoleOrServerOwner = (...roles: string[]) => {
+  return async (req: Request, res: Response, next: Function) => {
+    // Check if user has the required role
+    if (req.user && roles.includes(req.user.role)) {
+      return next();
+    }
+    
+    // Check if user is a server owner/admin (for Discord users in server context)
+    if (req.user?.discordUserId) {
+      const serverId = (req.query.serverId as string) || req.body?.serverId;
+      if (serverId) {
+        try {
+          const member = await storage.getServerMember(serverId, req.user.discordUserId);
+          if (member && (member.isOwner || member.isAdmin)) {
+            return next();
+          }
+        } catch (error) {
+          console.error("Error checking server membership:", error);
+        }
+      }
+    }
+    
+    return res.status(403).json({ error: "Forbidden" });
+  };
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize Passport
   app.use(passport.initialize());
@@ -1269,82 +1295,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/cases", requireAuth, async (req: Request, res: Response) => {
-    const caseData = req.body;
-    const { serverId } = caseData;
-    
-    // Only Agent, Management, and Overseer roles can create cases
-    if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
-      return res.status(403).json({ error: "Only authorized users can create cases" });
+    try {
+      const caseData = req.body;
+      const { serverId } = caseData;
+      
+      // Only Agent, Management, and Overseer roles can create cases
+      if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
+        return res.status(403).json({ error: "Only authorized users can create cases" });
+      }
+      
+      const id = `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`;
+      
+      const newCase = await storage.createCase({
+        ...caseData,
+        id,
+        assignedAgent: req.user!.username,
+        isPublic: false,
+        serverId: serverId || null,
+      });
+
+      await storage.createLog({
+        action: "CASE_CREATE",
+        userId: req.user!.id,
+        targetId: newCase.id,
+        serverId: serverId || undefined,
+        details: `Created case ${newCase.title}`,
+      });
+
+      // Send Discord notification
+      await sendCaseDiscordEmbed(newCase);
+
+      res.json(newCase);
+    } catch (error: any) {
+      console.error("Create case error:", error);
+      res.status(500).json({ error: "Failed to create case" });
     }
-    
-    const id = `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`;
-    
-    const newCase = await storage.createCase({
-      ...caseData,
-      id,
-      assignedAgent: req.user!.username,
-      isPublic: false,
-      serverId: serverId || null,
-    });
-
-    await storage.createLog({
-      action: "CASE_CREATE",
-      userId: req.user!.id,
-      targetId: newCase.id,
-      details: `Created case ${newCase.title}`,
-    });
-
-    // Send Discord notification
-    await sendCaseDiscordEmbed(newCase);
-
-    res.json(newCase);
   });
 
   app.patch("/api/cases/:id", requireAuth, async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { serverId, ...updates } = req.body;
-    
-    // Only Agent, Management, and Overseer roles can update cases
-    if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
-      return res.status(403).json({ error: "Only authorized users can update cases" });
-    }
-    
-    // Get the case first to validate
-    const caseData = await storage.getCase(id);
-    if (!caseData) {
-      return res.status(404).json({ error: "Case not found" });
-    }
-    
-    // If serverId is provided, verify it matches
-    if (serverId && caseData.serverId !== serverId) {
-      return res.status(403).json({ error: "Case not found in this server" });
-    }
-    
-    // If serverId is provided, verify user is a member
-    if (serverId) {
-      const discordUserId = req.user!.discordUserId || req.user!.id;
-      const isServerMember = await storage.getServerMember(serverId, discordUserId);
-      if (!isServerMember) {
-        return res.status(403).json({ error: "Not a member of this server" });
+    try {
+      const { id } = req.params;
+      const { serverId, ...updates } = req.body;
+      
+      // Only Agent, Management, and Overseer roles can update cases
+      if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
+        return res.status(403).json({ error: "Only authorized users can update cases" });
       }
+      
+      // Get the case first to validate
+      const caseData = await storage.getCase(id);
+      if (!caseData) {
+        return res.status(404).json({ error: "Case not found" });
+      }
+      
+      // If serverId is provided, verify it matches
+      if (serverId && caseData.serverId !== serverId) {
+        return res.status(403).json({ error: "Case not found in this server" });
+      }
+      
+      // If serverId is provided, verify user is a member
+      if (serverId) {
+        const discordUserId = req.user!.discordUserId || req.user!.id;
+        const isServerMember = await storage.getServerMember(serverId, discordUserId);
+        if (!isServerMember) {
+          return res.status(403).json({ error: "Not a member of this server" });
+        }
+      }
+      
+      const updatedCase = await storage.updateCase(id, updates);
+      
+      if (updatedCase) {
+        await storage.createLog({
+          action: "CASE_UPDATE",
+          userId: req.user!.id,
+          targetId: id,
+          serverId: caseData.serverId || undefined,
+          details: "Updated case details",
+        });
+      }
+      
+      res.json(updatedCase || null);
+    } catch (error: any) {
+      console.error("Update case error:", error);
+      res.status(500).json({ error: "Failed to update case" });
     }
-    
-    const updatedCase = await storage.updateCase(id, updates);
-    
-    if (updatedCase) {
-      await storage.createLog({
-        action: "CASE_UPDATE",
-        userId: req.user!.id,
-        targetId: id,
-        serverId: caseData.serverId || undefined,
-        details: "Updated case details",
-      });
-    }
-    
-    res.json(updatedCase || null);
   });
 
-  app.delete("/api/cases/:id", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+  app.delete("/api/cases/:id", requireAuth, requireRoleOrServerOwner("Management", "Overseer"), async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { serverId } = req.query;
@@ -1388,48 +1425,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/cases/:id/toggle-public", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { serverId } = req.query;
-    
-    const caseData = await storage.getCase(id);
-    
-    if (!caseData) {
-      return res.status(404).json({ error: "Case not found" });
-    }
-    
-    // If serverId is provided, verify it matches
-    if (serverId && caseData.serverId !== serverId) {
-      return res.status(403).json({ error: "Case not found in this server" });
-    }
-    
-    // If serverId is provided, verify user is a member
-    if (serverId) {
-      const discordUserId = req.user!.discordUserId || req.user!.id;
-      const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
-      if (!isServerMember) {
-        return res.status(403).json({ error: "Not a member of this server" });
+  app.patch("/api/cases/:id/toggle-public", requireAuth, requireRoleOrServerOwner("Overseer"), async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { serverId } = req.query;
+      
+      const caseData = await storage.getCase(id);
+      
+      if (!caseData) {
+        return res.status(404).json({ error: "Case not found" });
       }
-    }
-    
-    const updatedCase = await storage.updateCase(id, { isPublic: !caseData.isPublic });
-    
-    if (updatedCase) {
-      await storage.createLog({
-        action: "CASE_PUBLIC_TOGGLE",
-        userId: req.user!.id,
-        targetId: id,
-        serverId: caseData.serverId || undefined,
-        details: `Changed public visibility to ${updatedCase.isPublic}`,
-      });
+      
+      // If serverId is provided, verify it matches
+      if (serverId && caseData.serverId !== serverId) {
+        return res.status(403).json({ error: "Case not found in this server" });
+      }
+      
+      // If serverId is provided, verify user is a member
+      if (serverId) {
+        const discordUserId = req.user!.discordUserId || req.user!.id;
+        const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
+        if (!isServerMember) {
+          return res.status(403).json({ error: "Not a member of this server" });
+        }
+      }
+      
+      const updatedCase = await storage.updateCase(id, { isPublic: !caseData.isPublic });
+      
+      if (updatedCase) {
+        await storage.createLog({
+          action: "CASE_PUBLIC_TOGGLE",
+          userId: req.user!.id,
+          targetId: id,
+          serverId: caseData.serverId || undefined,
+          details: `Changed public visibility to ${updatedCase.isPublic}`,
+        });
 
-      // Send Discord notification when case is made public
-      if (updatedCase.isPublic) {
-        await sendCasePublicDiscordEmbed(updatedCase);
+        // Send Discord notification when case is made public
+        if (updatedCase.isPublic) {
+          await sendCasePublicDiscordEmbed(updatedCase);
+        }
       }
+      
+      res.json(updatedCase);
+    } catch (error: any) {
+      console.error("Toggle case public error:", error);
+      res.status(500).json({ error: "Failed to toggle case visibility" });
     }
-    
-    res.json(updatedCase);
   });
 
   // Log routes
