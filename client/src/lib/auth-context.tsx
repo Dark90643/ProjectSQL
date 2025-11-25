@@ -237,7 +237,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ discordId: discordUser.discordId, serverId }),
+        body: JSON.stringify({ discordId: discordUser.discordId, serverId, discordUsername: discordUser.username }),
       });
       if (!response.ok) {
         throw new Error("Failed to select server");
