@@ -619,29 +619,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all cases to count per server
       const allCases = await storage.getAllCases();
       
-      // Filter servers where bot is present and add case counts
+      // Get server members for this user to check permissions
+      const serverMembers: Map<string, any> = new Map();
+      for (const server of servers) {
+        const member = await storage.getServerMember(server.serverId, discordId as string);
+        if (member) {
+          serverMembers.set(server.serverId, member);
+        }
+      }
+      
+      // Filter servers where user is Owner or Admin (has permission to add bot)
       const serversWithData: any[] = [];
       
       for (const server of servers) {
-        // Check if bot is in this server
-        let hasBotInServer = false;
+        const member = serverMembers.get(server.serverId);
         
-        if (discordClient && discordClient.isReady()) {
-          const guild = discordClient.guilds.cache.get(server.serverId);
-          hasBotInServer = !!guild;
-        } else {
-          const botDiscordId = "1442053672694714529";
-          const botMember = await storage.getServerMember(server.serverId, botDiscordId);
-          hasBotInServer = !!botMember;
-        }
-        
-        // Only include servers with bot
-        if (hasBotInServer) {
+        // Only include servers where user is Owner or Admin
+        if (member && (member.isOwner || member.isAdmin)) {
           const caseCount = allCases.filter(c => c.serverId === server.serverId).length;
           
           serversWithData.push({
             ...server,
             caseCount,
+            hasBot: false, // Will be checked on client side
             serverIcon: server.serverIcon 
               ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
               : undefined,
