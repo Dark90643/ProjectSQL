@@ -1322,8 +1322,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: `Created case ${newCase.title}`,
       });
 
-      // Send Discord notification
-      await sendCaseDiscordEmbed(newCase);
+      // Send Discord notification (non-blocking)
+      sendCaseDiscordEmbed(newCase).catch(err => {
+        console.error("Failed to send Discord notification:", err);
+      });
 
       res.json(newCase);
     } catch (error: any) {
@@ -1461,9 +1463,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           details: `Changed public visibility to ${updatedCase.isPublic}`,
         });
 
-        // Send Discord notification when case is made public
+        // Send Discord notification when case is made public (non-blocking)
         if (updatedCase.isPublic) {
-          await sendCasePublicDiscordEmbed(updatedCase);
+          sendCasePublicDiscordEmbed(updatedCase).catch(err => {
+            console.error("Failed to send Discord notification:", err);
+          });
         }
       }
       
