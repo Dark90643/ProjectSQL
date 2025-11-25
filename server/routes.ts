@@ -1342,6 +1342,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         action: "CASE_UPDATE",
         userId: req.user!.id,
         targetId: id,
+        serverId: caseData.serverId || undefined,
         details: "Updated case details",
       });
     }
@@ -1380,6 +1381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         action: "CASE_DELETE",
         userId: req.user!.id,
         targetId: id,
+        serverId: caseData.serverId || undefined,
         details: JSON.stringify({ title: caseData.title, caseData: caseData }),
       });
     }
@@ -1418,6 +1420,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         action: "CASE_PUBLIC_TOGGLE",
         userId: req.user!.id,
         targetId: id,
+        serverId: caseData.serverId || undefined,
         details: `Changed public visibility to ${updatedCase.isPublic}`,
       });
 
