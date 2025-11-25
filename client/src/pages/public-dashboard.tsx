@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,7 @@ interface Server {
 export default function PublicDashboard() {
   const [cases, setCases] = useState<Case[]>([]);
   const [servers, setServers] = useState<Server[]>([]);
+  const [serverMap, setServerMap] = useState<Map<string, string>>(new Map());
   const [selectedServer, setSelectedServer] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [isSyncing, setIsSyncing] = useState(false);
@@ -59,6 +60,13 @@ export default function PublicDashboard() {
       try {
         const data = await fetch("/api/public/servers").then(r => r.json());
         setServers(data);
+        
+        // Create server map for quick lookup
+        const map = new Map<string, string>();
+        data.forEach((server: Server) => {
+          map.set(server.serverId, server.serverName);
+        });
+        setServerMap(map);
       } catch (error) {
         console.error("Error loading servers:", error);
       }
@@ -212,39 +220,49 @@ export default function PublicDashboard() {
             </div>
           ) : (
             filteredCases.map(c => (
-              <Card key={c.id} className="group bg-card/30 border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-card/50">
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <Badge variant="outline" className={`font-mono rounded-sm ${getPriorityColor(c.priority)}`}>
-                      {c.priority}
-                    </Badge>
-                    <Badge variant="secondary" className="font-mono rounded-sm text-[10px]">
-                      PUBLIC
-                    </Badge>
-                  </div>
-                  <CardTitle className="font-mono text-lg mt-2 group-hover:text-primary transition-colors truncate">
-                    {c.title}
-                  </CardTitle>
-                  <p className="text-xs font-mono text-muted-foreground">{c.id}</p>
-                </CardHeader>
-                <CardContent className="pb-3">
-                  <p className="text-sm text-muted-foreground line-clamp-3 h-[4.5rem] mb-4 font-mono">
-                    {c.description}
-                  </p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono border-t border-dashed border-border pt-3">
-                    <span className="flex items-center gap-1">
-                      <Clock size={12} />
-                      {new Date(c.updatedAt).toLocaleDateString()}
-                    </span>
-                    {c.status === "Redacted" && (
-                      <span className="flex items-center gap-1 text-destructive">
-                        <AlertTriangle size={12} />
-                        PARTIALLY REDACTED
-                      </span>
+              <Link key={c.id} href={`/cases/${c.id}`}>
+                <Card className="group bg-card/30 border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-card/50 cursor-pointer">
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between items-start">
+                      <Badge variant="outline" className={`font-mono rounded-sm ${getPriorityColor(c.priority)}`}>
+                        {c.priority}
+                      </Badge>
+                      <Badge variant="secondary" className="font-mono rounded-sm text-[10px]">
+                        PUBLIC
+                      </Badge>
+                    </div>
+                    <CardTitle className="font-mono text-lg mt-2 group-hover:text-primary transition-colors truncate">
+                      {c.title}
+                    </CardTitle>
+                    <p className="text-xs font-mono text-muted-foreground">{c.id}</p>
+                  </CardHeader>
+                  <CardContent className="pb-3">
+                    <p className="text-sm text-muted-foreground line-clamp-3 h-[4.5rem] mb-4 font-mono">
+                      {c.description}
+                    </p>
+                    
+                    {/* Server Name */}
+                    {c.serverId && serverMap.has(c.serverId) && (
+                      <div className="text-xs font-mono text-primary/70 mb-2 border-l-2 border-primary/30 pl-2">
+                        📍 {serverMap.get(c.serverId)}
+                      </div>
                     )}
-                  </div>
-                </CardContent>
-              </Card>
+                    
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono border-t border-dashed border-border pt-3">
+                      <span className="flex items-center gap-1">
+                        <Clock size={12} />
+                        {new Date(c.updatedAt).toLocaleDateString()}
+                      </span>
+                      {c.status === "Redacted" && (
+                        <span className="flex items-center gap-1 text-destructive">
+                          <AlertTriangle size={12} />
+                          PARTIALLY REDACTED
+                        </span>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))
           )}
         </div>
