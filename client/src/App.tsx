@@ -61,7 +61,7 @@ function RouterContent() {
         <Layout><ProtectedRoute component={Dashboard} path="/dashboard" /></Layout>
       </Route>
       <Route path="/cases/:id">
-        <Layout><ProtectedRoute component={CaseView} path="/cases/:id" /></Layout>
+        <Layout><CaseView /></Layout>
       </Route>
       <Route path="/admin">
         <Layout><ProtectedRoute component={AdminPanel} path="/admin" /></Layout>

@@ -47,6 +47,7 @@ export default function CaseView() {
   const [liveCase, setLiveCase] = useState<any>(null);
   const [isLoadingCase, setIsLoadingCase] = useState(!isNew);
   const [hasCreatePermission, setHasCreatePermission] = useState<boolean | null>(null);
+  const [isPublicCase, setIsPublicCase] = useState(false);
   
   const [isEditing, setIsEditing] = useState(isNew);
   const [needsPassword, setNeedsPassword] = useState(false);
@@ -69,6 +70,30 @@ export default function CaseView() {
       }
     }
   }, [isNew, user, setLocation, toast]);
+
+  // Check if accessing public case without auth
+  useEffect(() => {
+    if (!isNew && !user && params?.id) {
+      // Try to load as public case
+      fetch(`/api/cases/${params.id}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Case not found");
+          return res.json();
+        })
+        .then(data => {
+          if (data.isPublic) {
+            setIsPublicCase(true);
+          } else {
+            // Redirect to public page if trying to access private case without auth
+            setLocation("/public");
+            toast({ variant: "destructive", title: "Access Denied", description: "Please log in to view this case" });
+          }
+        })
+        .catch(err => {
+          setLocation("/public");
+        });
+    }
+  }, [isNew, user, params?.id, setLocation, toast]);
 
   // Fetch fresh case data on mount and when case ID changes
   useEffect(() => {
@@ -98,6 +123,9 @@ export default function CaseView() {
   const canEdit = isNew ? (hasCreatePermission === true) : canSaveRecord;
   const canDelete = user?.role === "Management" || user?.role === "Overseer";
   const isOverseer = user?.role === "Overseer";
+  
+  // If not authenticated and viewing a public case, only allow viewing (not editing)
+  const isViewingPublicAsGuest = !user && isPublicCase;
 
   const form = useForm<z.infer<typeof caseSchema>>({
     resolver: zodResolver(caseSchema),
