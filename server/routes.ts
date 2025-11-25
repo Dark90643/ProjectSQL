@@ -609,39 +609,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/auth/discord/servers", async (req: Request, res: Response) => {
     try {
-      const { discordId } = req.query;
-      if (!discordId) {
-        return res.status(400).json({ error: "Discord ID required" });
-      }
-
-      const servers = await storage.getServersByUser(discordId as string);
+      // Get all servers where the bot is present (not filtered by user)
+      const allWorkspaces = await storage.getAllServerWorkspaces();
       
       // Get all cases to count per server
       const allCases = await storage.getAllCases();
       
-      // Get server members for this user to check permissions
-      const serverMembers: Map<string, any> = new Map();
-      for (const server of servers) {
-        const member = await storage.getServerMember(server.serverId, discordId as string);
-        if (member) {
-          serverMembers.set(server.serverId, member);
-        }
+      // Get bot's guilds from Discord client
+      const botGuilds = new Set<string>();
+      if (discordClient && discordClient.isReady()) {
+        discordClient.guilds.cache.forEach(guild => {
+          botGuilds.add(guild.id);
+        });
       }
       
-      // Filter servers where user is Owner or Admin (has permission to add bot)
+      // Filter servers where bot is present and add case counts
       const serversWithData: any[] = [];
       
-      for (const server of servers) {
-        const member = serverMembers.get(server.serverId);
-        
-        // Only include servers where user is Owner or Admin
-        if (member && (member.isOwner || member.isAdmin)) {
+      for (const server of allWorkspaces) {
+        // Only include servers where bot is actually in
+        if (botGuilds.has(server.serverId)) {
           const caseCount = allCases.filter(c => c.serverId === server.serverId).length;
           
           serversWithData.push({
             ...server,
             caseCount,
-            hasBot: false, // Will be checked on client side
             serverIcon: server.serverIcon 
               ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
               : undefined,
@@ -1167,8 +1159,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/cases/public", async (req: Request, res: Response) => {
-    const cases = await storage.getPublicCases();
-    res.json(cases);
+    const { serverId } = req.query;
+    const allPublicCases = await storage.getPublicCases();
+    
+    // Filter by serverId if provided
+    if (serverId) {
+      const filtered = allPublicCases.filter(c => c.serverId === serverId);
+      res.json(filtered);
+    } else {
+      res.json(allPublicCases);
+    }
+  });
+
+  app.get("/api/public/servers", async (req: Request, res: Response) => {
+    try {
+      // Get all servers where the bot is present for public display
+      const allWorkspaces = await storage.getAllServerWorkspaces();
+      const allCases = await storage.getAllCases();
+      
+      // Get bot's guilds from Discord client
+      const botGuilds = new Set<string>();
+      if (discordClient && discordClient.isReady()) {
+        discordClient.guilds.cache.forEach(guild => {
+          botGuilds.add(guild.id);
+        });
+      }
+      
+      // Filter servers where bot is present
+      const serversWithData: any[] = [];
+      
+      for (const server of allWorkspaces) {
+        if (botGuilds.has(server.serverId)) {
+          const publicCaseCount = allCases.filter(c => c.serverId === server.serverId && c.isPublic).length;
+          
+          serversWithData.push({
+            ...server,
+            publicCaseCount,
+            serverIcon: server.serverIcon 
+              ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
+              : undefined,
+          });
+        }
+      }
+      
+      res.json(serversWithData);
+    } catch (error: any) {
+      console.error("Get public servers error:", error);
+      res.status(500).json({ error: "Failed to get servers" });
+    }
+  });
+
+  app.post("/api/admin/cleanup-legacy-accounts", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
+    try {
+      // Delete legacy accounts that have no Discord association
+      const allUsers = await storage.getAllUsers();
+      const legacyUsers = allUsers.filter(u => !u.id.includes(":") && ["MGM_DIRECTOR", "AGENT_FOX", "INTELLIGENCE", "AGENT_SMITH", "OVERSEER"].some(legacy => u.username?.includes(legacy)));
+      
+      let deletedCount = 0;
+      for (const user of legacyUsers) {
+        try {
+          await storage.updateUser(user.id, { isSuspended: true });
+          deletedCount++;
+        } catch (error) {
+          console.error("Failed to suspend user:", user.id);
+        }
+      }
+      
+      res.json({ success: true, deletedCount, message: `Suspended ${deletedCount} legacy accounts` });
+    } catch (error: any) {
+      console.error("Cleanup legacy accounts error:", error);
+      res.status(500).json({ error: "Failed to cleanup accounts" });
+    }
   });
 
   app.get("/api/cases/:id", async (req: Request, res: Response) => {

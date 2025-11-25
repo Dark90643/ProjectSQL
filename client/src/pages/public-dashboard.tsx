@@ -4,6 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Search, 
   Globe, 
@@ -11,7 +18,8 @@ import {
   Clock, 
   AlertTriangle,
   Eye,
-  RefreshCcw
+  RefreshCcw,
+  Zap
 } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -27,19 +35,45 @@ interface Case {
   tags: string[];
   content: string;
   isPublic: boolean;
+  serverId?: string;
+}
+
+interface Server {
+  serverId: string;
+  serverName: string;
+  serverIcon?: string;
+  publicCaseCount: number;
 }
 
 export default function PublicDashboard() {
   const [cases, setCases] = useState<Case[]>([]);
+  const [servers, setServers] = useState<Server[]>([]);
+  const [selectedServer, setSelectedServer] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const loadServers = async () => {
+      try {
+        const data = await fetch("/api/public/servers").then(r => r.json());
+        setServers(data);
+      } catch (error) {
+        console.error("Error loading servers:", error);
+      }
+    };
+    loadServers();
+  }, []);
+
   const loadCases = async () => {
     try {
       setIsSyncing(true);
-      const data = await api.cases.getPublic();
+      let url = "/api/cases/public";
+      if (selectedServer !== "all") {
+        url += `?serverId=${selectedServer}`;
+      }
+      const data = await fetch(url).then(r => r.json());
       setCases(data);
       setLastUpdated(new Date());
     } catch (error) {
@@ -59,7 +93,7 @@ export default function PublicDashboard() {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedServer]);
 
   const filteredCases = cases.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || 
@@ -129,15 +163,44 @@ export default function PublicDashboard() {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="relative w-full max-w-md mb-8">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="SEARCH PUBLIC RECORDS..." 
-            className="pl-9 font-mono bg-background/50 border-primary/20 focus-visible:ring-primary/50" 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        {/* Server & Search */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <Select value={selectedServer} onValueChange={setSelectedServer}>
+            <SelectTrigger className="md:w-64 font-mono bg-background/50 border-primary/20 focus:ring-primary/50">
+              <SelectValue placeholder="SELECT SERVER" />
+            </SelectTrigger>
+            <SelectContent className="font-mono">
+              <SelectItem value="all">
+                <span className="flex items-center gap-2">
+                  <Globe size={14} />
+                  ALL SERVERS
+                </span>
+              </SelectItem>
+              {servers.map(server => (
+                <SelectItem key={server.serverId} value={server.serverId}>
+                  <span className="flex items-center gap-2">
+                    {server.serverIcon ? (
+                      <img src={server.serverIcon} alt={server.serverName} className="w-4 h-4 rounded" />
+                    ) : (
+                      <Zap size={14} />
+                    )}
+                    {server.serverName} ({server.publicCaseCount})
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="SEARCH PUBLIC RECORDS..." 
+              className="pl-9 font-mono bg-background/50 border-primary/20 focus-visible:ring-primary/50" 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              data-testid="input-search-public"
+            />
+          </div>
         </div>
 
         {/* Grid */}

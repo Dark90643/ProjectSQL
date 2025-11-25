@@ -13,6 +13,7 @@ import CaseView from "@/pages/case-view";
 import AdminPanel from "@/pages/admin";
 import SettingsPage from "@/pages/settings";
 import Recovery from "@/pages/recovery";
+import PublicDashboard from "@/pages/public-dashboard";
 import Layout from "@/components/layout";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
@@ -47,6 +48,7 @@ function RouterContent() {
   return (
     <Switch>
       <Route path="/" component={Login} />
+      <Route path="/public" component={PublicDashboard} />
       <Route path="/server-selector" component={ServerSelector} />
       <Route path="/discord-auth" component={DiscordAuth} />
       <Route path="/bot-invite" component={BotInvite} />
