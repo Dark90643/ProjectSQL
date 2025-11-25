@@ -707,10 +707,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/check-support-team-status", requireAuth, async (req: Request, res: Response) => {
     try {
       // For logged-in users, check if they're support team
-      // We need to get their Discord ID from the session
-      const discordId = (req.session as any).discordUserId || (req.session as any).discordId;
+      // We need to get their Discord ID from the user object
+      const discordId = req.user?.discordUserId || req.user?.id;
       
       if (!discordId) {
+        console.log("No Discord ID found in user:", { userId: req.user?.id, discordUserId: req.user?.discordUserId });
         return res.json({ isSupportTeam: false });
       }
 
@@ -718,6 +719,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const member = await storage.getServerMember(officialBotServer, discordId);
       
       const isSupportTeam = !!(member && (member.isOwner || member.isAdmin));
+      console.log("Support team check:", { discordId, officialBotServer, isOwner: member?.isOwner, isAdmin: member?.isAdmin, isSupportTeam });
       
       res.json({ isSupportTeam });
     } catch (error: any) {
