@@ -230,7 +230,7 @@ export default function AdminPanel() {
           <Card className="bg-card/50 border-primary/20">
             <CardHeader>
               <CardTitle className="font-mono text-lg">Personnel Management</CardTitle>
-              <CardDescription className="font-mono text-xs">Manage active agents and clearance.</CardDescription>
+              <CardDescription className="font-mono text-xs">Authorized Discord accounts. Only users authenticated via Discord OAuth are displayed.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="rounded-md border border-border/50 overflow-hidden">
@@ -238,6 +238,7 @@ export default function AdminPanel() {
                   <TableHeader className="bg-muted/50">
                     <TableRow>
                       <TableHead className="font-mono text-xs">IDENTITY</TableHead>
+                      <TableHead className="font-mono text-xs">USER_ID</TableHead>
                       <TableHead className="font-mono text-xs">CLEARANCE</TableHead>
                       <TableHead className="font-mono text-xs">STATUS</TableHead>
                       <TableHead className="font-mono text-xs">CONNECTION</TableHead>
@@ -245,10 +246,15 @@ export default function AdminPanel() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((u) => (
+                    {users
+                      .filter(u => u.id.includes(":"))
+                      .map((u) => (
                       <TableRow key={u.id} className="hover:bg-muted/50 border-border/50">
                         <TableCell className="font-mono text-sm font-bold">
                           {u.username} {user.id === u.id && <span className="text-xs text-muted-foreground font-normal">(YOU)</span>}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">
+                          {u.id.split(":")[1] || u.id}
                         </TableCell>
                         <TableCell>
                           <Badge variant={u.role === "Overseer" ? "default" : "secondary"} className="font-mono text-[10px]">
@@ -277,12 +283,6 @@ export default function AdminPanel() {
                         <TableCell className="text-right">
                           {user.role === "Overseer" && user.id !== u.id && (
                             <div className="flex gap-1">
-                              <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-blue-500/50 hover:bg-blue-500/10 text-blue-500" onClick={() => {
-                                setEditingUser(u.id);
-                                setEditForm({ username: u.username, password: "", role: u.role });
-                              }}>
-                                <Edit2 size={12} className="mr-1" /> EDIT
-                              </Button>
                               {u.isSuspended ? (
                                 <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => unsuspendUser(u.id)}>
                                   <UserCheck size={12} className="mr-1" /> RESTORE
