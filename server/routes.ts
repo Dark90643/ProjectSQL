@@ -842,23 +842,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isAdmin: member?.isAdmin,
       });
 
-      // For Discord users, directly set session data without using Passport.req.login()
-      // because Passport's serialization breaks with composite IDs
-      if (req.session) {
-        req.session.passport = { user };
-        req.session.save((saveErr) => {
-          if (saveErr) {
-            console.error("Session save error:", saveErr);
-            return res.status(500).json({ error: "Session save failed" });
-          }
-          console.log("Discord user session saved with serverId:", user.serverId);
-          console.log("Discord user logged in:", { id: user.id, serverId: user.serverId, discordUserId: user.discordUserId });
+      // Use req.login() to properly set up Passport's session persistence
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.status(500).json({ error: "Login failed" });
+        }
+        
+        // Double-check the session was saved
+        if (req.session?.passport?.user) {
+          console.log("Discord user session established:", { id: user.id, serverId: user.serverId, role: user.role });
           res.json(user);
-        });
-      } else {
-        console.log("No session available!");
-        res.status(500).json({ error: "Session not available" });
-      }
+        } else {
+          console.error("Session not properly established after login");
+          res.status(500).json({ error: "Session establishment failed" });
+        }
+      });
     } catch (error: any) {
       console.error("Select server error:", error);
       res.status(500).json({ error: "Failed to select server" });
