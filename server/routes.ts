@@ -535,10 +535,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Store the full user object in session for Discord users
         if (req.session) {
           req.session.passport = { user };
+          req.session.discordUser = user; // Also store directly for easier access
+          req.session.save((saveErr) => {
+            if (saveErr) {
+              console.error("Session save error:", saveErr);
+              return res.status(500).json({ error: "Session save failed" });
+            }
+            console.log("Discord authentication complete for:", discordUser.id);
+            res.json({ discordId: discordUser.id, username: discordUser.username });
+          });
+        } else {
+          res.status(500).json({ error: "Session not available" });
         }
-
-        console.log("Discord authentication complete for:", discordUser.id);
-        res.json({ discordId: discordUser.id, username: discordUser.username });
       });
     } catch (error: any) {
       console.error("Discord POST callback error:", error);
