@@ -7,7 +7,6 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { sql } from "drizzle-orm";
 import type { User } from "@shared/schema";
 
 // Extend Express Request to include user
@@ -882,9 +881,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Update server member with Discord username if provided
       if (discordUsername && member) {
-        await storage.db.execute(
-          sql`UPDATE server_members SET discord_username = ${discordUsername} WHERE server_id = ${serverId} AND discord_user_id = ${discordId}`
-        );
+        try {
+          await storage.updateServerMember(serverId, discordId, { discordUsername });
+        } catch (err) {
+          console.warn("Failed to update Discord username:", err);
+        }
       }
 
       // Log the member data for debugging
