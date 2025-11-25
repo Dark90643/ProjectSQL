@@ -842,27 +842,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isAdmin: member?.isAdmin,
       });
 
-      req.login(user, (err) => {
-        if (err) {
-          return res.status(500).json({ error: "Login failed" });
-        }
-        // Store the full user object in session for Discord users
-        if (req.session) {
-          req.session.passport = { user };
-          req.session.save((saveErr) => {
-            if (saveErr) {
-              console.error("Session save error:", saveErr);
-              return res.status(500).json({ error: "Session save failed" });
-            }
-            console.log("Discord user session saved with serverId:", user.serverId);
-            console.log("Discord user logged in:", { id: user.id, serverId: user.serverId, discordUserId: user.discordUserId });
-            res.json(user);
-          });
-        } else {
-          console.log("No session available!");
-          res.status(500).json({ error: "Session not available" });
-        }
-      });
+      // For Discord users, directly set session data without using Passport.req.login()
+      // because Passport's serialization breaks with composite IDs
+      if (req.session) {
+        req.session.passport = { user };
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+            return res.status(500).json({ error: "Session save failed" });
+          }
+          console.log("Discord user session saved with serverId:", user.serverId);
+          console.log("Discord user logged in:", { id: user.id, serverId: user.serverId, discordUserId: user.discordUserId });
+          res.json(user);
+        });
+      } else {
+        console.log("No session available!");
+        res.status(500).json({ error: "Session not available" });
+      }
     } catch (error: any) {
       console.error("Select server error:", error);
       res.status(500).json({ error: "Failed to select server" });
