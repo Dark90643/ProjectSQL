@@ -1401,6 +1401,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: `Created case ${newCase.title}`,
       }).then(() => {
         console.log("✓ Log created for case:", newCase.id);
+        // Send audit trail message
+        if (serverId) {
+          sendBotAuditTrailMessage({
+            action: "CASE_CREATE",
+            userId: req.user!.id,
+            targetId: newCase.id,
+            details: `Created case ${newCase.title}`,
+            serverId,
+          }).catch(err => console.error("Failed to send audit trail message:", err));
+        }
       }).catch((logError: any) => {
         console.error("✗ Failed to create log (continuing):", logError.message);
       });
@@ -1575,6 +1585,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           targetId: id,
           serverId: caseData.serverId || undefined,
           details: `Changed public visibility to ${updatedCase.isPublic}`,
+        }).then(() => {
+          // Send audit trail message
+          if (caseData.serverId) {
+            sendBotAuditTrailMessage({
+              action: "CASE_PUBLIC_TOGGLE",
+              userId: req.user!.id,
+              targetId: id,
+              details: `Changed public visibility to ${updatedCase.isPublic}`,
+              serverId: caseData.serverId,
+            }).catch(err => console.error("Failed to send audit trail message:", err));
+          }
         }).catch((logError: any) => {
           console.error("✗ Failed to create toggle log:", logError.message);
         });
