@@ -1334,7 +1334,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     // If case is private, require authentication
-    if (!req.isAuthenticated()) {
+    // Check both Passport auth and Discord session auth
+    const isAuthenticated = req.isAuthenticated() || !!req.session?.discordUser;
+    if (!isAuthenticated) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
