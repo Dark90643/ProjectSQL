@@ -11,6 +11,7 @@ interface Server {
   serverId: string;
   serverName: string;
   serverIcon?: string;
+  caseCount: number;
 }
 
 export default function ServerSelector() {
@@ -197,6 +198,11 @@ export default function ServerSelector() {
                         {server.serverId.substring(0, 8)}...
                       </p>
                     </div>
+                  </div>
+
+                  {/* Case Count */}
+                  <div className="text-xs text-muted-foreground font-mono mb-3">
+                    <span data-testid={`text-cases-${server.serverId}`}>{server.caseCount} case{server.caseCount !== 1 ? 's' : ''}</span>
                   </div>
 
                   {/* Select Button */}

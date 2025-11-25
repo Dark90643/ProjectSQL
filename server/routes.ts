@@ -616,15 +616,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const servers = await storage.getServersByUser(discordId as string);
       
-      // Construct Discord CDN URLs for server icons
-      const serversWithIcons = servers.map(server => ({
-        ...server,
-        serverIcon: server.serverIcon 
-          ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
-          : undefined,
-      }));
+      // Get all cases to count per server
+      const allCases = await storage.getAllCases();
       
-      res.json(serversWithIcons);
+      // Filter servers where bot is present and add case counts
+      const serversWithData: any[] = [];
+      
+      for (const server of servers) {
+        // Check if bot is in this server
+        let hasBotInServer = false;
+        
+        if (discordClient && discordClient.isReady()) {
+          const guild = discordClient.guilds.cache.get(server.serverId);
+          hasBotInServer = !!guild;
+        } else {
+          const botDiscordId = "1442053672694714529";
+          const botMember = await storage.getServerMember(server.serverId, botDiscordId);
+          hasBotInServer = !!botMember;
+        }
+        
+        // Only include servers with bot
+        if (hasBotInServer) {
+          const caseCount = allCases.filter(c => c.serverId === server.serverId).length;
+          
+          serversWithData.push({
+            ...server,
+            caseCount,
+            serverIcon: server.serverIcon 
+              ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
+              : undefined,
+          });
+        }
+      }
+      
+      res.json(serversWithData);
     } catch (error: any) {
       console.error("Get servers error:", error);
       res.status(500).json({ error: "Failed to get servers" });
