@@ -98,19 +98,19 @@ passport.deserializeUser(async (id: any, done) => {
 
 // Middleware
 const requireAuth = (req: Request, res: Response, next: Function) => {
-  // First, try to get user from req.user (set by Passport)
+  // First check session for user (Discord users with ":" won't get deserialized by Passport)
+  if (req.session?.passport?.user) {
+    req.user = req.session.passport.user;
+    return next();
+  }
+  
+  // Then try to get user from req.user (set by Passport for regular users)
   if (req.user) {
     // If user is missing serverId but session has it, restore it
     if (!req.user.serverId && req.session?.passport?.user?.serverId) {
       req.user.serverId = req.session.passport.user.serverId;
       req.user.discordUserId = req.session.passport.user.discordUserId;
     }
-    return next();
-  }
-  
-  // For Discord users, restore from session if deserializeUser didn't work
-  if (req.session?.passport?.user) {
-    req.user = req.session.passport.user;
     return next();
   }
   
