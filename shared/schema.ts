@@ -31,6 +31,7 @@ export const serverMembers = pgTable("server_members", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   serverId: text("server_id").notNull(),
   discordUserId: text("discord_user_id").notNull(),
+  discordUsername: text("discord_username"),
   roles: text("roles").array().notNull().default(sql`ARRAY[]::text[]`),
   isOwner: boolean("is_owner").notNull().default(false),
   isAdmin: boolean("is_admin").notNull().default(false),
