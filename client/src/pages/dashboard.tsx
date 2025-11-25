@@ -36,6 +36,28 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [encryptingCaseId, setEncryptingCaseId] = useState<string | null>(null);
+  const [serverName, setServerName] = useState<string>("");
+
+  // Fetch server name from the workspace
+  useEffect(() => {
+    const fetchServerName = async () => {
+      if (user?.serverId) {
+        try {
+          const response = await fetch(`/api/auth/discord/servers`);
+          if (response.ok) {
+            const servers = await response.json();
+            const currentServer = servers.find((s: any) => s.id === user.serverId);
+            if (currentServer) {
+              setServerName(currentServer.name || user.serverId);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch server name:", error);
+        }
+      }
+    };
+    fetchServerName();
+  }, [user?.serverId]);
 
   if (!user) return null;
 
@@ -92,6 +114,13 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Selected Server Info */}
+      {user.serverId && (
+        <div className="text-right font-mono text-xs text-muted-foreground border-b border-primary/10 pb-2">
+          SELECTED SERVER: {serverName || user.serverId} / {user.serverId}
+        </div>
+      )}
+
       {/* Header Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-sidebar/50 border-sidebar-border">

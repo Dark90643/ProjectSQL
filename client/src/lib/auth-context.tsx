@@ -12,6 +12,8 @@ interface User {
   ip: string;
   isOnline: boolean;
   requiresInviteVerification?: boolean;
+  serverId?: string;
+  discordUserId?: string;
 }
 
 interface Case {
