@@ -42,11 +42,11 @@ export default function AdminPanel() {
         .then(data => {
           const members = Array.isArray(data) ? data : [];
           setServerMembers(members);
-          // Build username lookup from members
+          // Build username lookup from members, preferring discordUsername
           const lookup: Record<string, string> = {};
           members.forEach((m: any) => {
-            if (m.id && m.username) {
-              lookup[m.id] = m.username;
+            if (m.id && (m.discordUsername || m.username)) {
+              lookup[m.id] = m.discordUsername || m.username;
             }
           });
           setUsernameLookup(lookup);

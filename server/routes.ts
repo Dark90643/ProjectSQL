@@ -958,6 +958,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           id: member.discordUserId,
           username: userInfo?.username || member.discordUserId,
+          discordUsername: (userInfo as any)?.discordUsername || userInfo?.username || member.discordUserId,
           role: member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent",
           isSuspended: userInfo?.isSuspended || false,
           isOnline: userInfo?.isOnline || false,
