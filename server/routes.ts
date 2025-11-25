@@ -1299,6 +1299,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const caseData = req.body;
       const { serverId } = caseData;
       
+      console.log("Creating case with data:", { caseData, serverId, userId: req.user!.id });
+      
       // Only Agent, Management, and Overseer roles can create cases
       if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
         return res.status(403).json({ error: "Only authorized users can create cases" });
@@ -1313,14 +1315,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isPublic: false,
         serverId: serverId || null,
       });
+      
+      console.log("Case created successfully:", newCase.id);
 
-      await storage.createLog({
-        action: "CASE_CREATE",
-        userId: req.user!.id,
-        targetId: newCase.id,
-        serverId: serverId || undefined,
-        details: `Created case ${newCase.title}`,
-      });
+      try {
+        await storage.createLog({
+          action: "CASE_CREATE",
+          userId: req.user!.id,
+          targetId: newCase.id,
+          serverId: serverId || undefined,
+          details: `Created case ${newCase.title}`,
+        });
+        console.log("Log created successfully for case:", newCase.id);
+      } catch (logError: any) {
+        console.error("Failed to create log:", logError);
+      }
 
       // Send Discord notification (non-blocking)
       sendCaseDiscordEmbed(newCase).catch(err => {
@@ -1329,8 +1338,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(newCase);
     } catch (error: any) {
-      console.error("Create case error:", error);
-      res.status(500).json({ error: "Failed to create case" });
+      console.error("Create case error:", error.message, error.stack);
+      res.status(500).json({ error: error.message || "Failed to create case" });
     }
   });
 
