@@ -304,7 +304,7 @@ export default function AdminPanel() {
                       serverMembers.map((member) => (
                         <TableRow key={member.id} className="hover:bg-muted/50 border-border/50">
                           <TableCell className="font-mono text-sm font-bold">
-                            {member.username}:{member.discordUserId} {user?.id === member.discordUserId && <span className="text-xs text-muted-foreground font-normal">(YOU)</span>}
+                            {member.discordUsername}:{member.discordUserId} {user?.id === member.discordUserId && <span className="text-xs text-muted-foreground font-normal">(YOU)</span>}
                           </TableCell>
                           <TableCell className="font-mono text-xs text-muted-foreground">
                             {member.discordUserId}
