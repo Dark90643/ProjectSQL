@@ -40,6 +40,7 @@ interface Log {
   targetId?: string;
   timestamp: string;
   details: string;
+  serverId?: string;
 }
 
 interface AuthContextType {

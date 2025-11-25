@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Case } from "@shared/schema";
 
 export default function AdminPanel() {
-  const { user, users, logs, cases, suspendUser, unsuspendUser, editUser, createUserWithInvite, currentServerId } = useAuth();
+  const { user, users, logs, cases, suspendUser, unsuspendUser, editUser, createUserWithInvite, currentServerId, refreshData } = useAuth();
   const { toast } = useToast();
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ username: "", password: "", role: "Agent" });
@@ -23,6 +23,7 @@ export default function AdminPanel() {
   const [generatedInvites, setGeneratedInvites] = useState<{ code: string; created: string }[]>([]);
   const [encryptedCases, setEncryptedCases] = useState<Case[]>([]);
   const [serverMembers, setServerMembers] = useState<any[]>([]);
+  const [usernameLookup, setUsernameLookup] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (user && ["Management", "Overseer"].includes(user.role)) {
@@ -38,13 +39,32 @@ export default function AdminPanel() {
       // Fetch server members for the current server
       fetch(`/api/server-members?serverId=${currentServerId}`, { credentials: "include" })
         .then(res => res.json())
-        .then(data => setServerMembers(Array.isArray(data) ? data : []))
+        .then(data => {
+          const members = Array.isArray(data) ? data : [];
+          setServerMembers(members);
+          // Build username lookup from members
+          const lookup: Record<string, string> = {};
+          members.forEach((m: any) => {
+            if (m.id && m.username) {
+              lookup[m.id] = m.username;
+            }
+          });
+          setUsernameLookup(lookup);
+        })
         .catch(err => {
           console.error("Error fetching server members:", err);
           setServerMembers([]);
         });
     }
   }, [currentServerId]);
+
+  // Auto-refresh logs every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshData();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [refreshData]);
 
   const loadEncryptedCases = () => {
     fetch("/api/cases/encrypted/list", { credentials: "include" })
@@ -156,7 +176,7 @@ export default function AdminPanel() {
                           {new Date(log.timestamp).toLocaleString()}
                         </TableCell>
                         <TableCell className="font-mono text-xs font-bold text-primary">
-                          {users.find(u => u.id === log.userId)?.discordUsername || users.find(u => u.id === log.userId)?.username || serverMembers.find(m => m.id === log.userId)?.username || log.userId}
+                          {usernameLookup[log.userId] || users.find(u => u.id === log.userId)?.discordUsername || users.find(u => u.id === log.userId)?.username || log.userId}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="font-mono text-[10px]">
