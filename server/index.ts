@@ -1,15 +1,14 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
-import connectPgSimple from "connect-pg-simple";
-import { pool } from "./db";
+import memorystore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDiscordBot } from "./discord-bot";
 
 const app = express();
 
-// Session setup
-const PgSession = connectPgSimple(session);
+// Session setup - use memory store for now to debug session issues
+const MemoryStore = memorystore(session);
 
 // Always use secure: false for cookies since the app is accessed over HTTP in development
 // and the database URL determines production mode
@@ -17,9 +16,8 @@ const isProduction = !!process.env.DATABASE_URL?.includes("railway");
 
 app.use(
   session({
-    store: new PgSession({
-      pool,
-      createTableIfMissing: true,
+    store: new MemoryStore({
+      checkPeriod: 86400000, // prune expired entries every 24h
     }),
     secret: process.env.SESSION_SECRET || "aegis-net-secret-key-change-in-production",
     resave: false,

@@ -101,6 +101,7 @@ const requireAuth = (req: Request, res: Response, next: Function) => {
   // First check session for user (Discord users with ":" won't get deserialized by Passport)
   if (req.session?.passport?.user) {
     req.user = req.session.passport.user;
+    console.log("Auth: User from session:", { id: req.user.id, role: req.user.role });
     return next();
   }
   
@@ -111,9 +112,11 @@ const requireAuth = (req: Request, res: Response, next: Function) => {
       req.user.serverId = req.session.passport.user.serverId;
       req.user.discordUserId = req.session.passport.user.discordUserId;
     }
+    console.log("Auth: User from req.user:", { id: req.user.id, role: req.user.role });
     return next();
   }
   
+  console.log("Auth: No user found. Session:", req.session?.passport, "req.user:", req.user);
   return res.status(401).json({ error: "Unauthorized" });
 };
 
