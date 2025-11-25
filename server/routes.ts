@@ -72,7 +72,9 @@ passport.deserializeUser(async (id: any, done) => {
       return done(null, false);
     }
     
-    // If ID contains ":", it's a Discord user - return false and let requireAuth handle session restoration
+    // If ID contains ":", it's a Discord user - get the user object from session
+    // This should have been set by select-server endpoint
+    // For now, just return false and let requireAuth restore from session
     if (id.includes(":")) {
       return done(null, false);
     }

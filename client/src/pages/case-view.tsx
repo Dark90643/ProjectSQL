@@ -93,8 +93,9 @@ export default function CaseView() {
 
   const existingCase = liveCase || contextCase;
 
-  // Permission Checks
-  const canEdit = isNew ? (hasCreatePermission === true) : (user && ["Agent", "Management", "Overseer"].includes(user.role));
+  // Permission Checks - use same as "initiate case" button
+  const canSaveRecord = user ? ["Agent", "Management", "Overseer"].includes(user.role) : false;
+  const canEdit = isNew ? (hasCreatePermission === true) : canSaveRecord;
   const canDelete = user?.role === "Management" || user?.role === "Overseer";
   const isOverseer = user?.role === "Overseer";
 
