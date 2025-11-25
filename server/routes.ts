@@ -1295,11 +1295,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/cases", requireAuth, async (req: Request, res: Response) => {
+    let newCase: any = null;
     try {
       const caseData = req.body;
       const { serverId } = caseData;
       
-      console.log("Creating case with data:", { caseData, serverId, userId: req.user!.id });
+      console.log("Creating case with data:", { title: caseData.title, serverId, userId: req.user!.id });
       
       // Only Agent, Management, and Overseer roles can create cases
       if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
@@ -1308,16 +1309,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const id = `CASE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`;
       
-      const newCase = await storage.createCase({
-        ...caseData,
-        id,
-        assignedAgent: req.user!.username,
-        isPublic: false,
-        serverId: serverId || null,
-      });
-      
-      console.log("Case created successfully:", newCase.id);
+      try {
+        newCase = await storage.createCase({
+          ...caseData,
+          id,
+          assignedAgent: req.user!.username,
+          isPublic: false,
+          serverId: serverId || null,
+        });
+        console.log("✓ Case created successfully:", newCase.id);
+      } catch (caseError: any) {
+        console.error("✗ Failed to create case:", caseError.message);
+        return res.status(500).json({ error: "Failed to create case: " + caseError.message });
+      }
 
+      // Try to create log (non-blocking - don't fail the response if log fails)
       try {
         await storage.createLog({
           action: "CASE_CREATE",
@@ -1326,20 +1332,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           serverId: serverId || undefined,
           details: `Created case ${newCase.title}`,
         });
-        console.log("Log created successfully for case:", newCase.id);
+        console.log("✓ Log created successfully for case:", newCase.id);
       } catch (logError: any) {
-        console.error("Failed to create log:", logError);
+        console.error("✗ Failed to create log (continuing):", logError.message);
+        // Don't fail - case was created successfully
       }
 
       // Send Discord notification (non-blocking)
       sendCaseDiscordEmbed(newCase).catch(err => {
-        console.error("Failed to send Discord notification:", err);
+        console.error("✗ Failed to send Discord notification:", err.message);
       });
 
       res.json(newCase);
     } catch (error: any) {
-      console.error("Create case error:", error.message, error.stack);
-      res.status(500).json({ error: error.message || "Failed to create case" });
+      console.error("✗ Create case outer error:", error.message);
+      // If we got here, case was already created but something failed
+      if (newCase) {
+        res.json(newCase); // Return the created case anyway
+      } else {
+        res.status(500).json({ error: error.message || "Failed to create case" });
+      }
     }
   });
 
