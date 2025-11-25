@@ -20,13 +20,15 @@ app.use(
       checkPeriod: 86400000, // prune expired entries every 24h
     }),
     secret: process.env.SESSION_SECRET || "aegis-net-secret-key-change-in-production",
-    resave: false,
-    saveUninitialized: true, // Changed to true to ensure session is saved
+    resave: true, // Changed to true to ensure session persists
+    saveUninitialized: true, // Ensure session is always saved
+    name: "aegis.sid", // Use a custom session cookie name
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       httpOnly: true,
       secure: false, // Always false since we use HTTP in development
       sameSite: "lax",
+      path: "/", // Explicitly set path
     },
   })
 );
@@ -52,6 +54,7 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: false }));
+
 
 app.use((req, res, next) => {
   const start = Date.now();

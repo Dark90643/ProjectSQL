@@ -541,7 +541,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
               console.error("Session save error:", saveErr);
               return res.status(500).json({ error: "Session save failed" });
             }
-            console.log("Discord authentication complete for:", discordUser.id);
             res.json({ discordId: discordUser.id, username: discordUser.username });
           });
         } else {
