@@ -831,7 +831,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/discord/select-server", checkIpBan, async (req: Request, res: Response) => {
     try {
-      const { discordId, serverId, discordUsername } = req.body;
+      const { discordId, serverId, discordUsername, avatar } = req.body;
       if (!discordId || !serverId) {
         return res.status(400).json({ error: "Discord ID and server ID required" });
       }
@@ -890,7 +890,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create a session user for this workspace
       const clientIp = req.ip || req.socket.remoteAddress || "unknown";
       const roleFromMember = member && (member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent") || "Agent";
-      const user: Express.User & { discordUsername?: string } = {
+      const user: Express.User & { discordUsername?: string; discordAvatar?: string } = {
         id: `${discordId}:${serverId}`,
         username: discordId,
         role: roleFromMember,
@@ -900,6 +900,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         serverId,
         discordUserId: discordId,
         discordUsername,
+        discordAvatar: avatar,
       };
       
       console.log("User role assignment:", {

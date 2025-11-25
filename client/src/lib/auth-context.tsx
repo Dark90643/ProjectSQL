@@ -15,6 +15,7 @@ interface User {
   serverId?: string;
   discordUserId?: string;
   discordUsername?: string;
+  discordAvatar?: string;
 }
 
 interface Case {
@@ -49,7 +50,7 @@ interface AuthContextType {
   clientIp: string;
   isIpBanned: boolean;
   loading: boolean;
-  discordUser: { discordId: string; username: string } | null;
+  discordUser: { discordId: string; username: string; avatar?: string } | null;
   currentServerId: string | null;
   canCreateAccounts: boolean;
   isSupportTeam: boolean;
@@ -81,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [clientIp, setClientIp] = useState("");
   const [isIpBanned, setIsIpBanned] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [discordUser, setDiscordUser] = useState<{ discordId: string; username: string } | null>(null);
+  const [discordUser, setDiscordUser] = useState<{ discordId: string; username: string; avatar?: string } | null>(null);
   const [currentServerId, setCurrentServerId] = useState<string | null>(() => {
     // Restore from localStorage on mount
     if (typeof window !== 'undefined') {
@@ -208,7 +209,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error("Discord login failed");
       }
       const data = await response.json();
-      setDiscordUser({ discordId: data.discordId, username: data.username });
+      setDiscordUser({ discordId: data.discordId, username: data.username, avatar: data.avatar });
       
       // Check if user is support team (admin/owner of official bot server)
       try {
@@ -237,15 +238,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ discordId: discordUser.discordId, serverId, discordUsername: discordUser.username }),
+        body: JSON.stringify({ discordId: discordUser.discordId, serverId, discordUsername: discordUser.username, avatar: discordUser.avatar }),
       });
       if (!response.ok) {
         throw new Error("Failed to select server");
       }
       const userData = await response.json();
-      // Preserve Discord username in the user object
+      // Preserve Discord username and avatar in the user object
       if (discordUser?.username) {
         userData.discordUsername = discordUser.username;
+      }
+      if (discordUser?.avatar) {
+        userData.discordAvatar = discordUser.avatar;
       }
       setUser(userData);
       setCurrentServerId(serverId);

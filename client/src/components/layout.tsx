@@ -38,10 +38,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         <div className="bg-sidebar-accent/50 p-4 rounded-md border border-sidebar-border">
           <div className="flex items-center gap-3 mb-2">
-            <Avatar className="h-8 w-8 rounded bg-primary/10 text-primary border border-primary/20">
-              <AvatarFallback className="font-mono text-xs">
-                {((user as any).discordUsername || user.username || "?").substring(0, 2).toUpperCase()}
-              </AvatarFallback>
+            <Avatar className="h-8 w-8 rounded border border-primary/20">
+              {(user as any).discordAvatar ? (
+                <img 
+                  src={`https://cdn.discordapp.com/avatars/${(user as any).discordUserId}/${(user as any).discordAvatar}.png`}
+                  alt="Discord avatar"
+                  className="w-full h-full rounded"
+                />
+              ) : (
+                <div className="w-full h-full rounded bg-primary/10 text-primary flex items-center justify-center">
+                  <AvatarFallback className="font-mono text-xs">
+                    {((user as any).discordUsername || user.username || "?").substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </div>
+              )}
             </Avatar>
             <div className="overflow-hidden">
               <p className="text-sm font-mono font-bold truncate text-foreground">{(user as any).discordUsername || user.username || "Agent"}</p>

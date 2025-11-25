@@ -156,7 +156,7 @@ export default function AdminPanel() {
                           {new Date(log.timestamp).toLocaleString()}
                         </TableCell>
                         <TableCell className="font-mono text-xs font-bold text-primary">
-                          {users.find(u => u.id === log.userId)?.username || log.userId}
+                          {users.find(u => u.id === log.userId)?.discordUsername || users.find(u => u.id === log.userId)?.username || serverMembers.find(m => m.id === log.userId)?.username || log.userId}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="font-mono text-[10px]">
