@@ -1343,42 +1343,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.delete("/api/cases/:id", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { serverId } = req.query;
-    
-    const caseData = await storage.getCase(id);
-    
-    if (!caseData) {
-      return res.status(404).json({ error: "Case not found" });
-    }
-    
-    // If serverId is provided, verify it matches
-    if (serverId && caseData.serverId !== serverId) {
-      return res.status(403).json({ error: "Case not found in this server" });
-    }
-    
-    // If serverId is provided, verify user is a member
-    if (serverId) {
-      const discordUserId = req.user!.discordUserId || req.user!.id;
-      const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
-      if (!isServerMember) {
-        return res.status(403).json({ error: "Not a member of this server" });
+    try {
+      const { id } = req.params;
+      const { serverId } = req.query;
+      
+      const caseData = await storage.getCase(id);
+      
+      if (!caseData) {
+        return res.status(404).json({ error: "Case not found" });
       }
-    }
+      
+      // If serverId is provided, verify it matches
+      if (serverId && caseData.serverId !== serverId) {
+        return res.status(403).json({ error: "Case not found in this server" });
+      }
+      
+      // If serverId is provided, verify user is a member
+      if (serverId) {
+        const discordUserId = req.user!.discordUserId || req.user!.id;
+        const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
+        if (!isServerMember) {
+          return res.status(403).json({ error: "Not a member of this server" });
+        }
+      }
 
-    const success = await storage.deleteCase(id, req.user!.id);
-    
-    if (success) {
-      await storage.createLog({
-        action: "CASE_DELETE",
-        userId: req.user!.id,
-        targetId: id,
-        serverId: caseData.serverId || undefined,
-        details: JSON.stringify({ title: caseData.title, caseData: caseData }),
-      });
+      const success = await storage.deleteCase(id, req.user!.id);
+      
+      if (success) {
+        await storage.createLog({
+          action: "CASE_DELETE",
+          userId: req.user!.id,
+          targetId: id,
+          serverId: caseData.serverId || undefined,
+          details: JSON.stringify({ title: caseData.title, caseData: caseData }),
+        });
+      }
+      
+      res.json({ success });
+    } catch (error: any) {
+      console.error("Delete case error:", error);
+      res.status(500).json({ error: "Failed to delete case" });
     }
-    
-    res.json({ success });
   });
 
   app.patch("/api/cases/:id/toggle-public", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
