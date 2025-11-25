@@ -1004,6 +1004,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: id,
         details: "Suspended user access",
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "USER_SUSPEND",
+          userId: req.user!.id,
+          targetId: id,
+          details: "Suspended user access",
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
     }
     
@@ -1020,6 +1028,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: id,
         details: "Restored user access",
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "USER_UNSUSPEND",
+          userId: req.user!.id,
+          targetId: id,
+          details: "Restored user access",
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
     }
     
@@ -1067,6 +1083,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: id,
         details: `Edited user: ${changes.join(", ")}`,
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "USER_EDIT",
+          userId: req.user!.id,
+          targetId: id,
+          details: `Edited user: ${changes.join(", ")}`,
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
     }
     
@@ -1110,6 +1134,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: user.id,
         details: `Created account for ${username} requiring invite verification`,
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "USER_CREATE",
+          userId: req.user!.id,
+          targetId: user.id,
+          details: `Created account for ${username} requiring invite verification`,
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
 
       res.json({ username: user.username, inviteCode, tempPassword: code.code });
@@ -1128,6 +1160,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         action: "INVITE_GENERATE",
         userId: req.user!.id,
         details: `Generated invite code ${code}`,
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "INVITE_GENERATE",
+          userId: req.user!.id,
+          targetId: code,
+          details: `Generated invite code ${code}`,
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
 
       res.json(inviteCode);
@@ -1196,6 +1236,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: id,
         details: `Generated encryption code for case ${caseData.title}`,
+        serverId: caseData.serverId || undefined,
+      }).then(() => {
+        // Send audit trail message
+        if (caseData.serverId) {
+          sendBotAuditTrailMessage({
+            action: "CASE_ENCRYPT",
+            userId: req.user!.id,
+            targetId: id,
+            details: `Generated encryption code for case ${caseData.title}`,
+            serverId: caseData.serverId,
+          }).catch(err => console.error("Failed to send audit trail message:", err));
+        }
       });
 
       res.json({ caseCode, updatedCase });
@@ -1255,6 +1307,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: id,
         details: `Removed encryption from case ${caseData.title}`,
+        serverId: caseData.serverId || undefined,
+      }).then(() => {
+        if (caseData.serverId) {
+          sendBotAuditTrailMessage({
+            action: "CASE_DECRYPT",
+            userId: req.user!.id,
+            targetId: id,
+            details: `Removed encryption from case ${caseData.title}`,
+            serverId: caseData.serverId,
+          }).catch(err => console.error("Failed to send audit trail message:", err));
+        }
       });
 
       res.json({ success: true, updatedCase });
@@ -1489,6 +1552,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           targetId: id,
           serverId: caseData.serverId || undefined,
           details: "Updated case details",
+        }).then(() => {
+          // Send audit trail message
+          if (caseData.serverId) {
+            sendBotAuditTrailMessage({
+              action: "CASE_UPDATE",
+              userId: req.user!.id,
+              targetId: id,
+              details: "Updated case details",
+              serverId: caseData.serverId,
+            }).catch(err => console.error("Failed to send audit trail message:", err));
+          }
         }).catch((logError: any) => {
           console.error("✗ Failed to create update log:", logError.message);
         });
@@ -1536,6 +1610,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           targetId: id,
           serverId: caseData.serverId || undefined,
           details: JSON.stringify({ title: caseData.title, caseData: caseData }),
+        }).then(() => {
+          // Send audit trail message
+          if (caseData.serverId) {
+            sendBotAuditTrailMessage({
+              action: "CASE_DELETE",
+              userId: req.user!.id,
+              targetId: id,
+              details: `Deleted case ${caseData.title}`,
+              serverId: caseData.serverId,
+            }).catch(err => console.error("Failed to send audit trail message:", err));
+          }
         }).catch((logError: any) => {
           console.error("✗ Failed to create delete log:", logError.message);
         });
@@ -1701,6 +1786,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: caseId,
         details: `Restored deleted case ${restored.title}`,
+        serverId: restored.serverId || undefined,
+      }).then(() => {
+        if (restored.serverId) {
+          sendBotAuditTrailMessage({
+            action: "CASE_RESTORE",
+            userId: req.user!.id,
+            targetId: caseId,
+            details: `Restored deleted case ${restored.title}`,
+            serverId: restored.serverId,
+          }).catch(err => console.error("Failed to send audit trail message:", err));
+        }
       });
 
       res.json({ success: true, case: restored });
@@ -1749,6 +1845,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: caseId,
         details: `Removed file embed from deleted case ${caseData.title}`,
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "CASE_EMBED_REMOVED",
+          userId: req.user!.id,
+          targetId: caseId,
+          details: `Removed file embed from deleted case ${caseData.title}`,
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
 
       res.json({ success: true, message: "File embed removed" });
@@ -1783,6 +1887,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user!.id,
         targetId: caseId,
         details: `Permanently deleted recovery for case ${caseId} - no longer recoverable`,
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "CASE_PERMANENTLY_DELETED",
+          userId: req.user!.id,
+          targetId: caseId,
+          details: `Permanently deleted recovery for case ${caseId}`,
+          serverId: req.user!.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
 
       res.json({ success: true, message: "Case permanently deleted from recovery" });
@@ -1865,6 +1977,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         targetId: user.serverId,
         details: `Updated webhook configuration`,
         serverId: user.serverId,
+      }).then(() => {
+        sendBotAuditTrailMessage({
+          action: "WEBHOOK_CONFIG_UPDATED",
+          userId: user.id,
+          targetId: user.serverId,
+          details: `Updated webhook configuration`,
+          serverId: user.serverId,
+        }).catch(err => console.error("Failed to send audit trail message:", err));
       });
 
       res.json(config);
