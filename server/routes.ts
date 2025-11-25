@@ -914,10 +914,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For Discord users, bypass Passport and store directly in session
       // because Passport's serialization doesn't work with composite IDs
       if (req.session) {
-        req.session.discordUser = user;
-        console.log("Discord user session established:", { id: user.id, serverId: user.serverId, role: user.role });
+        req.session.discordUser = {
+          ...user,
+          discordUsername,
+          discordAvatar: avatar,
+        };
+        console.log("Discord user session established:", { id: user.id, serverId: user.serverId, role: user.role, discordUsername, avatar });
       }
-      res.json(user);
+      res.json({
+        ...user,
+        discordUsername,
+        discordAvatar: avatar,
+      });
     } catch (error: any) {
       console.error("Select server error:", error);
       res.status(500).json({ error: "Failed to select server" });
