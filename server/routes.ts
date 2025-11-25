@@ -928,6 +928,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(users.map(u => ({ ...u, password: undefined })));
   });
 
+  // Get server members with user info for the current server
+  app.get("/api/server-members", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const serverId = req.user!.serverId || req.query.serverId as string;
+      if (!serverId) {
+        return res.status(400).json({ error: "Server ID required" });
+      }
+
+      // Get server members
+      const members = await storage.getServerMembers(serverId);
+      
+      // Get all users for reference
+      const allUsers = await storage.getAllUsers();
+      
+      // Combine member info with user data (for logging, display)
+      const membersWithUserInfo = members.map(member => {
+        const userInfo = allUsers.find(u => u.id === member.discordUserId);
+        return {
+          id: member.discordUserId,
+          username: userInfo?.username || member.discordUserId,
+          role: member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent",
+          isSuspended: userInfo?.isSuspended || false,
+          isOnline: userInfo?.isOnline || false,
+          serverId,
+          discordUserId: member.discordUserId,
+          isOwner: member.isOwner,
+          isAdmin: member.isAdmin,
+        };
+      });
+      
+      res.json(membersWithUserInfo);
+    } catch (error: any) {
+      console.error("Get server members error:", error);
+      res.status(500).json({ error: "Failed to get server members" });
+    }
+  });
+
   app.patch("/api/users/:id/suspend", requireAuth, requireRole("Overseer"), async (req: Request, res: Response) => {
     const { id } = req.params;
     const user = await storage.updateUser(id, { isSuspended: true });

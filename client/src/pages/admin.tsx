@@ -22,6 +22,7 @@ export default function AdminPanel() {
   const [newAccountForm, setNewAccountForm] = useState({ username: "", inviteCode: "" });
   const [generatedInvites, setGeneratedInvites] = useState<{ code: string; created: string }[]>([]);
   const [encryptedCases, setEncryptedCases] = useState<Case[]>([]);
+  const [serverMembers, setServerMembers] = useState<any[]>([]);
 
   useEffect(() => {
     if (user && ["Management", "Overseer"].includes(user.role)) {
@@ -31,6 +32,19 @@ export default function AdminPanel() {
         .catch(err => console.error("Error fetching encrypted cases:", err));
     }
   }, [user]);
+
+  useEffect(() => {
+    if (currentServerId) {
+      // Fetch server members for the current server
+      fetch(`/api/server-members?serverId=${currentServerId}`, { credentials: "include" })
+        .then(res => res.json())
+        .then(data => setServerMembers(Array.isArray(data) ? data : []))
+        .catch(err => {
+          console.error("Error fetching server members:", err);
+          setServerMembers([]);
+        });
+    }
+  }, [currentServerId]);
 
   const loadEncryptedCases = () => {
     fetch("/api/cases/encrypted/list", { credentials: "include" })
@@ -255,57 +269,63 @@ export default function AdminPanel() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users
-                      .filter(u => u.id.includes(":"))
-                      .map((u) => (
-                      <TableRow key={u.id} className="hover:bg-muted/50 border-border/50">
-                        <TableCell className="font-mono text-sm font-bold">
-                          {u.username} {user.id === u.id && <span className="text-xs text-muted-foreground font-normal">(YOU)</span>}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs text-muted-foreground">
-                          {u.id.split(":")[1] || u.id}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={u.role === "Overseer" ? "default" : "secondary"} className="font-mono text-[10px]">
-                            {u.role}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                           {u.isSuspended ? (
-                             <span className="flex items-center gap-1 text-destructive text-xs font-mono">
-                               <AlertTriangle size={12} /> SUSPENDED
-                             </span>
-                           ) : (
-                             <span className="text-green-500 text-xs font-mono">ACTIVE</span>
-                           )}
-                        </TableCell>
-                        <TableCell>
-                           {u.isOnline ? (
-                             <span className="flex items-center gap-1 text-green-400 text-xs font-mono animate-pulse">
-                               <div className="w-2 h-2 rounded-full bg-green-500" />
-                               ONLINE
-                             </span>
-                           ) : (
-                             <span className="text-muted-foreground text-xs font-mono opacity-50">OFFLINE</span>
-                           )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {user.role === "Overseer" && user.id !== u.id && (
-                            <div className="flex gap-1">
-                              {u.isSuspended ? (
-                                <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => unsuspendUser(u.id)}>
-                                  <UserCheck size={12} className="mr-1" /> RESTORE
-                                </Button>
-                              ) : (
-                                <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-destructive/50 hover:bg-destructive/10 text-destructive" onClick={() => suspendUser(u.id)}>
-                                  <UserX size={12} className="mr-1" /> SUSPEND
-                                </Button>
-                              )}
-                            </div>
-                          )}
+                    {serverMembers.length > 0 ? (
+                      serverMembers.map((member) => (
+                        <TableRow key={member.id} className="hover:bg-muted/50 border-border/50">
+                          <TableCell className="font-mono text-sm font-bold">
+                            {member.username} {user?.id === member.discordUserId && <span className="text-xs text-muted-foreground font-normal">(YOU)</span>}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs text-muted-foreground">
+                            {member.discordUserId}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={member.role === "Overseer" ? "default" : "secondary"} className="font-mono text-[10px]">
+                              {member.role}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                             {member.isSuspended ? (
+                               <span className="flex items-center gap-1 text-destructive text-xs font-mono">
+                                 <AlertTriangle size={12} /> SUSPENDED
+                               </span>
+                             ) : (
+                               <span className="text-green-500 text-xs font-mono">ACTIVE</span>
+                             )}
+                          </TableCell>
+                          <TableCell>
+                             {member.isOnline ? (
+                               <span className="flex items-center gap-1 text-green-400 text-xs font-mono animate-pulse">
+                                 <div className="w-2 h-2 rounded-full bg-green-500" />
+                                 ONLINE
+                               </span>
+                             ) : (
+                               <span className="text-muted-foreground text-xs font-mono opacity-50">OFFLINE</span>
+                             )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {user?.role === "Overseer" && user.id !== member.discordUserId && (
+                              <div className="flex gap-1">
+                                {member.isSuspended ? (
+                                  <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-green-500/50 hover:bg-green-500/10" onClick={() => suspendUser(member.id)}>
+                                    <UserCheck size={12} className="mr-1" /> RESTORE
+                                  </Button>
+                                ) : (
+                                  <Button size="sm" variant="outline" className="h-7 text-xs font-mono border-destructive/50 hover:bg-destructive/10 text-destructive" onClick={() => suspendUser(member.id)}>
+                                    <UserX size={12} className="mr-1" /> SUSPEND
+                                  </Button>
+                                )}
+                              </div>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground font-mono text-xs">
+                          NO MEMBERS IN SERVER
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
                   </TableBody>
                 </Table>
               </div>
