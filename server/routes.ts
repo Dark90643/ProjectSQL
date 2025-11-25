@@ -1323,20 +1323,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "Failed to create case: " + caseError.message });
       }
 
-      // Try to create log (non-blocking - don't fail the response if log fails)
-      try {
-        await storage.createLog({
-          action: "CASE_CREATE",
-          userId: req.user!.id,
-          targetId: newCase.id,
-          serverId: serverId || undefined,
-          details: `Created case ${newCase.title}`,
-        });
-        console.log("✓ Log created successfully for case:", newCase.id);
-      } catch (logError: any) {
+      // Create log in background (completely non-blocking)
+      storage.createLog({
+        action: "CASE_CREATE",
+        userId: req.user!.id,
+        targetId: newCase.id,
+        serverId: serverId || undefined,
+        details: `Created case ${newCase.title}`,
+      }).then(() => {
+        console.log("✓ Log created for case:", newCase.id);
+      }).catch((logError: any) => {
         console.error("✗ Failed to create log (continuing):", logError.message);
-        // Don't fail - case was created successfully
-      }
+      });
 
       // Send Discord notification (non-blocking)
       sendCaseDiscordEmbed(newCase).catch(err => {
@@ -1388,12 +1386,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedCase = await storage.updateCase(id, updates);
       
       if (updatedCase) {
-        await storage.createLog({
+        // Create log in background (non-blocking)
+        storage.createLog({
           action: "CASE_UPDATE",
           userId: req.user!.id,
           targetId: id,
           serverId: caseData.serverId || undefined,
           details: "Updated case details",
+        }).catch((logError: any) => {
+          console.error("✗ Failed to create update log:", logError.message);
         });
       }
       
@@ -1432,12 +1433,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const success = await storage.deleteCase(id, req.user!.id);
       
       if (success) {
-        await storage.createLog({
+        // Create log in background (non-blocking)
+        storage.createLog({
           action: "CASE_DELETE",
           userId: req.user!.id,
           targetId: id,
           serverId: caseData.serverId || undefined,
           details: JSON.stringify({ title: caseData.title, caseData: caseData }),
+        }).catch((logError: any) => {
+          console.error("✗ Failed to create delete log:", logError.message);
         });
       }
       
@@ -1476,12 +1480,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedCase = await storage.updateCase(id, { isPublic: !caseData.isPublic });
       
       if (updatedCase) {
-        await storage.createLog({
+        // Create log in background (non-blocking)
+        storage.createLog({
           action: "CASE_PUBLIC_TOGGLE",
           userId: req.user!.id,
           targetId: id,
           serverId: caseData.serverId || undefined,
           details: `Changed public visibility to ${updatedCase.isPublic}`,
+        }).catch((logError: any) => {
+          console.error("✗ Failed to create toggle log:", logError.message);
         });
 
         // Send Discord notification when case is made public (non-blocking)
