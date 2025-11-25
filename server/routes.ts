@@ -1335,7 +1335,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     let newCase: any = null;
     try {
       const caseData = req.body;
-      const { serverId } = caseData;
+      // Use serverId from request body, or fall back to user's serverId (Discord OAuth users)
+      const serverId = caseData.serverId || req.user!.serverId;
       
       console.log("Creating case with data:", { title: caseData.title, serverId, userId: req.user!.id });
       
@@ -1393,7 +1394,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/cases/:id", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { serverId, ...updates } = req.body;
+      // Use serverId from request body, query, or fall back to user's serverId
+      const queryServerId = req.query.serverId as string;
+      const bodyServerId = req.body?.serverId;
+      const serverId = bodyServerId || queryServerId || req.user!.serverId;
+      
+      const updates = { ...req.body };
+      delete updates.serverId; // Don't update serverId
       
       // Only Agent, Management, and Overseer roles can update cases
       if (!["Agent", "Management", "Overseer"].includes(req.user!.role)) {
@@ -1492,7 +1499,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/cases/:id/toggle-public", requireAuth, requireRoleOrServerOwner("Overseer"), async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { serverId } = req.query;
+      // Use serverId from query or user's serverId
+      const queryServerId = req.query.serverId as string;
+      const serverId = queryServerId || req.user!.serverId;
       
       const caseData = await storage.getCase(id);
       
@@ -1508,7 +1517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // If serverId is provided, verify user is a member
       if (serverId) {
         const discordUserId = req.user!.discordUserId || req.user!.id;
-        const isServerMember = await storage.getServerMember(serverId as string, discordUserId);
+        const isServerMember = await storage.getServerMember(serverId, discordUserId);
         if (!isServerMember) {
           return res.status(403).json({ error: "Not a member of this server" });
         }
