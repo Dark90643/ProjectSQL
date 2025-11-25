@@ -7,6 +7,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { sql } from "drizzle-orm";
 import type { User } from "@shared/schema";
 
 // Extend Express Request to include user
@@ -878,6 +879,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
+      
+      // Update server member with Discord username if provided
+      if (discordUsername && member) {
+        await storage.db.execute(
+          sql`UPDATE server_members SET discord_username = ${discordUsername} WHERE server_id = ${serverId} AND discord_user_id = ${discordId}`
+        );
+      }
 
       // Log the member data for debugging
       console.log("Server member found:", {
@@ -958,7 +966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           id: member.discordUserId,
           username: userInfo?.username || member.discordUserId,
-          discordUsername: (userInfo as any)?.discordUsername || userInfo?.username || member.discordUserId,
+          discordUsername: (member as any)?.discordUsername || (userInfo as any)?.discordUsername || member.discordUserId,
           role: member.isOwner ? "Overseer" : member.isAdmin ? "Management" : "Agent",
           isSuspended: userInfo?.isSuspended || false,
           isOnline: userInfo?.isOnline || false,
