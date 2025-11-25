@@ -536,16 +536,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (req.session) {
           req.session.passport = { user };
           req.session.discordUser = user; // Also store directly for easier access
-          req.session.save((saveErr) => {
-            if (saveErr) {
-              console.error("Session save error:", saveErr);
-              return res.status(500).json({ error: "Session save failed" });
-            }
-            res.json({ discordId: discordUser.id, username: discordUser.username });
-          });
-        } else {
-          res.status(500).json({ error: "Session not available" });
         }
+
+        res.json({ discordId: discordUser.id, username: discordUser.username });
       });
     } catch (error: any) {
       console.error("Discord POST callback error:", error);
@@ -892,17 +885,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // because Passport's serialization doesn't work with composite IDs
       if (req.session) {
         req.session.discordUser = user;
-        req.session.save((err) => {
-          if (err) {
-            console.error("Session save error:", err);
-            return res.status(500).json({ error: "Session save failed" });
-          }
-          console.log("Discord user session established:", { id: user.id, serverId: user.serverId, role: user.role });
-          res.json(user);
-        });
-      } else {
-        res.status(500).json({ error: "Session not available" });
+        console.log("Discord user session established:", { id: user.id, serverId: user.serverId, role: user.role });
       }
+      res.json(user);
     } catch (error: any) {
       console.error("Select server error:", error);
       res.status(500).json({ error: "Failed to select server" });
