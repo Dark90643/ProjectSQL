@@ -86,20 +86,8 @@ export default function AdminPanel() {
 
   // Filter logs for current server only
   const filteredLogs = logs.filter(log => {
-    // If we have a currentServerId, filter logs
-    if (currentServerId) {
-      // First check if log.serverId matches
-      if (log.serverId === currentServerId) {
-        return true;
-      }
-      // If log doesn't have serverId, check if it's related to a case in this server
-      if (!log.serverId) {
-        const relatedCase = cases.find(c => c.id === log.targetId);
-        return relatedCase?.serverId === currentServerId;
-      }
-      return false;
-    }
-    // If no currentServerId, show all logs (for traditional users)
+    // Show all logs - don't filter by serverId
+    // The backend already filters logs based on user permissions
     return true;
   });
 
