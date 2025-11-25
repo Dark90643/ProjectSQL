@@ -14,6 +14,7 @@ interface User {
   requiresInviteVerification?: boolean;
   serverId?: string;
   discordUserId?: string;
+  discordUsername?: string;
 }
 
 interface Case {
@@ -242,6 +243,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error("Failed to select server");
       }
       const userData = await response.json();
+      // Preserve Discord username in the user object
+      if (discordUser?.username) {
+        userData.discordUsername = discordUser.username;
+      }
       setUser(userData);
       setCurrentServerId(serverId);
       localStorage.setItem('currentServerId', serverId);
