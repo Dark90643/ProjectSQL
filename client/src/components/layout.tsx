@@ -40,11 +40,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3 mb-2">
             <Avatar className="h-8 w-8 rounded bg-primary/10 text-primary border border-primary/20">
               <AvatarFallback className="font-mono text-xs">
-                {user.username.substring(0, 2).toUpperCase()}
+                {user.username?.substring(0, 2).toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
             <div className="overflow-hidden">
-              <p className="text-sm font-mono font-bold truncate text-foreground">{user.username}</p>
+              <p className="text-sm font-mono font-bold truncate text-foreground">{(user as any).discordUsername || user.username || "Agent"}</p>
               <p className="text-[10px] uppercase tracking-wider text-primary font-bold flex items-center gap-1">
                 <Lock size={8} />
                 {user.role} LEVEL
