@@ -12,6 +12,7 @@ interface Server {
   serverName: string;
   serverIcon?: string;
   caseCount: number;
+  hasBotInServer: boolean;
 }
 
 export default function ServerSelector() {
@@ -200,9 +201,12 @@ export default function ServerSelector() {
                     </div>
                   </div>
 
-                  {/* Case Count */}
-                  <div className="text-xs text-muted-foreground font-mono mb-3">
+                  {/* Case Count & Bot Status */}
+                  <div className="flex justify-between items-center text-xs text-muted-foreground font-mono mb-3">
                     <span data-testid={`text-cases-${server.serverId}`}>{server.caseCount} case{server.caseCount !== 1 ? 's' : ''}</span>
+                    <span className={`px-2 py-1 rounded text-[10px] ${server.hasBotInServer ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 'bg-orange-500/10 text-orange-400 border border-orange-500/30'}`} data-testid={`status-bot-${server.serverId}`}>
+                      {server.hasBotInServer ? '✓ BOT READY' : '⚠ ADD BOT'}
+                    </span>
                   </div>
 
                   {/* Select Button */}
@@ -223,7 +227,7 @@ export default function ServerSelector() {
                     ) : (
                       <>
                         <Zap className="mr-2 h-3 w-3" />
-                        ACCESS
+                        {server.hasBotInServer ? 'ACCESS' : 'SETUP BOT'}
                       </>
                     )}
                   </Button>

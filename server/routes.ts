@@ -609,8 +609,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/auth/discord/servers", async (req: Request, res: Response) => {
     try {
-      // Get all servers where the bot is present (not filtered by user)
-      const allWorkspaces = await storage.getAllServerWorkspaces();
+      const { discordId } = req.query;
+      if (!discordId) {
+        return res.status(400).json({ error: "Discord ID required" });
+      }
+
+      // Get all servers where the user is a member
+      const userServers = await storage.getServersByUser(discordId as string);
       
       // Get all cases to count per server
       const allCases = await storage.getAllCases();
@@ -623,17 +628,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Filter servers where bot is present and add case counts
+      // Get server members for this user to check permissions
       const serversWithData: any[] = [];
       
-      for (const server of allWorkspaces) {
-        // Only include servers where bot is actually in
-        if (botGuilds.has(server.serverId)) {
+      for (const server of userServers) {
+        const member = await storage.getServerMember(server.serverId, discordId as string);
+        
+        // Only include servers where user is Owner or Admin (has permission to add bot)
+        if (member && (member.isOwner || member.isAdmin)) {
           const caseCount = allCases.filter(c => c.serverId === server.serverId).length;
+          const hasBotInServer = botGuilds.has(server.serverId);
           
           serversWithData.push({
             ...server,
             caseCount,
+            hasBotInServer,
             serverIcon: server.serverIcon 
               ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.serverIcon}.png`
               : undefined,
