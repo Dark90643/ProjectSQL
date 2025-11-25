@@ -769,25 +769,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ error: "Not authorized to access support panel" });
       }
 
-      // Get all servers first
-      const allWorkspaces = await storage.getAllServerWorkspaces();
-      
-      // Get bot's guilds from Discord client
-      const botGuilds = new Set<string>();
+      // Get bot's guilds from Discord client - ALL servers the bot is in
+      const serverStats: any = {};
       if (discordClient && discordClient.isReady()) {
-        discordClient.guilds.cache.forEach(guild => {
-          botGuilds.add(guild.id);
-        });
+        // Add all servers the bot is in
+        for (const [guildId, guild] of discordClient.guilds.cache) {
+          const workspace = await storage.getServerWorkspace(guildId);
+          serverStats[guildId] = {
+            serverId: guildId,
+            serverName: workspace?.serverName || guild.name,
+            totalCases: 0,
+            activeCases: 0,
+            closedCases: 0,
+          };
+        }
       }
       
-      // Get all cases from all servers
-      const allCases = await storage.getAllCases();
-      
-      // Initialize serverStats for servers where bot is present (even if no cases)
-      const serverStats: any = {};
-      allWorkspaces.forEach(workspace => {
-        // Only include servers where bot is present
-        if (botGuilds.has(workspace.serverId)) {
+      // If no servers found through Discord client, fall back to database
+      if (Object.keys(serverStats).length === 0) {
+        const allWorkspaces = await storage.getAllServerWorkspaces();
+        allWorkspaces.forEach(workspace => {
           serverStats[workspace.serverId] = {
             serverId: workspace.serverId,
             serverName: workspace.serverName,
@@ -795,14 +796,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             activeCases: 0,
             closedCases: 0,
           };
-        }
-      });
-
+        });
+      }
+      
+      // Get all cases from all servers
+      const allCases = await storage.getAllCases();
+      
       // Add cases to the stats
       const casesWithServer: any[] = [];
       for (const caseData of allCases) {
         const serverId = caseData.serverId || "";
-        const serverName = serverStats[serverId]?.serverName || `Server ${caseData.serverId}`;
+        const serverName = serverStats[serverId]?.serverName || `Server ${serverId}`;
         
         casesWithServer.push({
           ...caseData,
