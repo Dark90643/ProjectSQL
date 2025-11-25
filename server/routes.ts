@@ -744,19 +744,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all servers first
       const allWorkspaces = await storage.getAllServerWorkspaces();
       
+      // Get bot's guilds from Discord client
+      const botGuilds = new Set<string>();
+      if (discordClient && discordClient.isReady()) {
+        discordClient.guilds.cache.forEach(guild => {
+          botGuilds.add(guild.id);
+        });
+      }
+      
       // Get all cases from all servers
       const allCases = await storage.getAllCases();
       
-      // Initialize serverStats for all servers (even if no cases)
+      // Initialize serverStats for servers where bot is present (even if no cases)
       const serverStats: any = {};
       allWorkspaces.forEach(workspace => {
-        serverStats[workspace.serverId] = {
-          serverId: workspace.serverId,
-          serverName: workspace.serverName,
-          totalCases: 0,
-          activeCases: 0,
-          closedCases: 0,
-        };
+        // Only include servers where bot is present
+        if (botGuilds.has(workspace.serverId)) {
+          serverStats[workspace.serverId] = {
+            serverId: workspace.serverId,
+            serverName: workspace.serverName,
+            totalCases: 0,
+            activeCases: 0,
+            closedCases: 0,
+          };
+        }
       });
 
       // Add cases to the stats
