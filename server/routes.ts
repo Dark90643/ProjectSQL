@@ -729,7 +729,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/support/all-cases", requireAuth, async (req: Request, res: Response) => {
     try {
       // Check if user is support team
-      const discordId = req.user?.username;
+      const discordId = req.user?.discordUserId || req.user?.id;
       if (!discordId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
