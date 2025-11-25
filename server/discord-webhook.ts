@@ -1,4 +1,7 @@
 // Discord Webhook Integration
+import { storage } from "./storage";
+import { discordClient } from "./discord-bot";
+
 export async function sendCaseDiscordEmbed(caseData: {
   id: string;
   title: string;
@@ -282,4 +285,127 @@ function getAuditColorForAction(action: string): number {
   if (action.includes("PUBLIC") || action.includes("DECRYPT")) return 0xFFCC00; // Yellow for public/decrypt
   if (action.includes("ENCRYPT")) return 0x9900FF; // Purple for encryption
   return 0x808080; // Gray for others
+}
+
+// New functions for bot channel messaging (not webhook URLs)
+export async function sendBotCasePostMessage(caseData: {
+  id: string;
+  title: string;
+  description: string;
+  priority: string;
+  serverId?: string | null;
+}): Promise<void> {
+  if (!caseData.serverId) return;
+  
+  try {
+    const config = await storage.getWebhookConfig(caseData.serverId);
+    if (!config?.casePostEnabled || !config.casePostChannelId) {
+      return;
+    }
+
+    const channel = await discordClient.channels.fetch(config.casePostChannelId);
+    if (!channel || !channel.isTextBased()) {
+      console.warn("Cannot send message to channel:", config.casePostChannelId);
+      return;
+    }
+
+    const embed = {
+      title: `📋 New Case: ${caseData.title}`,
+      description: caseData.description,
+      color: caseData.priority === "Critical" ? 0xFF0000 : 
+             caseData.priority === "High" ? 0xFF9900 :
+             caseData.priority === "Medium" ? 0xFFCC00 : 0x00CC00,
+      fields: [
+        { name: "Case ID", value: caseData.id, inline: true },
+        { name: "Priority", value: caseData.priority, inline: true },
+      ],
+      footer: { text: "AEGIS_NET Case Management" },
+      timestamp: new Date().toISOString(),
+    };
+
+    await channel.send({ embeds: [embed] });
+    console.log("✓ Case post message sent to channel:", config.casePostChannelId);
+  } catch (error) {
+    console.error("Failed to send case post message:", error);
+  }
+}
+
+export async function sendBotCaseReleaseMessage(caseData: {
+  id: string;
+  title: string;
+  description: string;
+  priority: string;
+  serverId?: string | null;
+}): Promise<void> {
+  if (!caseData.serverId) return;
+  
+  try {
+    const config = await storage.getWebhookConfig(caseData.serverId);
+    if (!config?.caseReleaseEnabled || !config.caseReleaseChannelId) {
+      return;
+    }
+
+    const channel = await discordClient.channels.fetch(config.caseReleaseChannelId);
+    if (!channel || !channel.isTextBased()) {
+      console.warn("Cannot send message to channel:", config.caseReleaseChannelId);
+      return;
+    }
+
+    const embed = {
+      title: `🔓 Case Released: ${caseData.title}`,
+      description: caseData.description,
+      color: 0x00FF00,
+      fields: [
+        { name: "Case ID", value: caseData.id, inline: true },
+        { name: "Priority", value: caseData.priority, inline: true },
+      ],
+      footer: { text: "AEGIS_NET Case Management" },
+      timestamp: new Date().toISOString(),
+    };
+
+    await channel.send({ embeds: [embed] });
+    console.log("✓ Case release message sent to channel:", config.caseReleaseChannelId);
+  } catch (error) {
+    console.error("Failed to send case release message:", error);
+  }
+}
+
+export async function sendBotAuditTrailMessage(logData: {
+  action: string;
+  userId: string;
+  targetId?: string;
+  details: string;
+  serverId?: string | null;
+}): Promise<void> {
+  if (!logData.serverId) return;
+  
+  try {
+    const config = await storage.getWebhookConfig(logData.serverId);
+    if (!config?.auditTrailEnabled || !config.auditTrailChannelId) {
+      return;
+    }
+
+    const channel = await discordClient.channels.fetch(config.auditTrailChannelId);
+    if (!channel || !channel.isTextBased()) {
+      console.warn("Cannot send message to channel:", config.auditTrailChannelId);
+      return;
+    }
+
+    const embed = {
+      title: `📝 ${logData.action}`,
+      description: logData.details,
+      color: getAuditColorForAction(logData.action),
+      fields: [
+        { name: "User", value: logData.userId, inline: true },
+        { name: "Target", value: logData.targetId || "N/A", inline: true },
+      ],
+      footer: { text: "AEGIS_NET Audit Trail" },
+      timestamp: new Date().toISOString(),
+    };
+
+    await channel.send({ embeds: [embed] });
+    console.log("✓ Audit trail message sent to channel:", config.auditTrailChannelId);
+  } catch (error) {
+    console.error("Failed to send audit trail message:", error);
+  }
 }

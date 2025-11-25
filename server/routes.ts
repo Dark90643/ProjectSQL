@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { sendCaseDiscordEmbed, sendCasePublicDiscordEmbed } from "./discord-webhook";
+import { sendCaseDiscordEmbed, sendCasePublicDiscordEmbed, sendBotCasePostMessage, sendBotCaseReleaseMessage, sendBotAuditTrailMessage } from "./discord-webhook";
 import { discordClient, checkUserGuildPermissions } from "./discord-bot";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -1401,9 +1401,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("✗ Failed to create log (continuing):", logError.message);
       });
 
-      // Send Discord notification (non-blocking)
+      // Send Discord notifications (non-blocking)
       sendCaseDiscordEmbed(newCase).catch(err => {
-        console.error("✗ Failed to send Discord notification:", err.message);
+        console.error("✗ Failed to send Discord webhook notification:", err.message);
+      });
+      
+      // Send bot channel message (non-blocking)
+      sendBotCasePostMessage({
+        id: newCase.id,
+        title: newCase.title,
+        description: newCase.description,
+        priority: newCase.priority,
+        serverId: serverId || newCase.serverId,
+      }).catch(err => {
+        console.error("Failed to send bot case post message:", err.message);
       });
 
       res.json(newCase);
@@ -1567,7 +1578,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Send Discord notification when case is made public (non-blocking)
         if (updatedCase.isPublic) {
           sendCasePublicDiscordEmbed(updatedCase).catch(err => {
-            console.error("Failed to send Discord notification:", err);
+            console.error("Failed to send Discord webhook notification:", err);
+          });
+          
+          // Send bot channel message (non-blocking)
+          sendBotCaseReleaseMessage({
+            id: updatedCase.id,
+            title: updatedCase.title,
+            description: updatedCase.description,
+            priority: updatedCase.priority,
+            serverId: caseData.serverId || updatedCase.serverId,
+          }).catch(err => {
+            console.error("Failed to send bot case release message:", err);
           });
         }
       }
