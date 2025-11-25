@@ -69,6 +69,7 @@ export const cases = pgTable("cases", {
 
 export const logs = pgTable("logs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serverId: text("server_id"),
   action: text("action").notNull(),
   userId: varchar("user_id").notNull(),
   targetId: varchar("target_id"),

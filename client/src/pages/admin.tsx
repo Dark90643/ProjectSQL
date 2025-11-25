@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Case } from "@shared/schema";
 
 export default function AdminPanel() {
-  const { user, users, logs, cases, suspendUser, unsuspendUser, editUser, createUserWithInvite } = useAuth();
+  const { user, users, logs, cases, suspendUser, unsuspendUser, editUser, createUserWithInvite, currentServerId } = useAuth();
   const { toast } = useToast();
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ username: "", password: "", role: "Agent" });
@@ -70,7 +70,17 @@ export default function AdminPanel() {
     );
   }
 
-  const sortedLogs = [...logs].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  // Filter logs for current server only
+  const filteredLogs = logs.filter(log => {
+    if (!log.serverId) {
+      // If log doesn't have serverId, check if it's related to a case in this server
+      const relatedCase = cases.find(c => c.id === log.targetId);
+      return relatedCase?.serverId === currentServerId;
+    }
+    return log.serverId === currentServerId;
+  });
+
+  const sortedLogs = [...filteredLogs].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   const handleEncryptCase = async (caseId: string) => {
     try {
@@ -112,7 +122,7 @@ export default function AdminPanel() {
           <Card className="bg-card/50 border-primary/20">
             <CardHeader>
               <CardTitle className="font-mono text-lg">Audit Trail</CardTitle>
-              <CardDescription className="font-mono text-xs">All system actions are recorded below.</CardDescription>
+              <CardDescription className="font-mono text-xs">Server-specific audit log for {cases.find(c => c.serverId === currentServerId)?.serverId || currentServerId || 'all actions'}.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="rounded-md border border-border/50 overflow-hidden">
