@@ -882,16 +882,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update server member with Discord username if provided
       if (discordUsername && member) {
         try {
-          await storage.updateServerMember(serverId, discordId, { discordUsername });
+          console.log("Updating server member with Discord username:", { serverId, discordId, discordUsername });
+          const updatedMember = await storage.updateServerMember(serverId, discordId, { discordUsername });
+          console.log("Updated member result:", updatedMember);
         } catch (err) {
           console.warn("Failed to update Discord username:", err);
         }
+      } else {
+        console.log("Skipped username update:", { hasUsername: !!discordUsername, hasMember: !!member });
       }
 
       // Log the member data for debugging
       console.log("Server member found:", {
         serverId,
         discordId,
+        discordUsername,
         isOwner: member?.isOwner,
         isAdmin: member?.isAdmin,
       });
