@@ -1821,12 +1821,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No server context" });
       }
 
-      // TODO: Fetch actual Discord channels from bot
-      // For now, return empty array - will be implemented with Discord.js
-      res.json({ channels: [] });
+      // Fetch Discord guild and get text channels
+      const guild = await discordClient.guilds.fetch(user.serverId);
+      if (!guild) {
+        return res.json({ channels: [] });
+      }
+
+      const textChannels = guild.channels.cache
+        .filter((channel: any) => channel.type === 0) // 0 = GUILD_TEXT
+        .map((channel: any) => ({
+          id: channel.id,
+          name: channel.name,
+        }))
+        .sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+      res.json({ channels: textChannels });
     } catch (error: any) {
       console.error("Get webhook channels error:", error);
-      res.status(500).json({ error: "Failed to get channels" });
+      res.status(500).json({ error: "Failed to get channels", channels: [] });
     }
   });
 
