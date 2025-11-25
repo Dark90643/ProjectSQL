@@ -1697,6 +1697,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             title: updatedCase.title,
             description: updatedCase.description,
             priority: updatedCase.priority,
+            status: updatedCase.status,
+            assignedAgent: updatedCase.assignedAgent,
+            content: updatedCase.content,
+            tags: updatedCase.tags,
+            caseCode: updatedCase.caseCode,
+            googleDocUrl: updatedCase.googleDocUrl,
             serverId: caseData.serverId || updatedCase.serverId,
           }).catch(err => {
             console.error("Failed to send bot case release message:", err);

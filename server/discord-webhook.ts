@@ -335,6 +335,12 @@ export async function sendBotCaseReleaseMessage(caseData: {
   title: string;
   description: string;
   priority: string;
+  status?: string;
+  assignedAgent?: string;
+  content?: string;
+  tags?: string[];
+  caseCode?: string | null;
+  googleDocUrl?: string | null;
   serverId?: string | null;
 }): Promise<void> {
   if (!caseData.serverId) return;
@@ -358,8 +364,23 @@ export async function sendBotCaseReleaseMessage(caseData: {
       fields: [
         { name: "Case ID", value: caseData.id, inline: true },
         { name: "Priority", value: caseData.priority, inline: true },
+        ...(caseData.status ? [{ name: "Status", value: caseData.status, inline: true }] : []),
+        ...(caseData.assignedAgent ? [{ name: "Assigned Agent", value: caseData.assignedAgent, inline: true }] : []),
+        { name: "Classification", value: "PUBLIC 🔓", inline: true },
+        ...(caseData.caseCode ? [{ name: "Encryption Code", value: caseData.caseCode, inline: true }] : []),
+        ...(caseData.tags && caseData.tags.length > 0 ? [{ name: "Tags", value: caseData.tags.join(", "), inline: false }] : []),
+        ...(caseData.content ? [{
+          name: "Content",
+          value: caseData.content.substring(0, 1024) + (caseData.content.length > 1024 ? "..." : ""),
+          inline: false,
+        }] : []),
+        ...(caseData.googleDocUrl ? [{
+          name: "Google Docs Link",
+          value: `[View Document](${caseData.googleDocUrl})`,
+          inline: false,
+        }] : []),
       ],
-      footer: { text: "AEGIS_NET Case Management" },
+      footer: { text: "AEGIS_NET Case Management - Now Public" },
       timestamp: new Date().toISOString(),
     };
 
