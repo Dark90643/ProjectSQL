@@ -176,7 +176,18 @@ export default function AdminPanel() {
                           {new Date(log.timestamp).toLocaleString()}
                         </TableCell>
                         <TableCell className="font-mono text-xs font-bold text-primary">
-                          {usernameLookup[log.userId] || users.find(u => u.id === log.userId)?.discordUsername || users.find(u => u.id === log.userId)?.username || log.userId}
+                          {(() => {
+                            // Try direct lookup first
+                            if (usernameLookup[log.userId]) return usernameLookup[log.userId];
+                            
+                            // For Discord users with composite ID (discordId:serverId), extract the Discord ID
+                            const userId = log.userId.includes(':') ? log.userId.split(':')[0] : log.userId;
+                            if (usernameLookup[userId]) return usernameLookup[userId];
+                            
+                            // Fall back to users array
+                            const user = users.find(u => u.id === log.userId || u.discordUserId === userId);
+                            return user?.discordUsername || user?.username || log.userId;
+                          })()}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="font-mono text-[10px]">
