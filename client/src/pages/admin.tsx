@@ -24,6 +24,7 @@ export default function AdminPanel() {
   const [encryptedCases, setEncryptedCases] = useState<Case[]>([]);
   const [serverMembers, setServerMembers] = useState<any[]>([]);
   const [usernameLookup, setUsernameLookup] = useState<Record<string, string>>({});
+  const [activeTab, setActiveTab] = useState("logs");
 
   useEffect(() => {
     if (user && ["Management", "Overseer"].includes(user.role)) {
@@ -57,6 +58,18 @@ export default function AdminPanel() {
         });
     }
   }, [currentServerId]);
+
+  // Refresh immediately on mount and when entering admin panel
+  useEffect(() => {
+    refreshData();
+  }, []);
+
+  // Refresh immediately when switching to logs tab
+  useEffect(() => {
+    if (activeTab === "logs") {
+      refreshData();
+    }
+  }, [activeTab, refreshData]);
 
   // Auto-refresh logs every 5 seconds
   useEffect(() => {
@@ -145,7 +158,7 @@ export default function AdminPanel() {
         <h1 className="font-mono text-2xl font-bold tracking-tight">ADMINISTRATION_PANEL</h1>
       </div>
 
-      <Tabs defaultValue="logs" className="w-full">
+      <Tabs defaultValue="logs" className="w-full" onValueChange={setActiveTab}>
         <TabsList className="grid w-full bg-black/40 border border-white/10 grid-cols-3">
           <TabsTrigger value="logs" className="font-mono">SYSTEM LOGS</TabsTrigger>
           <TabsTrigger value="users" className="font-mono">AGENT ROSTER</TabsTrigger>
