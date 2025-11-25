@@ -1777,7 +1777,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/webhook/config", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
     try {
       const user = req.user;
+      console.log("Update webhook config - User:", { userId: user?.id, role: user?.role, serverId: user?.serverId });
+      
       if (!user?.serverId) {
+        console.error("No server context for webhook config update");
         return res.status(400).json({ error: "No server context" });
       }
 
@@ -1790,6 +1793,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseReleaseEnabled,
       } = req.body;
 
+      console.log("Updating webhook config with:", {
+        serverId: user.serverId,
+        auditTrailEnabled,
+        casePostEnabled,
+        caseReleaseEnabled,
+      });
+
       const config = await storage.createOrUpdateWebhookConfig({
         serverId: user.serverId,
         auditTrailChannelId: auditTrailEnabled ? auditTrailChannelId : null,
@@ -1800,17 +1810,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseReleaseEnabled,
       });
 
+      console.log("Webhook config updated successfully:", config);
+
       await storage.createLog({
         action: "WEBHOOK_CONFIG_UPDATED",
         userId: user.id,
         targetId: user.serverId,
         details: `Updated webhook configuration`,
+        serverId: user.serverId,
       });
 
       res.json(config);
     } catch (error: any) {
       console.error("Update webhook config error:", error);
-      res.status(500).json({ error: "Failed to update webhook config" });
+      res.status(500).json({ error: "Failed to update webhook config", details: error.message });
     }
   });
 
