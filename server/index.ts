@@ -42,6 +42,7 @@ declare module 'express-session' {
     passport?: {
       user?: any;
     };
+    discordUser?: any; // Direct user storage for Discord users
   }
 }
 

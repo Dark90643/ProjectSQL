@@ -98,25 +98,27 @@ passport.deserializeUser(async (id: any, done) => {
 
 // Middleware
 const requireAuth = (req: Request, res: Response, next: Function) => {
-  // First check session for user (Discord users with ":" won't get deserialized by Passport)
+  // First check for Discord users stored directly in session
+  if (req.session?.discordUser) {
+    req.user = req.session.discordUser;
+    console.log("Auth: User from session (Discord):", { id: req.user.id, role: req.user.role });
+    return next();
+  }
+  
+  // Then check session for Passport users
   if (req.session?.passport?.user) {
     req.user = req.session.passport.user;
-    console.log("Auth: User from session:", { id: req.user.id, role: req.user.role });
+    console.log("Auth: User from session (Passport):", { id: req.user.id, role: req.user.role });
     return next();
   }
   
   // Then try to get user from req.user (set by Passport for regular users)
   if (req.user) {
-    // If user is missing serverId but session has it, restore it
-    if (!req.user.serverId && req.session?.passport?.user?.serverId) {
-      req.user.serverId = req.session.passport.user.serverId;
-      req.user.discordUserId = req.session.passport.user.discordUserId;
-    }
     console.log("Auth: User from req.user:", { id: req.user.id, role: req.user.role });
     return next();
   }
   
-  console.log("Auth: No user found. Session:", req.session?.passport, "req.user:", req.user);
+  console.log("Auth: No user found. Session:", req.session);
   return res.status(401).json({ error: "Unauthorized" });
 };
 
@@ -842,22 +844,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isAdmin: member?.isAdmin,
       });
 
-      // Use req.login() to properly set up Passport's session persistence
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Login error:", err);
-          return res.status(500).json({ error: "Login failed" });
-        }
-        
-        // Double-check the session was saved
-        if (req.session?.passport?.user) {
+      // For Discord users, bypass Passport and store directly in session
+      // because Passport's serialization doesn't work with composite IDs
+      if (req.session) {
+        req.session.discordUser = user;
+        req.session.save((err) => {
+          if (err) {
+            console.error("Session save error:", err);
+            return res.status(500).json({ error: "Session save failed" });
+          }
           console.log("Discord user session established:", { id: user.id, serverId: user.serverId, role: user.role });
           res.json(user);
-        } else {
-          console.error("Session not properly established after login");
-          res.status(500).json({ error: "Session establishment failed" });
-        }
-      });
+        });
+      } else {
+        res.status(500).json({ error: "Session not available" });
+      }
     } catch (error: any) {
       console.error("Select server error:", error);
       res.status(500).json({ error: "Failed to select server" });
