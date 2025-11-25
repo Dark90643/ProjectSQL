@@ -159,6 +159,12 @@ Preferred communication style: Simple, everyday language.
   - Can search by Roblox username or user ID
   - Returns account creation dates, profile URLs, and status information
   - Uses public Roblox API (no authentication required)
+  - **Enhanced Features**:
+    - Interactive selection menu to view: Badges, Friends, or Groups
+    - 9 results per page displayed in 3x3 grid layout
+    - Account age display for both Discord and Roblox accounts
+    - Pagination buttons (Previous/Next) for browsing multiple pages
+    - Stores pagination state for 10 minutes after command execution
 - **Lockdown Features**:
   - `/lockdown` - Lock/unlock individual channels to prevent message sending
   - `/server-lockdown` - Lock/unlock entire server (all text channels)
@@ -179,7 +185,7 @@ Preferred communication style: Simple, everyday language.
   - Each server can have specific roles with command access
   - Administrator permission can be enabled/disabled per server
   - Permissions are stored in-memory per server (not persisted to database currently)
-- Webhook integration for case notifications with rich embeds
+- Bot channel messaging for case notifications and audit trail logging (replaced webhook infrastructure)
 - Account age verification and join rate limiting for raid detection
 - Comprehensive moderation logging and audit trails
 

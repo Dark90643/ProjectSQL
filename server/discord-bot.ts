@@ -11,6 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ActivityType,
+  StringSelectMenuBuilder,
 } from "discord.js";
 import { storage } from "./storage";
 
@@ -64,6 +65,19 @@ interface CasesPaginationData {
   guildId: string;
 }
 const casesPagination = new Map<string, CasesPaginationData>(); // messageId -> pagination data
+
+// Pagination storage for user-lookup command
+interface UserLookupPaginationData {
+  type: "badges" | "friends" | "groups";
+  items: any[];
+  currentPage: number;
+  userId: string;
+  robloxId: string;
+  robloxUsername: string;
+  discordUser?: any;
+  robloxData?: any;
+}
+const userLookupPagination = new Map<string, UserLookupPaginationData>(); // messageId -> pagination data
 
 // Export the Discord client so it can be accessed from routes
 export let discordClient: Client | null = null;
@@ -473,6 +487,159 @@ export async function initializeDiscordBot() {
           console.error("Button interaction error:", error);
           await interaction.reply({
             content: "An error occurred while processing your request.",
+            ephemeral: true,
+          });
+        }
+      } else if (customId.startsWith("userlookup_")) {
+        try {
+          const [_, action, messageId] = customId.split("_");
+          const paginationData = userLookupPagination.get(messageId);
+          
+          if (!paginationData) {
+            await interaction.reply({
+              content: "Pagination data expired. Please use `/user-lookup` again.",
+              ephemeral: true,
+            });
+            return;
+          }
+          
+          // Only allow the user who initiated the command to use pagination
+          if (interaction.user.id !== paginationData.userId) {
+            await interaction.reply({
+              content: "You can only navigate pagination for your own command.",
+              ephemeral: true,
+            });
+            return;
+          }
+          
+          const itemsPerPage = 9;
+          const totalPages = Math.ceil(paginationData.items.length / itemsPerPage);
+          
+          if (action === "prev" && paginationData.currentPage > 0) {
+            paginationData.currentPage--;
+          } else if (action === "next" && paginationData.currentPage < totalPages - 1) {
+            paginationData.currentPage++;
+          }
+          
+          // Get items for current page
+          const startIdx = paginationData.currentPage * itemsPerPage;
+          const endIdx = startIdx + itemsPerPage;
+          const pageItems = paginationData.items.slice(startIdx, endIdx);
+          
+          // Create embed with grid layout
+          const embed = createUserLookupEmbed(paginationData, pageItems, paginationData.currentPage, totalPages);
+          
+          // Create buttons
+          const prevButton = new ButtonBuilder()
+            .setCustomId(`userlookup_prev_${messageId}`)
+            .setLabel("⬅️ Previous")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(paginationData.currentPage === 0);
+          
+          const nextButton = new ButtonBuilder()
+            .setCustomId(`userlookup_next_${messageId}`)
+            .setLabel("Next ➡️")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(paginationData.currentPage >= totalPages - 1);
+          
+          const row = new ActionRowBuilder()
+            .addComponents(prevButton, nextButton);
+          
+          await interaction.update({
+            embeds: [embed],
+            components: [row as any],
+          });
+        } catch (error) {
+          console.error("User lookup button interaction error:", error);
+          await interaction.reply({
+            content: "An error occurred while processing your request.",
+            ephemeral: true,
+          });
+        }
+      }
+      return;
+    }
+    
+    if (interaction.isStringSelectMenu?.()) {
+      const customId = interaction.customId;
+      if (customId.startsWith("userlookup_type_")) {
+        try {
+          const [_, __, messageId] = customId.split("_");
+          const type = interaction.values[0] as "badges" | "friends" | "groups";
+          const paginationData = userLookupPagination.get(messageId);
+          
+          if (!paginationData) {
+            await interaction.reply({
+              content: "Pagination data expired. Please use `/user-lookup` again.",
+              ephemeral: true,
+            });
+            return;
+          }
+          
+          // Only allow the user who initiated the command to use the menu
+          if (interaction.user.id !== paginationData.userId) {
+            await interaction.reply({
+              content: "You can only use this menu for your own command.",
+              ephemeral: true,
+            });
+            return;
+          }
+          
+          // Fetch the selected data
+          const items = await fetchUserLookupData(paginationData.robloxId, type);
+          
+          paginationData.type = type;
+          paginationData.items = items;
+          paginationData.currentPage = 0;
+          
+          const itemsPerPage = 9;
+          const totalPages = Math.ceil(items.length / itemsPerPage);
+          
+          // Get items for first page
+          const startIdx = 0;
+          const endIdx = itemsPerPage;
+          const pageItems = items.slice(startIdx, endIdx);
+          
+          // Create embed
+          const embed = createUserLookupEmbed(paginationData, pageItems, 0, totalPages);
+          
+          // Create buttons
+          const prevButton = new ButtonBuilder()
+            .setCustomId(`userlookup_prev_${messageId}`)
+            .setLabel("⬅️ Previous")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(true);
+          
+          const nextButton = new ButtonBuilder()
+            .setCustomId(`userlookup_next_${messageId}`)
+            .setLabel("Next ➡️")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(totalPages <= 1);
+          
+          const row = new ActionRowBuilder()
+            .addComponents(prevButton, nextButton);
+          
+          // Create select menu
+          const selectMenu = new StringSelectMenuBuilder()
+            .setCustomId(`userlookup_type_${messageId}`)
+            .setPlaceholder("Select what to view")
+            .addOptions(
+              { label: "Badges", value: "badges", description: "View user badges" },
+              { label: "Friends", value: "friends", description: "View user friends" },
+              { label: "Groups", value: "groups", description: "View user groups" }
+            );
+          
+          const selectRow = new ActionRowBuilder()
+            .addComponents(selectMenu);
+          
+          await interaction.update({
+            embeds: [embed],
+            components: [selectRow as any, row as any],
+          });
+        } catch (error) {
+          console.error("User lookup select menu error:", error);
+          await interaction.reply({
+            content: "An error occurred while fetching data.",
             ephemeral: true,
           });
         }
@@ -2472,146 +2639,107 @@ async function handleUserLookup(
       return;
     }
     
-    const embed = new EmbedBuilder()
-      .setColor(Colors.Blurple)
-      .setTitle("User Lookup Results")
-      .setTimestamp();
+    let robloxId: string | null = null;
+    let robloxData: any = null;
     
-    // Search Discord user if provided
-    if (discordUser) {
-      embed.addFields(
-        { name: "Discord Username", value: discordUser.tag, inline: true },
-        { name: "Discord ID", value: discordUser.id, inline: true },
-        {
-          name: "Account Created",
-          value: new Date(discordUser.createdTimestamp).toLocaleDateString(),
-          inline: true,
-        },
-        {
-          name: "Bot Account",
-          value: discordUser.bot ? "Yes" : "No",
-          inline: true,
-        }
-      );
-    }
-    
-    // Search Roblox if username or ID provided
+    // Resolve Roblox ID from username if needed
     if (robloxUsername) {
       try {
-        // Roblox API to get user ID from username
-        const robloxResponse = await fetch(
+        const response = await fetch(
           `https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(robloxUsername)}`
         );
-        
-        if (robloxResponse.ok) {
-          const robloxData = await robloxResponse.json();
-          
-          if (robloxData.Id) {
-            embed.addFields(
-              { name: "Roblox Username", value: robloxData.Username || "N/A", inline: true },
-              { name: "Roblox User ID", value: robloxData.Id.toString(), inline: true },
-              {
-                name: "Roblox Profile URL",
-                value: `https://www.roblox.com/users/${robloxData.Id}/profile`,
-                inline: false,
-              }
-            );
-          } else {
-            embed.addFields({
-              name: "Roblox Lookup",
-              value: `No user found with username: ${robloxUsername}`,
-              inline: false,
-            });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.Id) {
+            robloxId = data.Id.toString();
+            robloxUserId = robloxId;
           }
-        } else {
-          embed.addFields({
-            name: "Roblox Lookup",
-            value: `Could not look up Roblox username: ${robloxUsername}`,
-            inline: false,
-          });
         }
       } catch (error) {
-        console.error("Roblox username lookup error:", error);
-        embed.addFields({
-          name: "Roblox Lookup",
-          value: "Error searching Roblox API",
-          inline: false,
-        });
+        console.error("Error resolving Roblox username:", error);
       }
+    } else if (robloxUserId) {
+      robloxId = robloxUserId;
     }
     
-    if (robloxUserId) {
+    // Fetch Roblox user data if we have an ID
+    if (robloxId) {
       try {
-        // Roblox API to get user info from user ID
-        const robloxResponse = await fetch(
-          `https://users.roblox.com/v1/users/${robloxUserId}`
-        );
-        
-        if (robloxResponse.ok) {
-          const robloxData = await robloxResponse.json();
-          
-          embed.addFields(
-            { name: "Roblox Username", value: robloxData.name || "N/A", inline: true },
-            { name: "Roblox User ID", value: robloxUserId, inline: true },
-            {
-              name: "Display Name",
-              value: robloxData.displayName || "N/A",
-              inline: true,
-            },
-            {
-              name: "Account Created",
-              value: new Date(robloxData.created).toLocaleDateString(),
-              inline: true,
-            },
-            {
-              name: "Roblox Profile URL",
-              value: `https://www.roblox.com/users/${robloxUserId}/profile`,
-              inline: false,
-            }
-          );
-          
-          // Try to fetch additional info
-          try {
-            const statusResponse = await fetch(
-              `https://www.roblox.com/mobileapi/userblock/getStatus?targetUserIds=${robloxUserId}`
-            );
-            if (statusResponse.ok) {
-              const statusData = await statusResponse.json();
-              if (statusData.userBlockStatuses && statusData.userBlockStatuses.length > 0) {
-                const status = statusData.userBlockStatuses[0];
-                embed.addFields({
-                  name: "Account Status",
-                  value: status.isBlocked ? "Blocked/Suspended" : "Active",
-                  inline: true,
-                });
-              }
-            }
-          } catch {
-            // Status check optional
-          }
-        } else {
-          embed.addFields({
-            name: "Roblox Lookup",
-            value: `Could not find Roblox user with ID: ${robloxUserId}`,
-            inline: false,
-          });
+        const response = await fetch(`https://users.roblox.com/v1/users/${robloxId}`);
+        if (response.ok) {
+          robloxData = await response.json();
         }
       } catch (error) {
-        console.error("Roblox user ID lookup error:", error);
-        embed.addFields({
-          name: "Roblox Lookup",
-          value: "Error searching Roblox API",
-          inline: false,
-        });
+        console.error("Error fetching Roblox data:", error);
       }
     }
     
-    embed.setFooter({
-      text: "User lookup results | Information from public APIs",
-    });
+    // Create base embed with user info
+    const messageId = Math.random().toString(36).substring(7);
+    const paginationData: UserLookupPaginationData = {
+      type: "badges",
+      items: [],
+      currentPage: 0,
+      userId: interaction.user.id,
+      robloxId: robloxId || "",
+      robloxUsername: robloxData?.name || robloxUsername || "",
+      discordUser,
+      robloxData,
+    };
+    
+    // Fetch initial badges data
+    if (robloxId) {
+      const badgesData = await fetchUserLookupData(robloxId, "badges");
+      paginationData.items = badgesData;
+    }
+    
+    const itemsPerPage = 9;
+    const totalPages = Math.ceil(paginationData.items.length / itemsPerPage);
+    
+    // Get first page items
+    const pageItems = paginationData.items.slice(0, itemsPerPage);
+    
+    // Create main embed with user info
+    const embed = createUserLookupEmbed(paginationData, pageItems, 0, totalPages);
+    
+    // Create select menu for choosing data type
+    const selectMenu = new StringSelectMenuBuilder()
+      .setCustomId(`userlookup_type_${messageId}`)
+      .setPlaceholder("Select what to view")
+      .addOptions(
+        { label: "Badges", value: "badges", description: "View user badges" },
+        { label: "Friends", value: "friends", description: "View user friends" },
+        { label: "Groups", value: "groups", description: "View user groups" }
+      );
+    
+    const selectRow = new ActionRowBuilder()
+      .addComponents(selectMenu);
+    
+    // Create pagination buttons
+    const prevButton = new ButtonBuilder()
+      .setCustomId(`userlookup_prev_${messageId}`)
+      .setLabel("⬅️ Previous")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true);
+    
+    const nextButton = new ButtonBuilder()
+      .setCustomId(`userlookup_next_${messageId}`)
+      .setLabel("Next ➡️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(totalPages <= 1);
+    
+    const buttonRow = new ActionRowBuilder()
+      .addComponents(prevButton, nextButton);
+    
+    // Store pagination data
+    userLookupPagination.set(messageId, paginationData);
+    
+    // Clean up old pagination data after 10 minutes
+    setTimeout(() => userLookupPagination.delete(messageId), 10 * 60 * 1000);
     
     await interaction.editReply({
       embeds: [embed],
+      components: [selectRow as any, buttonRow as any],
     });
     
     console.log(
@@ -2623,6 +2751,143 @@ async function handleUserLookup(
       content: "Failed to perform user lookup. Please try again.",
     });
   }
+}
+
+// Helper function to fetch user data from Roblox API
+async function fetchUserLookupData(robloxId: string, type: "badges" | "friends" | "groups"): Promise<any[]> {
+  try {
+    let url = "";
+    let dataKey = "";
+    
+    if (type === "badges") {
+      url = `https://badges.roblox.com/v1/users/${robloxId}/badges`;
+      dataKey = "data";
+    } else if (type === "friends") {
+      url = `https://friends.roblox.com/v1/users/${robloxId}/friends`;
+      dataKey = "data";
+    } else if (type === "groups") {
+      url = `https://groups.roblox.com/v1/users/${robloxId}/groups/roles`;
+      dataKey = "data";
+    }
+    
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      return data[dataKey] || data || [];
+    }
+    return [];
+  } catch (error) {
+    console.error(`Error fetching ${type} data:`, error);
+    return [];
+  }
+}
+
+// Helper function to create user lookup embed
+function createUserLookupEmbed(
+  paginationData: UserLookupPaginationData,
+  pageItems: any[],
+  currentPage: number,
+  totalPages: number
+): EmbedBuilder {
+  const itemsPerPage = 9;
+  const startIdx = currentPage * itemsPerPage;
+  
+  let title = "User Lookup Results";
+  let description = "";
+  
+  // Add user info to description
+  if (paginationData.discordUser) {
+    description += `**Discord:** ${paginationData.discordUser.tag} (${paginationData.discordUser.id})\n`;
+    description += `**Account Age:** ${Math.floor((Date.now() - paginationData.discordUser.createdTimestamp) / (1000 * 60 * 60 * 24))} days\n`;
+  }
+  
+  if (paginationData.robloxData) {
+    description += `**Roblox:** ${paginationData.robloxData.name} (ID: ${paginationData.robloxData.id})\n`;
+    description += `**Display Name:** ${paginationData.robloxData.displayName || "N/A"}\n`;
+    const createdDate = new Date(paginationData.robloxData.created);
+    const accountAge = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+    description += `**Account Age:** ${accountAge} days (Created: ${createdDate.toLocaleDateString()})\n`;
+  }
+  
+  description += `\n**Viewing:** ${paginationData.type.charAt(0).toUpperCase() + paginationData.type.slice(1)}`;
+  
+  const embed = new EmbedBuilder()
+    .setColor(Colors.Blurple)
+    .setTitle(title)
+    .setDescription(description)
+    .setTimestamp();
+  
+  // Format items based on type
+  if (paginationData.type === "badges" && pageItems.length > 0) {
+    // Display badges in a 3x3 grid (9 per page)
+    const badgeTexts: string[] = [];
+    for (const badge of pageItems) {
+      const name = badge.name || "Unknown Badge";
+      const icon = "🏆";
+      badgeTexts.push(`${icon} ${name}`);
+    }
+    
+    // Create grid display (3 per row)
+    let gridText = "";
+    for (let i = 0; i < badgeTexts.length; i += 3) {
+      const row = badgeTexts.slice(i, i + 3).join(" | ");
+      gridText += row + "\n";
+    }
+    
+    embed.addFields({ name: "Badges", value: gridText || "No badges found", inline: false });
+  } else if (paginationData.type === "friends" && pageItems.length > 0) {
+    // Display friends in a grid
+    const friendTexts: string[] = [];
+    for (const friend of pageItems) {
+      const name = friend.name || friend.username || "Unknown";
+      friendTexts.push(`👤 ${name}`);
+    }
+    
+    // Create grid display (3 per row)
+    let gridText = "";
+    for (let i = 0; i < friendTexts.length; i += 3) {
+      const row = friendTexts.slice(i, i + 3).join(" | ");
+      gridText += row + "\n";
+    }
+    
+    embed.addFields({ name: "Friends", value: gridText || "No friends found", inline: false });
+  } else if (paginationData.type === "groups" && pageItems.length > 0) {
+    // Display groups in a grid
+    const groupTexts: string[] = [];
+    for (const group of pageItems) {
+      const groupName = group.group?.name || "Unknown Group";
+      const role = group.role?.name || "Member";
+      groupTexts.push(`👥 ${groupName} (${role})`);
+    }
+    
+    // Create grid display (3 per row, but show role so might be longer)
+    let gridText = "";
+    for (let i = 0; i < groupTexts.length; i++) {
+      gridText += groupTexts[i];
+      if ((i + 1) % 3 === 0) {
+        gridText += "\n";
+      } else if (i < groupTexts.length - 1) {
+        gridText += " | ";
+      }
+    }
+    
+    embed.addFields({ name: "Groups", value: gridText || "No groups found", inline: false });
+  } else if (pageItems.length === 0) {
+    embed.addFields({ 
+      name: `${paginationData.type.charAt(0).toUpperCase() + paginationData.type.slice(1)}`,
+      value: `No ${paginationData.type} found`,
+      inline: false 
+    });
+  }
+  
+  // Add footer with pagination info
+  if (paginationData.items.length > 0) {
+    embed.setFooter({
+      text: `Page ${currentPage + 1} of ${totalPages} | Items ${startIdx + 1}-${Math.min(startIdx + itemsPerPage, paginationData.items.length)} of ${paginationData.items.length}`,
+    });
+  }
+  
+  return embed;
 }
 
 // Helper function to check user permissions in a Discord guild
