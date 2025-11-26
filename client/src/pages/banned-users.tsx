@@ -10,10 +10,14 @@ interface BannedUser {
   id: string;
   userId: string;
   serverId: string;
+  serverName?: string;
   reason: string;
   bannedAt: string;
-  serverName?: string;
-  linkedFrom?: string;
+  linkedBanId?: string;
+  isMainServerBan?: boolean;
+  mainServerName?: string;
+  mainServerId?: string;
+  cascadedFrom?: boolean;
 }
 
 export default function BannedUsers() {
@@ -24,6 +28,7 @@ export default function BannedUsers() {
   const [banUserId, setBanUserId] = useState("");
   const [banReason, setBanReason] = useState("");
   const [selectedServer, setSelectedServer] = useState<string>("main");
+  const [refreshInterval, setRefreshInterval] = useState(5000);
 
   useEffect(() => {
     if (!user || user.role !== "Management" && user.role !== "Overseer") {
@@ -31,7 +36,11 @@ export default function BannedUsers() {
       return;
     }
     fetchBannedUsers();
-  }, [user, serverId]);
+    
+    // Auto-refresh every 5 seconds
+    const interval = setInterval(fetchBannedUsers, refreshInterval);
+    return () => clearInterval(interval);
+  }, [user, serverId, refreshInterval]);
 
   const fetchBannedUsers = async () => {
     try {
@@ -140,28 +149,44 @@ export default function BannedUsers() {
 
       {/* Banned Users List */}
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Banned Users</h2>
-        {loading ? (
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Banned Users (Auto-Syncing)</h2>
+          <span className="text-xs text-green-400 animate-pulse">● Live</span>
+        </div>
+        {loading && bannedUsers.length === 0 ? (
           <div className="text-center text-gray-400">Loading banned users...</div>
         ) : bannedUsers.length === 0 ? (
           <div className="text-center text-gray-400">No banned users found</div>
         ) : (
-          <div className="space-y-2 max-h-96 overflow-y-auto">
+          <div className="space-y-3 max-h-96 overflow-y-auto">
             {bannedUsers.map((ban) => (
-              <div key={ban.id} className="flex justify-between items-center p-3 bg-gray-800 rounded" data-testid={`ban-entry-${ban.userId}`}>
-                <div className="flex-1">
-                  <div className="font-mono text-sm">ID: {ban.userId}</div>
-                  <div className="text-sm text-gray-400">{ban.reason}</div>
-                  {ban.linkedFrom && <div className="text-xs text-yellow-400">Cascaded from main server</div>}
+              <div key={ban.id} className="p-3 bg-gray-800 rounded border border-gray-700" data-testid={`ban-entry-${ban.userId}`}>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="font-mono text-sm font-bold">User ID: {ban.userId}</div>
+                    <div className="text-xs text-blue-300 mt-1">
+                      Server: <span className="font-mono">{ban.serverName || ban.serverId}</span>
+                    </div>
+                    {ban.cascadedFrom && ban.mainServerName && (
+                      <div className="text-xs text-yellow-400 mt-1">
+                        Cascaded from: <span className="font-mono">{ban.mainServerName}</span> ({ban.mainServerId})
+                      </div>
+                    )}
+                    <div className="text-sm text-gray-400 mt-2">Reason: {ban.reason}</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Banned: {ban.bannedAt ? new Date(ban.bannedAt).toLocaleString() : 'Unknown'}
+                    </div>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleUnban(ban.userId, ban.serverId)}
+                    data-testid={`button-unban-${ban.userId}`}
+                    className="ml-2"
+                  >
+                    Unban
+                  </Button>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleUnban(ban.userId, ban.serverId)}
-                  data-testid={`button-unban-${ban.userId}`}
-                >
-                  Unban
-                </Button>
               </div>
             ))}
           </div>
