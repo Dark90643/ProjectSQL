@@ -1,0 +1,231 @@
+2025-11-26T09:49:04.000000000Z [inf]  Starting Container
+2025-11-26T09:49:06.428883932Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T09:49:06.428891536Z [inf]  
+2025-11-26T09:49:06.428899004Z [inf]  > rest-express@1.0.0 start
+2025-11-26T09:49:06.428906138Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T09:49:06.428912981Z [inf]  
+2025-11-26T09:49:08.314201743Z [inf]  Registering Discord bot commands...
+2025-11-26T09:49:08.314209904Z [inf]  9:49:06 AM [express] serving on port 8080
+2025-11-26T09:49:08.314218349Z [inf]  Discord bot commands registered successfully
+2025-11-26T09:49:08.314226652Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T09:49:08.314234049Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T09:49:08.314241647Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T09:49:12.409604800Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:12.409612445Z [inf]  9:49:11 AM [express] GET /api/auth/me 304 in 81ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T09:49:32.724321291Z [inf]  9:49:30 AM [express] GET /api/logs 304 in 286ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T09:49:32.724331661Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:32.724341252Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:32.724341573Z [err]  Get banned users error: error: column "main_server_id" does not exist
+2025-11-26T09:49:32.724356465Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:32.724356811Z [inf]  9:49:29 AM [express] GET /api/auth/me 304 in 72ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T09:49:32.724367171Z [inf]  Support team check: {
+2025-11-26T09:49:32.724369643Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:32.724375625Z [inf]    discordId: '579180906833641474',
+2025-11-26T09:49:32.724384368Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-26T09:49:32.724395419Z [inf]    isOwner: true,
+2025-11-26T09:49:32.724401768Z [inf]    isAdmin: true,
+2025-11-26T09:49:32.724408548Z [inf]    isSupportTeam: true
+2025-11-26T09:49:32.724416607Z [inf]  }
+2025-11-26T09:49:32.724426998Z [inf]  9:49:30 AM [express] GET /api/auth/check-support-team-status 304 in 147ms :: {"isSupportTeam":true}
+2025-11-26T09:49:32.724435199Z [inf]  9:49:30 AM [express] GET /api/cases 304 in 212ms :: []
+2025-11-26T09:49:32.724442180Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:32.724450532Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:49:32.724530502Z [inf]  9:49:29 AM [express] GET /api/auth/check-ip 200 in 149ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-26T09:49:33.804924051Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T09:49:33.804928374Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:49:33.804933848Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T09:49:33.804938392Z [err]      at async DatabaseStorage.getChildServers (file:///app/dist/index.js:529:19)
+2025-11-26T09:49:33.804943667Z [err]      at async DatabaseStorage.getBannedUsersAcrossServers (file:///app/dist/index.js:537:26)
+2025-11-26T09:49:33.804949349Z [err]      at async file:///app/dist/index.js:4437:20 {
+2025-11-26T09:49:33.804954569Z [err]    length: 114,
+2025-11-26T09:49:33.804959265Z [err]    severity: 'ERROR',
+2025-11-26T09:49:33.804964461Z [err]    code: '42703',
+2025-11-26T09:49:33.804970132Z [err]    detail: undefined,
+2025-11-26T09:49:33.804975172Z [err]    hint: undefined,
+2025-11-26T09:49:33.804979210Z [err]    position: '14',
+2025-11-26T09:49:33.804983202Z [err]    internalPosition: undefined,
+2025-11-26T09:49:33.804988288Z [err]    internalQuery: undefined,
+2025-11-26T09:49:33.804993112Z [err]    where: undefined,
+2025-11-26T09:49:33.805002862Z [err]    schema: undefined,
+2025-11-26T09:49:33.805010539Z [err]    table: undefined,
+2025-11-26T09:49:33.805016426Z [err]    column: undefined,
+2025-11-26T09:49:33.805023448Z [err]    dataType: undefined,
+2025-11-26T09:49:33.805029514Z [err]    constraint: undefined,
+2025-11-26T09:49:33.805035057Z [err]    file: 'parse_relation.c',
+2025-11-26T09:49:33.805040466Z [err]    line: '3722',
+2025-11-26T09:49:33.805045648Z [err]    routine: 'errorMissingColumn'
+2025-11-26T09:49:33.805056815Z [err]  }
+2025-11-26T09:49:33.805063260Z [inf]  9:49:30 AM [express] GET /api/users 304 in 148ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T09:49:34.805015695Z [inf]  9:49:31 AM [express] GET /api/moderation/banned-users 500 in 153ms :: {"error":"Failed to get banned…
+2025-11-26T09:49:34.805023546Z [err]  Ban link error: error: column "main_server_id" of relation "server_link_verifications" does not exist
+2025-11-26T09:49:34.805027843Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T09:49:34.805033870Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:49:34.805039163Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T09:49:34.805044426Z [err]      at async DatabaseStorage.createVerificationCode (file:///app/dist/index.js:499:28)
+2025-11-26T09:49:34.805052572Z [err]      at async handleBanLink (file:///app/dist/index.js:2436:28)
+2025-11-26T09:49:34.805057880Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T09:49:34.805062659Z [err]    length: 152,
+2025-11-26T09:49:34.805068384Z [err]    severity: 'ERROR',
+2025-11-26T09:49:34.805074524Z [err]    code: '42703',
+2025-11-26T09:49:34.805080973Z [err]    detail: undefined,
+2025-11-26T09:49:34.805087167Z [err]    hint: undefined,
+2025-11-26T09:49:34.805091831Z [err]    position: '48',
+2025-11-26T09:49:34.805096905Z [err]    internalPosition: undefined,
+2025-11-26T09:49:34.805102301Z [err]    internalQuery: undefined,
+2025-11-26T09:49:34.805108004Z [err]    where: undefined,
+2025-11-26T09:49:34.805113388Z [err]    schema: undefined,
+2025-11-26T09:49:34.805118289Z [err]    table: undefined,
+2025-11-26T09:49:34.805123279Z [err]    column: undefined,
+2025-11-26T09:49:34.805128427Z [err]    dataType: undefined,
+2025-11-26T09:49:34.805134396Z [err]    constraint: undefined,
+2025-11-26T09:49:34.805141989Z [err]    file: 'parse_target.c',
+2025-11-26T09:49:34.805147818Z [err]    line: '1066',
+2025-11-26T09:49:34.805470851Z [err]    routine: 'checkInsertTargets'
+2025-11-26T09:49:34.805477532Z [err]  }
+2025-11-26T09:50:05.634238315Z [err]  Ban link error: error: column "main_server_id" of relation "server_link_verifications" does not exist
+2025-11-26T09:50:05.634244456Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T09:50:05.634249207Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:50:05.634253052Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T09:50:05.634257411Z [err]      at async DatabaseStorage.createVerificationCode (file:///app/dist/index.js:499:28)
+2025-11-26T09:50:05.634262684Z [err]      at async handleBanLink (file:///app/dist/index.js:2436:28)
+2025-11-26T09:50:05.634267709Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T09:50:05.634273044Z [err]    length: 152,
+2025-11-26T09:50:05.634278140Z [err]    severity: 'ERROR',
+2025-11-26T09:50:05.634282857Z [err]    code: '42703',
+2025-11-26T09:50:05.634288324Z [err]    detail: undefined,
+2025-11-26T09:50:05.634293144Z [err]    hint: undefined,
+2025-11-26T09:50:05.634298429Z [err]    position: '48',
+2025-11-26T09:50:05.634304624Z [err]    internalPosition: undefined,
+2025-11-26T09:50:05.634310320Z [err]    internalQuery: undefined,
+2025-11-26T09:50:05.634314038Z [err]    where: undefined,
+2025-11-26T09:50:05.634317927Z [err]    schema: undefined,
+2025-11-26T09:50:05.634322446Z [err]    table: undefined,
+2025-11-26T09:50:05.634326710Z [err]    column: undefined,
+2025-11-26T09:50:05.634330268Z [err]    dataType: undefined,
+2025-11-26T09:50:05.634334057Z [err]    constraint: undefined,
+2025-11-26T09:50:05.634339719Z [err]    file: 'parse_target.c',
+2025-11-26T09:50:05.634344950Z [err]    line: '1066',
+2025-11-26T09:50:05.634351922Z [err]    routine: 'checkInsertTargets'
+2025-11-26T09:50:05.634357803Z [err]  }
+2025-11-26T09:50:05.640452578Z [err]  Could not send error reply: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T09:50:05.640457659Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T09:50:05.640463076Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:50:05.640468592Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T09:50:05.640474320Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T09:50:05.640479448Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T09:50:05.640485062Z [err]      at async handleBanLink (file:///app/dist/index.js:2492:7)
+2025-11-26T09:50:05.640491354Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T09:50:05.640496180Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T09:50:05.640501018Z [err]    rawError: {
+2025-11-26T09:50:05.640505717Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T09:50:05.640510000Z [err]      code: 40060
+2025-11-26T09:50:05.640514573Z [err]    },
+2025-11-26T09:50:05.640519297Z [err]    code: 40060,
+2025-11-26T09:50:05.640525555Z [err]    status: 400,
+2025-11-26T09:50:05.640531572Z [err]    method: 'POST',
+2025-11-26T09:50:05.640537281Z [err]    url: 'https://discord.com/api/v10/interactions/1443176960288100416/aW50ZXJhY3Rpb246MTQ0MzE3Njk2MDI4ODEwMDQxNjpTd2dpcUxmUW1uNTFKUjNHdXZia0Q3UDZldk9VaDdWR3FtQndwdk90WUlhZVVvTWNJb3lFTHJxeTg2RUI4UFRXcVJ2UkJyY1liS0dnOGJ4Y1c4endTYzc3QXBGNXUwaGdKUE9qZDU0bW5hM0VCQ1RHa3hsZndtRlQ3UXdJdGwyaw/callback?with_response=false'
+2025-11-26T09:50:05.640543344Z [err]  }
+2025-11-26T09:50:36.629426753Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:36.629434326Z [inf]  9:50:30 AM [express] GET /api/auth/me 304 in 74ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T09:50:36.629440999Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:36.629447960Z [err]  Failed to ban user 1290598913107169322 in server 1441447050024714252: error: column "linked_ban_id" of relation "mod_bans" does not exist
+2025-11-26T09:50:36.629455589Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T09:50:36.629462761Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:50:36.629469996Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T09:50:36.629476841Z [err]      at async DatabaseStorage.addBan (file:///app/dist/index.js:443:22)
+2025-11-26T09:50:36.629485110Z [err]      at async file:///app/dist/index.js:4494:11 {
+2025-11-26T09:50:36.629536545Z [err]    length: 134,
+2025-11-26T09:50:36.629545124Z [err]    severity: 'ERROR',
+2025-11-26T09:50:36.629552172Z [err]    code: '42703',
+2025-11-26T09:50:36.629559271Z [err]    detail: undefined,
+2025-11-26T09:50:36.629567602Z [err]    hint: undefined,
+2025-11-26T09:50:36.629574992Z [err]    position: '94',
+2025-11-26T09:50:36.629583014Z [err]    internalPosition: undefined,
+2025-11-26T09:50:36.629589830Z [err]    internalQuery: undefined,
+2025-11-26T09:50:36.629598039Z [err]    where: undefined,
+2025-11-26T09:50:36.629605667Z [err]    schema: undefined,
+2025-11-26T09:50:36.629613540Z [err]    table: undefined,
+2025-11-26T09:50:36.629620436Z [err]    column: undefined,
+2025-11-26T09:50:36.629680966Z [err]    dataType: undefined,
+2025-11-26T09:50:38.356537217Z [err]    constraint: undefined,
+2025-11-26T09:50:38.356544317Z [err]    file: 'parse_target.c',
+2025-11-26T09:50:38.356552666Z [err]    line: '1066',
+2025-11-26T09:50:38.356559244Z [err]    routine: 'checkInsertTargets'
+2025-11-26T09:50:38.356566361Z [err]  }
+2025-11-26T09:50:38.356576565Z [inf]  9:50:33 AM [express] POST /api/moderation/manual-ban 200 in 365ms :: {"success":true}
+2025-11-26T09:50:38.356583177Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:38.356590784Z [err]  Get banned users error: error: column "main_server_id" does not exist
+2025-11-26T09:50:38.356597349Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T09:50:38.356603520Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:50:38.356609229Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T09:50:38.356614820Z [err]      at async DatabaseStorage.getChildServers (file:///app/dist/index.js:529:19)
+2025-11-26T09:50:38.356623077Z [err]      at async DatabaseStorage.getBannedUsersAcrossServers (file:///app/dist/index.js:537:26)
+2025-11-26T09:50:38.356629471Z [err]      at async file:///app/dist/index.js:4437:20 {
+2025-11-26T09:50:38.356635994Z [err]    length: 114,
+2025-11-26T09:50:38.356641499Z [err]    severity: 'ERROR',
+2025-11-26T09:50:38.356653987Z [err]    code: '42703',
+2025-11-26T09:50:38.356661181Z [err]    detail: undefined,
+2025-11-26T09:50:38.356668102Z [err]    hint: undefined,
+2025-11-26T09:50:38.356677692Z [err]    position: '14',
+2025-11-26T09:50:38.356684159Z [err]    internalPosition: undefined,
+2025-11-26T09:50:38.356690804Z [err]    internalQuery: undefined,
+2025-11-26T09:50:38.356697710Z [err]    where: undefined,
+2025-11-26T09:50:39.886334269Z [err]    file: 'parse_relation.c',
+2025-11-26T09:50:39.886343099Z [err]    line: '3722',
+2025-11-26T09:50:39.886352208Z [err]    routine: 'errorMissingColumn'
+2025-11-26T09:50:39.886361477Z [err]  }
+2025-11-26T09:50:39.886372074Z [inf]  9:50:33 AM [express] GET /api/moderation/banned-users 500 in 394ms :: {"error":"Failed to get banned…
+2025-11-26T09:50:39.886384738Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:39.886385553Z [err]    schema: undefined,
+2025-11-26T09:50:39.886397166Z [err]    table: undefined,
+2025-11-26T09:50:39.886398457Z [inf]  9:50:39 AM [express] GET /api/webhook/config 304 in 140ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302c…
+2025-11-26T09:50:39.886407220Z [err]    column: undefined,
+2025-11-26T09:50:39.886411363Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:39.886419863Z [inf]  9:50:39 AM [express] GET /api/webhook/channels 304 in 73ms :: {"channels":[{"id":"144205171176925188…
+2025-11-26T09:50:39.886425232Z [err]    dataType: undefined,
+2025-11-26T09:50:39.886432934Z [err]    constraint: undefined,
+2025-11-26T09:50:45.939793839Z [inf]  9:50:45 AM [express] GET /api/auth/check-ip 304 in 146ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-26T09:50:47.682237000Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:47.682244858Z [inf]  9:50:46 AM [express] GET /api/auth/me 304 in 71ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T09:50:47.682250979Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:47.682257214Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:47.682263447Z [inf]  Support team check: {
+2025-11-26T09:50:47.682269334Z [inf]    discordId: '579180906833641474',
+2025-11-26T09:50:47.682276323Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-26T09:50:47.682283190Z [inf]    isOwner: true,
+2025-11-26T09:50:47.682289280Z [inf]    isAdmin: true,
+2025-11-26T09:50:47.682295334Z [inf]    isSupportTeam: true
+2025-11-26T09:50:47.682302068Z [inf]  }
+2025-11-26T09:50:47.682309652Z [inf]  9:50:46 AM [express] GET /api/auth/check-support-team-status 304 in 145ms :: {"isSupportTeam":true}
+2025-11-26T09:50:47.682315829Z [inf]  9:50:46 AM [express] GET /api/cases 304 in 211ms :: []
+2025-11-26T09:50:47.682321866Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:47.682352532Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:47.682359323Z [inf]  9:50:47 AM [express] GET /api/logs 304 in 228ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T09:50:47.682367638Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:50:47.682373943Z [inf]  9:50:47 AM [express] GET /api/users 304 in 140ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T09:50:47.682379462Z [err]  Get banned users error: error: column "main_server_id" does not exist
+2025-11-26T09:50:49.688934247Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T09:50:49.688934383Z [err]    where: undefined,
+2025-11-26T09:50:49.688948606Z [err]    severity: 'ERROR',
+2025-11-26T09:50:49.688949997Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:50:49.688961965Z [err]    code: '42703',
+2025-11-26T09:50:49.688965576Z [err]    position: '14',
+2025-11-26T09:50:49.688972831Z [err]    detail: undefined,
+2025-11-26T09:50:49.688976025Z [err]    schema: undefined,
+2025-11-26T09:50:49.688980682Z [err]    hint: undefined,
+2025-11-26T09:50:49.688986280Z [err]    table: undefined,
+2025-11-26T09:50:49.688994851Z [err]    internalPosition: undefined,
+2025-11-26T09:50:49.688995335Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T09:50:49.689004302Z [err]    column: undefined,
+2025-11-26T09:50:49.689005732Z [err]    internalQuery: undefined,
+2025-11-26T09:50:49.689006431Z [err]      at async DatabaseStorage.getChildServers (file:///app/dist/index.js:529:19)
+2025-11-26T09:50:49.689014681Z [err]      at async DatabaseStorage.getBannedUsersAcrossServers (file:///app/dist/index.js:537:26)
+2025-11-26T09:50:49.689019618Z [err]    dataType: undefined,
+2025-11-26T09:50:49.689023331Z [err]      at async file:///app/dist/index.js:4437:20 {
+2025-11-26T09:50:49.689030489Z [err]    constraint: undefined,
+2025-11-26T09:50:49.689032831Z [err]    length: 114,
+2025-11-26T09:50:49.689040539Z [err]    file: 'parse_relation.c',
+2025-11-26T09:50:49.689049062Z [err]    line: '3722',
+2025-11-26T09:50:49.689062461Z [err]    routine: 'errorMissingColumn'
+2025-11-26T09:50:49.689070944Z [err]  }
+2025-11-26T09:50:49.689079083Z [inf]  9:50:47 AM [express] GET /api/moderation/banned-users 500 in 141ms :: {"error":"Failed to get banned…
