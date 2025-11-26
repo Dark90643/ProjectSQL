@@ -1,0 +1,24 @@
+2025-11-26T11:24:09.000000000Z [inf]  Starting Container
+2025-11-26T11:24:10.725103830Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T11:24:10.725109725Z [inf]  
+2025-11-26T11:24:10.725116406Z [inf]  > rest-express@1.0.0 start
+2025-11-26T11:24:10.725121608Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T11:24:10.725127148Z [inf]  
+2025-11-26T11:24:11.127718583Z [inf]  Registering Discord bot commands...
+2025-11-26T11:24:11.176771334Z [inf]  11:24:11 AM [express] serving on port 8080
+2025-11-26T11:24:11.713363204Z [inf]  Discord bot commands registered successfully
+2025-11-26T11:24:11.852382084Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T11:24:11.852391486Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T11:24:11.852399554Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T11:25:12.415645707Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:25:12.415652262Z [inf]  11:25:06 AM [express] GET /api/auth/me 304 in 77ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:26:12.583376588Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:26:12.583385636Z [inf]  11:26:05 AM [express] GET /api/auth/me 304 in 73ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:27:13.530215898Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:27:13.530223753Z [inf]  11:27:05 AM [express] GET /api/auth/me 304 in 72ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:27:53.855452104Z [err]  (node:20) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+2025-11-26T11:27:53.855462983Z [inf]  Could not send DM to user
+2025-11-26T11:27:53.855469505Z [inf]  Main server 1441447050024714252 has 1 child servers
+2025-11-26T11:27:53.855475840Z [inf]  Cascading ban for SecureNet#7790 to child server 1308761613851168788
+2025-11-26T11:27:53.855482237Z [inf]  ✅ Cascaded ban to Discord in child server 1308761613851168788
+2025-11-26T11:27:53.855489122Z [inf]  User SecureNet#7790 banned by sea8484: test
