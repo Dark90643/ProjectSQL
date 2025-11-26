@@ -1,0 +1,80 @@
+2025-11-26T10:58:25.000000000Z [inf]  Starting Container
+2025-11-26T10:58:26.633125401Z [inf]  
+2025-11-26T10:58:26.633140510Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T10:58:26.633147634Z [inf]  
+2025-11-26T10:58:26.633153427Z [inf]  > rest-express@1.0.0 start
+2025-11-26T10:58:26.633165909Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T10:58:26.925201998Z [inf]  Registering Discord bot commands...
+2025-11-26T10:58:26.968160055Z [inf]  10:58:26 AM [express] serving on port 8080
+2025-11-26T10:58:27.497957155Z [inf]  Discord bot commands registered successfully
+2025-11-26T10:58:27.498063477Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T10:58:27.500591185Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T10:58:27.500596674Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T10:59:28.019835728Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:59:28.019842761Z [inf]  10:59:22 AM [express] GET /api/auth/me 304 in 100ms :: {"id":"579180906833641474:1441447050024714252"…
+2025-11-26T11:00:28.516818278Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:00:28.516823077Z [inf]  11:00:23 AM [express] GET /api/auth/me 304 in 73ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:01:30.374326149Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:01:30.374332544Z [inf]  11:01:24 AM [express] GET /api/auth/me 304 in 75ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:02:32.583166254Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:02:32.583173194Z [inf]  11:02:25 AM [express] GET /api/auth/me 304 in 74ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:03:35.910710531Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:03:35.910721169Z [inf]  11:03:27 AM [express] GET /api/auth/me 304 in 70ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:04:35.124496728Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:04:35.124504929Z [inf]  11:04:27 AM [express] GET /api/auth/me 304 in 72ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:05:37.176157133Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:05:37.176162899Z [inf]  11:05:29 AM [express] GET /api/auth/me 304 in 74ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:06:37.354767736Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:06:37.354773023Z [inf]  11:06:29 AM [express] GET /api/auth/me 304 in 70ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:07:36.811773818Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:07:36.811781638Z [inf]  11:07:32 AM [express] GET /api/auth/me 304 in 74ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:08:36.950411190Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:08:36.950420611Z [inf]  11:08:31 AM [express] GET /api/auth/me 304 in 68ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:09:37.048411058Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:09:37.048415696Z [inf]  11:09:33 AM [express] GET /api/auth/me 304 in 71ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:10:38.423009045Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:10:38.423016041Z [inf]  11:10:32 AM [express] GET /api/auth/me 304 in 74ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:11:30.484454512Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:11:30.484460039Z [inf]  11:11:30 AM [express] GET /api/auth/me 304 in 74ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:11:50.481798152Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T11:11:50.481808587Z [err]      at async ChatInputCommandInteraction.deferReply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:122:22)
+2025-11-26T11:11:50.481861479Z [err]      at async handleBan (file:///app/dist/index.js:1350:5)
+2025-11-26T11:11:50.481868703Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:895:9) {
+2025-11-26T11:11:50.481874872Z [err]    requestBody: { files: undefined, json: { type: 5, data: [Object] } },
+2025-11-26T11:11:50.481881813Z [err]    rawError: { message: 'Unknown interaction', code: 10062 },
+2025-11-26T11:11:50.481889556Z [err]    code: 10062,
+2025-11-26T11:11:50.481896217Z [err]    status: 404,
+2025-11-26T11:11:50.481909779Z [err]    method: 'POST',
+2025-11-26T11:11:50.481932774Z [err]    url: 'https://discord.com/api/v10/interactions/1443197541482102854/aW50ZXJhY3Rpb246MTQ0MzE5NzU0MTQ4MjEwMjg1NDoxamEwMjFJekc3NXJLZGwwVGFPTmZHQnhlZUlCMjFPSXB5aHpvNk9NQ0YyWVRIS3p5ZWdyQ3NMWThWYU5FMUM0anhmRGdvRWhvOVdnQWgxaTAxZ29JcDdnWUZPUWVmR0FVNDdLUkVGUGxNMG5jMFFNQWVkM0NoSnhDOThFOUNzMg/callback?with_response=false'
+2025-11-26T11:11:50.481937968Z [err]  }
+2025-11-26T11:11:50.481943195Z [err]  Failed to send error reply: Error [InteractionNotReplied]: The reply to this interaction has not been sent or deferred.
+2025-11-26T11:11:50.482084649Z [err]  (node:20) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+2025-11-26T11:11:50.482091445Z [err]  Ban command error: DiscordAPIError[10062]: Unknown interaction
+2025-11-26T11:11:50.482099333Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T11:11:50.482105665Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T11:11:50.482111847Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T11:11:50.484093508Z [err]      at ChatInputCommandInteraction.editReply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:246:48)
+2025-11-26T11:11:50.484104925Z [err]      at handleBan (file:///app/dist/index.js:1432:25)
+2025-11-26T11:11:50.484111016Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T11:11:50.484116016Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:895:9) {
+2025-11-26T11:11:50.484121909Z [err]    code: 'InteractionNotReplied'
+2025-11-26T11:11:50.484128007Z [err]  }
+2025-11-26T11:12:09.673071420Z [inf]  11:12:04 AM [express] GET /api/auth/check-ip 200 in 149ms :: {"ip":"100.64.0.5","isBanned":false}
+2025-11-26T11:12:09.673077670Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:12:09.673082640Z [inf]  11:12:04 AM [express] GET /api/auth/me 304 in 68ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:12:09.673088261Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:12:09.673093700Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:12:09.673100104Z [inf]  Support team check: {
+2025-11-26T11:12:09.673105223Z [inf]    discordId: '579180906833641474',
+2025-11-26T11:12:09.673111276Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-26T11:12:09.673120512Z [inf]    isOwner: true,
+2025-11-26T11:12:09.673126773Z [inf]    isAdmin: true,
+2025-11-26T11:12:09.673133632Z [inf]    isSupportTeam: true
+2025-11-26T11:12:09.673139210Z [inf]  }
+2025-11-26T11:12:09.673144736Z [inf]  11:12:05 AM [express] GET /api/auth/check-support-team-status 304 in 138ms :: {"isSupportTeam":true}
+2025-11-26T11:12:09.673150204Z [inf]  11:12:05 AM [express] GET /api/cases 304 in 219ms :: []
+2025-11-26T11:12:09.673155824Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:12:09.673161441Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:12:09.673166958Z [inf]  11:12:05 AM [express] GET /api/logs 304 in 271ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T11:12:09.673173273Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:12:09.673179405Z [inf]  11:12:05 AM [express] GET /api/users 304 in 146ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…

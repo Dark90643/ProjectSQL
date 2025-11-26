@@ -699,6 +699,8 @@ export async function initializeDiscordBot() {
         const reason = interaction.options.getString("reason")!;
         await handleKick(interaction, user, reason);
       } else if (command === "ban") {
+        // Defer immediately to avoid 3-second timeout
+        await interaction.deferReply({ ephemeral: false });
         const user = interaction.options.getUser("user")!;
         const reason = interaction.options.getString("reason")!;
         await handleBan(interaction, user, reason);
@@ -1302,9 +1304,7 @@ async function handleKick(interaction: any, user: any, reason: string) {
 
 async function handleBan(interaction: any, user: any, reason: string) {
   try {
-    await interaction.deferReply({ ephemeral: false });
-    
-    // Check permissions
+    // Check permissions (deferReply already done at command level)
     if (!(await checkModPermission(interaction))) {
       await interaction.editReply({
         content: "You do not have permission to use this command.",
