@@ -156,3 +156,62 @@ export async function sendBotAuditTrailMessage(logData: {
     console.error("Failed to send audit trail message:", error);
   }
 }
+
+export async function sendBotBanMessage(banData: {
+  userId: string;
+  userName: string;
+  reason: string;
+  duration: string;
+  moderatorId: string;
+  moderatorName: string;
+  serverId: string;
+  isCascaded?: boolean;
+  mainServerName?: string;
+}): Promise<void> {
+  if (!banData.serverId) return;
+  
+  try {
+    const config = await storage.getWebhookConfig(banData.serverId);
+    
+    // Determine which channel to use
+    let channelId: string | null = null;
+    if (banData.isCascaded && config?.childServerBanEnabled && config?.childServerBanChannelId) {
+      channelId = config.childServerBanChannelId;
+    } else if (!banData.isCascaded && config?.banLogsEnabled && config?.banLogsChannelId) {
+      channelId = config.banLogsChannelId;
+    }
+    
+    if (!channelId) return;
+
+    const channel = await discordClient.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) {
+      console.warn("Cannot send message to channel:", channelId);
+      return;
+    }
+
+    const durationDisplay = banData.duration === "permanent" ? "Permanent" : banData.duration;
+    const title = banData.isCascaded ? `🔗 Cascaded Ban: ${banData.userName}` : `🚫 User Banned: ${banData.userName}`;
+    
+    const embed = {
+      title,
+      description: `${banData.userName} has been banned from the server`,
+      color: banData.isCascaded ? 0xFFA500 : 0xFF0000,
+      fields: [
+        { name: "User ID", value: banData.userId, inline: true },
+        { name: "Duration", value: durationDisplay, inline: true },
+        { name: "Moderator", value: banData.moderatorName, inline: true },
+        { name: "Reason", value: banData.reason, inline: false },
+        ...(banData.isCascaded && banData.mainServerName ? [
+          { name: "Cascaded from", value: banData.mainServerName, inline: false }
+        ] : []),
+      ],
+      footer: { text: "AEGIS_NET Ban Log" },
+      timestamp: new Date().toISOString(),
+    };
+
+    await channel.send({ embeds: [embed] });
+    console.log("✓ Ban log message sent to channel:", channelId);
+  } catch (error) {
+    console.error("Failed to send ban log message:", error);
+  }
+}

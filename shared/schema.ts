@@ -232,8 +232,7 @@ export const insertModMuteSchema = createInsertSchema(modMutes).omit({
 export const insertModBanSchema = createInsertSchema(modBans).omit({
   id: true,
   bannedAt: true,
-  linkedBanId: true,
-  isMainServerBan: true,
+  unbanAt: true,
 });
 
 export const insertModLogSchema = createInsertSchema(modLogs).omit({

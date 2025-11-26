@@ -15,6 +15,7 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import { storage } from "./storage";
+import { sendBotBanMessage } from "./discord-webhook";
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const clientId = "1442053672694714529"; // Your bot's client ID from Discord Developer Portal
@@ -1451,6 +1452,41 @@ async function handleBan(interaction: any, user: any, duration: string, reason: 
     await interaction.editReply({
       embeds: [embed],
     });
+
+    // Send ban log to main server webhook
+    try {
+      await sendBotBanMessage({
+        userId: user.id,
+        userName: user.tag,
+        reason: reason,
+        duration: duration,
+        moderatorId: interaction.user.id,
+        moderatorName: interaction.user.tag,
+        serverId: interaction.guildId,
+        isCascaded: false,
+      });
+    } catch (webhookError) {
+      console.error("Failed to send ban webhook:", webhookError);
+    }
+
+    // Send ban logs to child servers
+    for (const childServerId of childServers) {
+      try {
+        await sendBotBanMessage({
+          userId: user.id,
+          userName: user.tag,
+          reason: reason,
+          duration: duration,
+          moderatorId: interaction.user.id,
+          moderatorName: interaction.user.tag,
+          serverId: childServerId,
+          isCascaded: true,
+          mainServerName: interaction.guild?.name,
+        });
+      } catch (webhookError) {
+        console.error("Failed to send cascaded ban webhook:", webhookError);
+      }
+    }
 
     console.log(
       `User ${user.tag} banned by ${interaction.user.tag} for ${duration}: ${reason}`
