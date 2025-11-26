@@ -15,9 +15,8 @@ interface WebhookConfig {
   caseReleaseEnabled: boolean;
   banLogsChannelId: string | null;
   banLogsEnabled: boolean;
-  childServerBanChannelId: string | null;
   childServerBanEnabled: boolean;
-  childServerBanServerId?: string | null;
+  childServerBanChannels?: Record<string, string>; // serverId -> channelId mapping
 }
 
 export default function SettingsPage() {
@@ -64,8 +63,8 @@ export default function SettingsPage() {
         caseReleaseEnabled: false,
         banLogsChannelId: null,
         banLogsEnabled: false,
-        childServerBanChannelId: null,
         childServerBanEnabled: false,
+        childServerBanChannels: {},
       });
     }
   };
@@ -392,21 +391,20 @@ export default function SettingsPage() {
                       <div className="space-y-2">
                         {linkedServers.map((server) => {
                           const serverChannels = serverChannelsMap[server.id] || [];
-                          const isCurrentServer = webhookConfig.childServerBanServerId === server.id;
-                          const selectedChannel = isCurrentServer ? webhookConfig.childServerBanChannelId : null;
+                          const selectedChannelId = webhookConfig.childServerBanChannels?.[server.id] || "";
                           
                           return (
                             <div key={server.id} className="flex items-center gap-2 p-2 bg-black/20 rounded border border-white/5">
                               <span className="font-mono text-xs text-muted-foreground flex-1 truncate">{server.name}</span>
                               <select
-                                value={selectedChannel || ""}
+                                value={selectedChannelId}
                                 onChange={(e) => {
-                                  if (e.target.value) {
-                                    updateWebhookConfig({ 
-                                      childServerBanServerId: server.id,
-                                      childServerBanChannelId: e.target.value
-                                    });
-                                  }
+                                  updateWebhookConfig({ 
+                                    childServerBanChannels: {
+                                      ...webhookConfig.childServerBanChannels,
+                                      [server.id]: e.target.value
+                                    }
+                                  });
                                 }}
                                 disabled={loading}
                                 className="px-2 py-1 bg-black/40 border border-white/10 rounded font-mono text-xs text-white focus:border-primary/50 focus:outline-none flex-shrink-0"
