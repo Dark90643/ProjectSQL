@@ -112,6 +112,8 @@ export const modBans = pgTable("mod_bans", {
   moderatorId: text("moderator_id").notNull(),
   reason: text("reason").notNull(),
   bannedAt: timestamp("banned_at").notNull().defaultNow(),
+  linkedBanId: text("linked_ban_id"), // Reference to parent ban if cascaded from main server
+  isMainServerBan: boolean("is_main_server_ban").notNull().default(false),
 });
 
 export const modLogs = pgTable("mod_logs", {
@@ -154,6 +156,21 @@ export const webhookConfigs = pgTable("webhook_configs", {
   caseReleaseEnabled: boolean("case_release_enabled").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const serverLinks = pgTable("server_links", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mainServerId: text("main_server_id").notNull(),
+  childServerId: text("child_server_id").notNull(),
+  linkedAt: timestamp("linked_at").notNull().defaultNow(),
+});
+
+export const serverLinkVerifications = pgTable("server_link_verifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mainServerId: text("main_server_id").notNull(),
+  verificationCode: text("verification_code").notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
 });
 
 export const insertDiscordAccountSchema = createInsertSchema(discordAccounts).omit({
@@ -209,6 +226,8 @@ export const insertModMuteSchema = createInsertSchema(modMutes).omit({
 export const insertModBanSchema = createInsertSchema(modBans).omit({
   id: true,
   bannedAt: true,
+  linkedBanId: true,
+  isMainServerBan: true,
 });
 
 export const insertModLogSchema = createInsertSchema(modLogs).omit({
@@ -231,6 +250,16 @@ export const insertWebhookConfigSchema = createInsertSchema(webhookConfigs).omit
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertServerLinkSchema = createInsertSchema(serverLinks).omit({
+  id: true,
+  linkedAt: true,
+});
+
+export const insertServerLinkVerificationSchema = createInsertSchema(serverLinkVerifications).omit({
+  id: true,
+  createdAt: true,
 });
 
 export type InsertWebhookConfig = z.infer<typeof insertWebhookConfigSchema>;
@@ -261,3 +290,7 @@ export type InsertModIp = z.infer<typeof insertModIpSchema>;
 export type ModIp = typeof modIps.$inferSelect;
 export type InsertServerPermission = z.infer<typeof insertServerPermissionSchema>;
 export type ServerPermission = typeof serverPermissions.$inferSelect;
+export type InsertServerLink = z.infer<typeof insertServerLinkSchema>;
+export type ServerLink = typeof serverLinks.$inferSelect;
+export type InsertServerLinkVerification = z.infer<typeof insertServerLinkVerificationSchema>;
+export type ServerLinkVerification = typeof serverLinkVerifications.$inferSelect;
