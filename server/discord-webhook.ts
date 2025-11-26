@@ -162,55 +162,65 @@ export async function sendBotBanMessage(banData: {
   userName: string;
   reason: string;
   duration: string;
-  moderatorId: string;
-  moderatorName: string;
+  moderatorId?: string;
+  moderatorName?: string;
   serverId: string;
-  isCascaded?: boolean;
-  mainServerName?: string;
+  childServerBans?: string[];
 }): Promise<void> {
+  // Always send to main server ban log, never to child server channels
   if (!banData.serverId) return;
   
   try {
-    const config = await storage.getWebhookConfig(banData.serverId);
-    
-    // Determine which channel to use
-    let channelId: string | null = null;
-    if (banData.isCascaded && config?.childServerBanEnabled && config?.childServerBanChannelId) {
-      channelId = config.childServerBanChannelId;
-    } else if (!banData.isCascaded && config?.banLogsEnabled && config?.banLogsChannelId) {
-      channelId = config.banLogsChannelId;
+    // Get the main server to send the ban message to
+    let mainServerId = banData.serverId;
+    const linkedServers = await storage.getLinkedServers(banData.serverId);
+    const mainLink = linkedServers.find(link => link.childServerId === banData.serverId);
+    if (mainLink) {
+      mainServerId = mainLink.mainServerId;
     }
     
-    if (!channelId) return;
+    const config = await storage.getWebhookConfig(mainServerId);
+    if (!config?.banLogsEnabled || !config?.banLogsChannelId) return;
 
-    const channel = await discordClient.channels.fetch(channelId);
+    const channel = await discordClient.channels.fetch(config.banLogsChannelId);
     if (!channel || !channel.isTextBased()) {
-      console.warn("Cannot send message to channel:", channelId);
+      console.warn("Cannot send message to channel:", config.banLogsChannelId);
       return;
     }
 
     const durationDisplay = banData.duration === "permanent" ? "Permanent" : banData.duration;
-    const title = banData.isCascaded ? `🔗 Cascaded Ban: ${banData.userName}` : `🚫 User Banned: ${banData.userName}`;
+    
+    const fields: any[] = [
+      { name: "User ID", value: banData.userId, inline: true },
+      { name: "Duration", value: durationDisplay, inline: true },
+    ];
+    
+    if (banData.moderatorName) {
+      fields.push({ name: "Moderator", value: banData.moderatorName, inline: true });
+    }
+    
+    fields.push({ name: "Reason", value: banData.reason, inline: false });
+    
+    // Add child server bans info if this is a cascaded ban
+    if (banData.childServerBans && banData.childServerBans.length > 0) {
+      fields.push({ 
+        name: "Banned in Child Servers", 
+        value: banData.childServerBans.join("\n"), 
+        inline: false 
+      });
+    }
     
     const embed = {
-      title,
-      description: `${banData.userName} has been banned from the server`,
-      color: banData.isCascaded ? 0xFFA500 : 0xFF0000,
-      fields: [
-        { name: "User ID", value: banData.userId, inline: true },
-        { name: "Duration", value: durationDisplay, inline: true },
-        { name: "Moderator", value: banData.moderatorName, inline: true },
-        { name: "Reason", value: banData.reason, inline: false },
-        ...(banData.isCascaded && banData.mainServerName ? [
-          { name: "Cascaded from", value: banData.mainServerName, inline: false }
-        ] : []),
-      ],
+      title: `🚫 User Banned: ${banData.userName}`,
+      description: `${banData.userName} has been banned`,
+      color: 0xFF0000,
+      fields,
       footer: { text: "AEGIS_NET Ban Log" },
       timestamp: new Date().toISOString(),
     };
 
     await channel.send({ embeds: [embed] });
-    console.log("✓ Ban log message sent to channel:", channelId);
+    console.log("✓ Ban log message sent to main server channel:", config.banLogsChannelId);
   } catch (error) {
     console.error("Failed to send ban log message:", error);
   }

@@ -1466,13 +1466,26 @@ async function handleBan(interaction: any, user: any, duration: string, reason: 
       embeds: [embed],
     });
 
-    // Send ban log to main server webhook
+    // Send ban log to main server webhook with child server info
     try {
+      const childServerBanNames = [];
+      for (const childServerId of childServers) {
+        try {
+          const guild = await discordClient?.guilds.fetch(childServerId);
+          if (guild) {
+            childServerBanNames.push(`• ${guild.name}`);
+          }
+        } catch {
+          childServerBanNames.push(`• Server ${childServerId}`);
+        }
+      }
+      
       await sendBotBanMessage({
         userId: user.id,
         userName: user.tag,
         reason: reason,
         duration: duration,
+        childServerBans: childServerBanNames.length > 0 ? childServerBanNames : undefined,
         moderatorId: interaction.user.id,
         moderatorName: interaction.user.tag,
         serverId: interaction.guildId,
