@@ -496,18 +496,18 @@ export async function initializeDiscordBot() {
           const paginationData = userLookupPagination.get(messageId);
           
           if (!paginationData) {
-            await interaction.reply({
+            await interaction.deferReply({ ephemeral: true });
+            await interaction.editReply({
               content: "Pagination data expired. Please use `/user-lookup` again.",
-              ephemeral: true,
             });
             return;
           }
           
           // Only allow the user who initiated the command to use pagination
           if (interaction.user.id !== paginationData.userId) {
-            await interaction.reply({
+            await interaction.deferReply({ ephemeral: true });
+            await interaction.editReply({
               content: "You can only navigate pagination for your own command.",
-              ephemeral: true,
             });
             return;
           }
@@ -551,10 +551,14 @@ export async function initializeDiscordBot() {
           });
         } catch (error) {
           console.error("User lookup button interaction error:", error);
-          await interaction.reply({
-            content: "An error occurred while processing your request.",
-            ephemeral: true,
-          });
+          try {
+            await interaction.deferReply({ ephemeral: true });
+            await interaction.editReply({
+              content: "An error occurred while processing your request.",
+            });
+          } catch (e) {
+            console.error("Failed to send error response:", e);
+          }
         }
       }
       return;
@@ -569,18 +573,18 @@ export async function initializeDiscordBot() {
           const paginationData = userLookupPagination.get(messageId);
           
           if (!paginationData) {
-            await interaction.reply({
+            await interaction.deferReply({ ephemeral: true });
+            await interaction.editReply({
               content: "Pagination data expired. Please use `/user-lookup` again.",
-              ephemeral: true,
             });
             return;
           }
           
           // Only allow the user who initiated the command to use the menu
           if (interaction.user.id !== paginationData.userId) {
-            await interaction.reply({
+            await interaction.deferReply({ ephemeral: true });
+            await interaction.editReply({
               content: "You can only use this menu for your own command.",
-              ephemeral: true,
             });
             return;
           }
