@@ -709,8 +709,9 @@ export async function initializeDiscordBot() {
         // Defer immediately to avoid 3-second timeout
         await interaction.deferReply({ ephemeral: false });
         const user = interaction.options.getUser("user")!;
+        const duration = interaction.options.getString("duration") || "permanent";
         const reason = interaction.options.getString("reason")!;
-        await handleBan(interaction, user, reason);
+        await handleBan(interaction, user, duration, reason);
       } else if (command === "mute") {
         const user = interaction.options.getUser("user")!;
         const duration = interaction.options.getString("duration")!;
@@ -1309,7 +1310,34 @@ async function handleKick(interaction: any, user: any, reason: string) {
   }
 }
 
-async function handleBan(interaction: any, user: any, reason: string) {
+// Helper function to calculate expiration time from duration string
+function calculateUnbanTime(duration: string): Date | null {
+  if (duration === "permanent" || !duration) return null;
+  
+  const now = new Date();
+  const match = duration.match(/^(\d+)([hdwmy])$/);
+  if (!match) return null;
+  
+  const amount = parseInt(match[1]);
+  const unit = match[2];
+  
+  switch (unit) {
+    case "h": // hours
+      return new Date(now.getTime() + amount * 60 * 60 * 1000);
+    case "d": // days
+      return new Date(now.getTime() + amount * 24 * 60 * 60 * 1000);
+    case "w": // weeks
+      return new Date(now.getTime() + amount * 7 * 24 * 60 * 60 * 1000);
+    case "m": // months
+      return new Date(now.getTime() + amount * 30 * 24 * 60 * 60 * 1000);
+    case "y": // years
+      return new Date(now.getTime() + amount * 365 * 24 * 60 * 60 * 1000);
+    default:
+      return null;
+  }
+}
+
+async function handleBan(interaction: any, user: any, duration: string, reason: string) {
   try {
     // Check permissions (deferReply already done at command level)
     if (!(await checkModPermission(interaction))) {
@@ -1318,6 +1346,10 @@ async function handleBan(interaction: any, user: any, reason: string) {
       });
       return;
     }
+
+    // Calculate unban time
+    const unbanAt = calculateUnbanTime(duration);
+    const durationDisplay = duration === "permanent" ? "Permanent" : duration;
 
     // Try to send DM
     try {
@@ -1330,6 +1362,7 @@ async function handleBan(interaction: any, user: any, reason: string) {
             .setDescription(`You have been banned from ${interaction.guild?.name}`)
             .addFields(
               { name: "Reason", value: reason },
+              { name: "Duration", value: durationDisplay },
               {
                 name: "Moderator",
                 value: interaction.user.tag,
@@ -1352,6 +1385,7 @@ async function handleBan(interaction: any, user: any, reason: string) {
         userId: user.id,
         moderatorId: interaction.user.id,
         reason: reason,
+        duration: duration,
         isMainServerBan: true,
       });
     } catch (dbError) {
@@ -1371,6 +1405,7 @@ async function handleBan(interaction: any, user: any, reason: string) {
           userId: user.id,
           moderatorId: interaction.user.id,
           reason: `[Cascaded from main server] ${reason}`,
+          duration: duration,
         }).catch(() => {});
         
         // Try to ban in Discord if bot has access to the guild
@@ -1408,6 +1443,7 @@ async function handleBan(interaction: any, user: any, reason: string) {
           value: `${interaction.user.tag}`,
           inline: true,
         },
+        { name: "Duration", value: durationDisplay, inline: true },
         { name: "Reason", value: reason, inline: false }
       )
       .setTimestamp();
@@ -1417,7 +1453,7 @@ async function handleBan(interaction: any, user: any, reason: string) {
     });
 
     console.log(
-      `User ${user.tag} banned by ${interaction.user.tag}: ${reason}`
+      `User ${user.tag} banned by ${interaction.user.tag} for ${duration}: ${reason}`
     );
   } catch (error) {
     console.error("Ban command error:", error);
