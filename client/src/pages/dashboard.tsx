@@ -18,7 +18,8 @@ import {
   Globe,
   Lock,
   Shield,
-  ChevronLeft
+  ChevronLeft,
+  Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -189,6 +190,15 @@ export default function Dashboard() {
               <Button className="font-mono gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
                 <Plus size={16} />
                 INITIATE CASE
+              </Button>
+            </Link>
+          )}
+
+          {(user.role === "Management" || user.role === "Overseer") && (
+            <Link href="/banned-users">
+              <Button variant="outline" className="font-mono gap-2 border-dashed">
+                <Settings size={16} />
+                SERVER MANAGEMENT
               </Button>
             </Link>
           )}
