@@ -27,7 +27,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState<any[]>([]);
   const [linkedServers, setLinkedServers] = useState<any[]>([]);
-  const [childServerChannels, setChildServerChannels] = useState<any[]>([]);
+  const [serverChannelsMap, setServerChannelsMap] = useState<Record<string, any[]>>({});
 
   useEffect(() => {
     if (!user) return;
@@ -37,12 +37,13 @@ export default function SettingsPage() {
   }, [user]);
 
   useEffect(() => {
-    if (webhookConfig?.childServerBanServerId) {
-      loadChildServerChannels(webhookConfig.childServerBanServerId);
-    } else {
-      setChildServerChannels([]);
-    }
-  }, [webhookConfig?.childServerBanServerId]);
+    // Load channels for all linked servers
+    linkedServers.forEach(server => {
+      if (!serverChannelsMap[server.id]) {
+        loadChannelsForServer(server.id);
+      }
+    });
+  }, [linkedServers]);
 
   const loadWebhookConfig = async () => {
     try {
@@ -95,17 +96,23 @@ export default function SettingsPage() {
     }
   };
 
-  const loadChildServerChannels = async (serverId: string) => {
+  const loadChannelsForServer = async (serverId: string) => {
     try {
       const response = await fetch(`/api/webhook/channels/${serverId}`, {
         credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to load channels");
       const data = await response.json();
-      setChildServerChannels(data.channels || []);
+      setServerChannelsMap(prev => ({
+        ...prev,
+        [serverId]: data.channels || []
+      }));
     } catch (error: any) {
-      console.error("Error loading child server channels:", error);
-      setChildServerChannels([]);
+      console.error(`Error loading channels for server ${serverId}:`, error);
+      setServerChannelsMap(prev => ({
+        ...prev,
+        [serverId]: []
+      }));
     }
   };
 
@@ -383,27 +390,41 @@ export default function SettingsPage() {
                     <div className="space-y-3 pt-2">
                       <label className="font-mono text-xs uppercase text-muted-foreground">Configure Channel for Each Child Server</label>
                       <div className="space-y-2">
-                        {linkedServers.map((server) => (
-                          <div key={server.id} className="flex items-center gap-2 p-2 bg-black/20 rounded border border-white/5">
-                            <span className="font-mono text-xs text-muted-foreground flex-1 truncate">{server.name}</span>
-                            <select
-                              value={webhookConfig.childServerBanServerId === server.id ? (webhookConfig.childServerBanChannelId || "") : ""}
-                              onChange={(e) => {
-                                if (e.target.value) {
-                                  updateWebhookConfig({ 
-                                    childServerBanServerId: server.id,
-                                    childServerBanChannelId: e.target.value
-                                  });
-                                }
-                              }}
-                              disabled={loading}
-                              className="px-2 py-1 bg-black/40 border border-white/10 rounded font-mono text-xs text-white focus:border-primary/50 focus:outline-none flex-shrink-0"
-                            >
-                              <option value="">SELECT CHANNEL</option>
-                              <option value={`loading-${server.id}`} disabled>Loading...</option>
-                            </select>
-                          </div>
-                        ))}
+                        {linkedServers.map((server) => {
+                          const serverChannels = serverChannelsMap[server.id] || [];
+                          const isCurrentServer = webhookConfig.childServerBanServerId === server.id;
+                          const selectedChannel = isCurrentServer ? webhookConfig.childServerBanChannelId : null;
+                          
+                          return (
+                            <div key={server.id} className="flex items-center gap-2 p-2 bg-black/20 rounded border border-white/5">
+                              <span className="font-mono text-xs text-muted-foreground flex-1 truncate">{server.name}</span>
+                              <select
+                                value={selectedChannel || ""}
+                                onChange={(e) => {
+                                  if (e.target.value) {
+                                    updateWebhookConfig({ 
+                                      childServerBanServerId: server.id,
+                                      childServerBanChannelId: e.target.value
+                                    });
+                                  }
+                                }}
+                                disabled={loading}
+                                className="px-2 py-1 bg-black/40 border border-white/10 rounded font-mono text-xs text-white focus:border-primary/50 focus:outline-none flex-shrink-0"
+                              >
+                                <option value="">SELECT CHANNEL</option>
+                                {serverChannels.length === 0 ? (
+                                  <option value="" disabled>No channels</option>
+                                ) : (
+                                  serverChannels.map((ch) => (
+                                    <option key={ch.id} value={ch.id}>
+                                      # {ch.name}
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
