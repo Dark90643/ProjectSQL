@@ -1,0 +1,59 @@
+2025-11-26T12:46:36.000000000Z [inf]  Starting Container
+2025-11-26T12:46:37.106394022Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T12:46:37.106402894Z [inf]  
+2025-11-26T12:46:37.106410357Z [inf]  > rest-express@1.0.0 start
+2025-11-26T12:46:37.106417211Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T12:46:37.106424024Z [inf]  
+2025-11-26T12:46:37.291944612Z [inf]  Registering Discord bot commands...
+2025-11-26T12:46:37.325403124Z [inf]  12:46:37 PM [express] serving on port 8080
+2025-11-26T12:46:37.486935215Z [err]  Failed to register Discord commands: DiscordAPIError[50035]: Invalid Form Body
+2025-11-26T12:46:37.486947372Z [err]  5.options[2][APPLICATION_COMMAND_OPTIONS_REQUIRED_INVALID]: Required options must be placed before non-required options
+2025-11-26T12:46:37.486956862Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T12:46:37.486963137Z [err]    },
+2025-11-26T12:46:37.486964006Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:46:37.486970400Z [err]      errors: { '5': [Object] }
+2025-11-26T12:46:37.486971917Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T12:46:37.486972481Z [err]    code: 50035,
+2025-11-26T12:46:37.486981655Z [err]    status: 400,
+2025-11-26T12:46:37.486983307Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T12:46:37.486990610Z [err]    method: 'PUT',
+2025-11-26T12:46:37.486992502Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T12:46:37.486998965Z [err]      at async initializeDiscordBot (file:///app/dist/index.js:736:5) {
+2025-11-26T12:46:37.486999342Z [err]    url: 'https://discord.com/api/v10/applications/1442053672694714529/commands'
+2025-11-26T12:46:37.487004786Z [err]  }
+2025-11-26T12:46:37.487006628Z [err]    requestBody: {
+2025-11-26T12:46:37.487012200Z [err]      files: undefined,
+2025-11-26T12:46:37.487018063Z [err]      json: [
+2025-11-26T12:46:37.487023573Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487029029Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487035026Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487040570Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487047210Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487053037Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487058960Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487064356Z [err]        [Object], [Object], [Object],
+2025-11-26T12:46:37.487069402Z [err]        [Object], [Object], [Object]
+2025-11-26T12:46:37.487075103Z [err]      ]
+2025-11-26T12:46:37.487080304Z [err]    },
+2025-11-26T12:46:37.487085789Z [err]    rawError: {
+2025-11-26T12:46:37.487091428Z [err]      message: 'Invalid Form Body',
+2025-11-26T12:46:37.487097069Z [err]      code: 50035,
+2025-11-26T12:46:37.965958027Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T12:46:37.965966009Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T12:46:37.965978681Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T12:47:37.998516499Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:47:37.998524247Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:47:37.998530683Z [inf]  12:47:32 PM [express] GET /api/auth/me 304 in 69ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:47:37.998537380Z [inf]  12:47:32 PM [express] GET /api/moderation/banned-users 304 in 202ms :: {"bans":[]}
+2025-11-26T12:48:37.986226482Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:48:37.986236104Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:48:37.986244103Z [inf]  12:48:32 PM [express] GET /api/auth/me 304 in 66ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:48:37.986253437Z [inf]  12:48:32 PM [express] GET /api/moderation/banned-users 304 in 195ms :: {"bans":[]}
+2025-11-26T12:49:37.966861945Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:49:37.966871720Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:49:37.966881123Z [inf]  12:49:32 PM [express] GET /api/auth/me 304 in 68ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:49:37.966887797Z [inf]  12:49:32 PM [express] GET /api/moderation/banned-users 304 in 194ms :: {"bans":[]}
+2025-11-26T12:50:38.098803057Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:50:38.098814241Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:50:38.098821575Z [inf]  12:50:32 PM [express] GET /api/auth/me 304 in 66ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:50:38.098828341Z [inf]  12:50:32 PM [express] GET /api/moderation/banned-users 304 in 193ms :: {"bans":[]}

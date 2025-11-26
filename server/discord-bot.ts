@@ -409,13 +409,13 @@ const commands = [
     .addStringOption((option) =>
       option
         .setName("code")
-        .setDescription("Verification code (required for linking)")
+        .setDescription("Verification code for linking")
         .setRequired(false)
     )
     .addStringOption((option) =>
       option
         .setName("server_id")
-        .setDescription("Child server ID to unlink (required for unlinking)")
+        .setDescription("Child server ID for unlinking")
         .setRequired(false)
     ),
 ].map((command) => command.toJSON());
@@ -1419,6 +1419,7 @@ async function handleBan(interaction: any, user: any, duration: string, reason: 
           moderatorId: interaction.user.id,
           reason: `[Cascaded from main server] ${reason}`,
           duration: duration,
+          linkedBanId: mainBan?.id,
         }).catch(() => {});
         
         // Try to ban in Discord if bot has access to the guild
