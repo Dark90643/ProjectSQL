@@ -1,0 +1,92 @@
+2025-11-26T10:08:45.000000000Z [inf]  Starting Container
+2025-11-26T10:08:45.745935277Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T10:08:45.745948517Z [inf]  
+2025-11-26T10:08:45.745981523Z [inf]  > rest-express@1.0.0 start
+2025-11-26T10:08:45.745994792Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T10:08:45.746001902Z [inf]  
+2025-11-26T10:08:47.866263391Z [inf]  Discord bot commands registered successfully
+2025-11-26T10:08:47.866274689Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T10:08:47.866284268Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T10:08:47.866292484Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T10:08:47.866364481Z [inf]  Registering Discord bot commands...
+2025-11-26T10:08:47.866371225Z [inf]  10:08:47 AM [express] serving on port 8080
+2025-11-26T10:10:16.655161765Z [err]  Error linking servers: error: duplicate key value violates unique constraint "server_links_main_server_id_child_server_id_key"
+2025-11-26T10:10:16.655583421Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T10:10:16.655595760Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:10:16.655602301Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T10:10:16.655609105Z [err]      at async DatabaseStorage.linkServers (file:///app/dist/index.js:511:20)
+2025-11-26T10:10:16.655615935Z [err]      at async handleBanLink (file:///app/dist/index.js:2480:9)
+2025-11-26T10:10:16.655623002Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:10:16.655630551Z [err]    length: 329,
+2025-11-26T10:10:16.655637838Z [err]    severity: 'ERROR',
+2025-11-26T10:10:16.655643789Z [err]    code: '23505',
+2025-11-26T10:10:16.655650714Z [err]    detail: 'Key (main_server_id, child_server_id)=(1441447050024714252, 1308761613851168788) already exists.',
+2025-11-26T10:10:16.655658171Z [err]    hint: undefined,
+2025-11-26T10:10:16.655664673Z [err]    position: undefined,
+2025-11-26T10:10:16.655671977Z [err]    internalPosition: undefined,
+2025-11-26T10:10:16.655677909Z [err]    internalQuery: undefined,
+2025-11-26T10:10:16.655683670Z [err]    where: undefined,
+2025-11-26T10:10:16.655690076Z [err]    schema: 'public',
+2025-11-26T10:10:16.655696313Z [err]    table: 'server_links',
+2025-11-26T10:10:16.655703074Z [err]    column: undefined,
+2025-11-26T10:10:16.655709511Z [err]    dataType: undefined,
+2025-11-26T10:10:16.655716967Z [err]    constraint: 'server_links_main_server_id_child_server_id_key',
+2025-11-26T10:10:16.655723272Z [err]    file: 'nbtinsert.c',
+2025-11-26T10:10:16.655730478Z [err]    line: '666',
+2025-11-26T10:10:19.579629511Z [err]    routine: '_bt_check_unique'
+2025-11-26T10:10:19.579637105Z [err]  }
+2025-11-26T10:10:19.579645033Z [err]  Ban link error: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T10:10:19.579652448Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:10:19.579658580Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:10:19.579665204Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:10:19.579672584Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:10:19.579679673Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:10:19.579686846Z [err]      at async handleBanLink (file:///app/dist/index.js:2492:9)
+2025-11-26T10:10:19.579693232Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:10:19.579699423Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:10:19.579706349Z [err]    rawError: {
+2025-11-26T10:10:19.579713080Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T10:10:19.579720671Z [err]      code: 40060
+2025-11-26T10:10:19.579727952Z [err]    },
+2025-11-26T10:10:19.579733982Z [err]    code: 40060,
+2025-11-26T10:10:19.579779654Z [err]    status: 400,
+2025-11-26T10:10:19.579786465Z [err]    method: 'POST',
+2025-11-26T10:10:19.579793592Z [err]    url: 'https://discord.com/api/v10/interactions/1443182044481064970/aW50ZXJhY3Rpb246MTQ0MzE4MjA0NDQ4MTA2NDk3MDpNQlAxaHEwb3d6SWc3UTRJYXJlQ1lobjhIVGQ0QXBFa1ZyM3BnR1Y0WXRrR2o4OXQ4WExxWVMwaUg4YXRUeEpVNEF3SUV1eWFvUDhzamVIYkpRZWRKWmVuNHYyTDRjc3Fxam54enNtTmd4Q1hpa1l3c1U3VldEUXRTZ1hpWnA3Qg/callback?with_response=false'
+2025-11-26T10:10:21.180579277Z [err]    rawError: {
+2025-11-26T10:10:21.180598120Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T10:10:21.180610430Z [err]      code: 40060
+2025-11-26T10:10:21.180620006Z [err]    },
+2025-11-26T10:10:21.180629504Z [err]    code: 40060,
+2025-11-26T10:10:21.180639391Z [err]    status: 400,
+2025-11-26T10:10:21.180647857Z [err]    method: 'POST',
+2025-11-26T10:10:21.180657801Z [err]    url: 'https://discord.com/api/v10/interactions/1443182044481064970/aW50ZXJhY3Rpb246MTQ0MzE4MjA0NDQ4MTA2NDk3MDpNQlAxaHEwb3d6SWc3UTRJYXJlQ1lobjhIVGQ0QXBFa1ZyM3BnR1Y0WXRrR2o4OXQ4WExxWVMwaUg4YXRUeEpVNEF3SUV1eWFvUDhzamVIYkpRZWRKWmVuNHYyTDRjc3Fxam54enNtTmd4Q1hpa1l3c1U3VldEUXRTZ1hpWnA3Qg/callback?with_response=false'
+2025-11-26T10:10:21.180668169Z [err]  }
+2025-11-26T10:10:21.181526960Z [err]  }
+2025-11-26T10:10:21.181535074Z [err]  Could not send error reply: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T10:10:21.181542198Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:10:21.181549879Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:10:21.181560123Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:10:21.181569008Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:10:21.181576927Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:10:21.181584734Z [err]      at async handleBanLink (file:///app/dist/index.js:2501:7)
+2025-11-26T10:10:21.181593204Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:10:21.181601645Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:11:12.316669159Z [err]  (node:20) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+2025-11-26T10:11:12.316677160Z [inf]  Could not send DM to user
+2025-11-26T10:11:12.316690849Z [err]  Failed to cascade ban to child servers: DiscordAPIError[10004]: Unknown Guild
+2025-11-26T10:11:12.316696476Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:11:12.316704688Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:11:12.316711386Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T10:11:12.316718315Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T10:11:12.316724156Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:11:12.316730725Z [err]      at async GuildManager.fetch (/app/node_modules/discord.js/src/managers/GuildManager.js:276:20)
+2025-11-26T10:11:12.316738658Z [err]      at async handleBan (file:///app/dist/index.js:1389:28)
+2025-11-26T10:11:12.316744070Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:895:9) {
+2025-11-26T10:11:12.316750075Z [err]    requestBody: { files: undefined, json: undefined },
+2025-11-26T10:11:12.316755800Z [err]    rawError: { message: 'Unknown Guild', code: 10004 },
+2025-11-26T10:11:12.316761639Z [err]    code: 10004,
+2025-11-26T10:11:12.316768671Z [err]    status: 404,
+2025-11-26T10:11:12.316774985Z [err]    method: 'GET',
+2025-11-26T10:11:12.316781412Z [err]    url: 'https://discord.com/api/v10/guilds/1308761613851168788?with_counts=true'
+2025-11-26T10:11:12.316789725Z [err]  }
+2025-11-26T10:11:12.316795984Z [inf]  User SecureNet#7790 banned by sea8484: test

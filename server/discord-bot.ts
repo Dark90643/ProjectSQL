@@ -1352,9 +1352,9 @@ async function handleBan(interaction: any, user: any, reason: string) {
     }
 
     // Cascade ban to child servers if this is a main server
-    try {
-      const childServers = await storage.getChildServers(interaction.guildId);
-      for (const childServerId of childServers) {
+    const childServers = await storage.getChildServers(interaction.guildId);
+    for (const childServerId of childServers) {
+      try {
         const childGuild = await discordClient?.guilds.fetch(childServerId);
         if (childGuild) {
           // Ban in Discord
@@ -1367,11 +1367,11 @@ async function handleBan(interaction: any, user: any, reason: string) {
             reason: `[Cascaded from main server] ${reason}`,
             linkedBanId: mainBan?.id,
             isMainServerBan: false,
-          });
+          }).catch(() => {});
         }
+      } catch (cascadeError) {
+        console.error(`Failed to cascade ban to child server ${childServerId}:`, cascadeError);
       }
-    } catch (cascadeError) {
-      console.error("Failed to cascade ban to child servers:", cascadeError);
     }
 
     const embed = new EmbedBuilder()
