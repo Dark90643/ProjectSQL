@@ -147,6 +147,12 @@ const commands = [
     )
     .addStringOption((option) =>
       option
+        .setName("duration")
+        .setDescription("Ban duration (e.g., 1h, 1d, 7d, or permanent). Default: permanent")
+        .setRequired(false)
+    )
+    .addStringOption((option) =>
+      option
         .setName("reason")
         .setDescription("Reason for ban")
         .setRequired(true)

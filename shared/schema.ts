@@ -111,7 +111,9 @@ export const modBans = pgTable("mod_bans", {
   userId: text("user_id").notNull(),
   moderatorId: text("moderator_id").notNull(),
   reason: text("reason").notNull(),
+  duration: text("duration").notNull().default("permanent"), // e.g., "1h", "1d", "7d", "permanent"
   bannedAt: timestamp("banned_at").notNull().defaultNow(),
+  unbanAt: timestamp("unban_at"), // When the ban expires
   linkedBanId: text("linked_ban_id"), // Reference to parent ban if cascaded from main server
   isMainServerBan: boolean("is_main_server_ban").notNull().default(false),
 });
