@@ -401,7 +401,8 @@ const commands = [
         .setDescription("Action to perform")
         .addChoices(
           { name: "Generate Code", value: "generate" },
-          { name: "Link Child Server", value: "link" }
+          { name: "Link Child Server", value: "link" },
+          { name: "Unlink Child Server", value: "unlink" }
         )
         .setRequired(true)
     )
@@ -409,6 +410,12 @@ const commands = [
       option
         .setName("code")
         .setDescription("Verification code (required for linking)")
+        .setRequired(false)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("server_id")
+        .setDescription("Child server ID to unlink (required for unlinking)")
         .setRequired(false)
     ),
 ].map((command) => command.toJSON());
@@ -783,7 +790,8 @@ export async function initializeDiscordBot() {
       } else if (command === "secured-net") {
         const action = interaction.options.getString("action")!;
         const code = interaction.options.getString("code");
-        await handleBanLink(interaction, action, code);
+        const serverId = interaction.options.getString("server_id");
+        await handleBanLink(interaction, action, code, serverId);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -2777,7 +2785,8 @@ async function handleServerLockdown(interaction: any, lock: boolean, reason?: st
 async function handleBanLink(
   interaction: any,
   action: string,
-  code?: string | null
+  code?: string | null,
+  serverId?: string | null
 ) {
   try {
     // Check if command is used in a server
@@ -2902,6 +2911,43 @@ async function handleBanLink(
         } catch (editError) {
           console.error("Failed to edit reply:", editError);
         }
+      }
+    } else if (action === "unlink") {
+      // Unlink a child server from the main server
+      if (!serverId) {
+        await interaction.reply({
+          content: "❌ Please provide the child server ID to unlink.",
+          flags: 64,
+        });
+        return;
+      }
+      
+      try {
+        // Verify that the current server is a main server and has this child linked
+        const childLink = await storage.getServerLink(guildId, serverId);
+        if (!childLink) {
+          await interaction.reply({
+            content: `❌ Server \`${serverId}\` is not linked as a child of this server.`,
+            flags: 64,
+          });
+          return;
+        }
+        
+        // Unlink the servers
+        await storage.unlinkServers(guildId, serverId);
+        
+        await interaction.reply({
+          content: `✅ **Server Unlinked Successfully**\n\nServer \`${serverId}\` has been removed from this server's linked child servers.\n\n**Effect:** Bans from this server will no longer cascade to that server.`,
+          flags: 64,
+        });
+        
+        console.log(`Child server ${serverId} unlinked from main server ${guildId}`);
+      } catch (error) {
+        console.error("Error unlinking servers:", error);
+        await interaction.reply({
+          content: "❌ Failed to unlink servers. Please try again.",
+          flags: 64,
+        });
       }
     }
   } catch (error) {
