@@ -162,7 +162,7 @@ export const serverLinks = pgTable("server_links", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   mainServerId: text("main_server_id").notNull(),
   childServerId: text("child_server_id").notNull(),
-  linkedAt: timestamp("linked_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const serverLinkVerifications = pgTable("server_link_verifications", {
