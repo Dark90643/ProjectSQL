@@ -2760,24 +2760,35 @@ async function fetchUserLookupData(robloxId: string, type: "badges" | "friends" 
     let dataKey = "";
     
     if (type === "badges") {
-      url = `https://badges.roblox.com/v1/users/${robloxId}/badges`;
-      dataKey = "data";
+      url = `https://www.roblox.com/api/users/${robloxId}/badges`;
+      dataKey = "badges";
     } else if (type === "friends") {
-      url = `https://friends.roblox.com/v1/users/${robloxId}/friends`;
+      url = `https://friends.roblox.com/v1/users/${robloxId}/friends?limit=100`;
       dataKey = "data";
     } else if (type === "groups") {
-      url = `https://groups.roblox.com/v1/users/${robloxId}/groups/roles`;
+      url = `https://groups.roblox.com/v1/users/${robloxId}/groups/roles?limit=100`;
       dataKey = "data";
     }
     
-    const response = await fetch(url);
+    console.log(`Fetching ${type} from: ${url}`);
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+    
     if (response.ok) {
       const data = await response.json();
-      return data[dataKey] || data || [];
+      console.log(`Successfully fetched ${type}:`, data);
+      const result = data[dataKey] || data || [];
+      return Array.isArray(result) ? result : [];
+    } else {
+      console.warn(`Roblox API ${type} returned status ${response.status}`);
+      return [];
     }
-    return [];
-  } catch (error) {
-    console.error(`Error fetching ${type} data:`, error);
+  } catch (error: any) {
+    console.error(`Error fetching ${type} data:`, error.message);
     return [];
   }
 }
