@@ -2034,7 +2034,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get bans for this server and all linked child servers if user is accessing main server
       const bans = await storage.getBannedUsersAcrossServers(user.serverId);
       
-      res.json({ bans });
+      // Map to frontend format
+      const formattedBans = bans.map(ban => ({
+        id: ban.id,
+        userId: ban.userId,
+        serverId: ban.serverId,
+        serverName: ban.serverName,
+        reason: ban.reason,
+        bannedAt: ban.bannedAt.toISOString(),
+        linkedBanId: ban.linkedBanId,
+        isMainServerBan: ban.isMainServerBan,
+        mainServerName: ban.mainServerName,
+        mainServerId: ban.mainServerId,
+        cascadedFrom: ban.cascadedFrom,
+      }));
+      
+      res.json({ bans: formattedBans });
     } catch (error: any) {
       console.error("Get banned users error:", error);
       res.status(500).json({ error: "Failed to get banned users", bans: [] });

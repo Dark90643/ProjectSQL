@@ -460,13 +460,42 @@ export class DatabaseStorage implements IStorage {
     return bans;
   }
   
-  async getBannedUsersAcrossServers(mainServerId: string): Promise<(ModBan & { serverName?: string; linkedFrom?: string })[]> {
+  async getBannedUsersAcrossServers(mainServerId: string): Promise<any[]> {
     const childServers = await this.getChildServers(mainServerId);
     const allServerIds = [mainServerId, ...childServers];
     const bans = await db.select().from(modBans).where(
       or(...allServerIds.map(id => eq(modBans.serverId, id)))
     );
-    return bans;
+    
+    // Enhance bans with server names and cascade info
+    const enhancedBans = await Promise.all(bans.map(async (ban) => {
+      const serverWorkspace = await this.getServerWorkspace(ban.serverId);
+      let cascadedFrom = false;
+      let mainServerName: string | undefined;
+      let mainServerId: string | undefined;
+      
+      // If this ban has a linkedBanId, look up the main server ban
+      if (ban.linkedBanId) {
+        cascadedFrom = true;
+        // Find the main server by looking for a ban with this ID in the main server
+        const mainBan = await db.select().from(modBans).where(eq(modBans.id, ban.linkedBanId));
+        if (mainBan.length > 0) {
+          const mainServerWorkspace = await this.getServerWorkspace(mainBan[0].serverId);
+          mainServerName = mainServerWorkspace?.serverName;
+          mainServerId = mainBan[0].serverId;
+        }
+      }
+      
+      return {
+        ...ban,
+        serverName: serverWorkspace?.serverName || ban.serverId,
+        cascadedFrom,
+        mainServerName,
+        mainServerId,
+      };
+    }));
+    
+    return enhancedBans;
   }
   
   async unbanUserFromServer(serverId: string, userId: string): Promise<boolean> {
