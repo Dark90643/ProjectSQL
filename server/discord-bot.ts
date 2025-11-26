@@ -3018,8 +3018,7 @@ async function handleUserLookup(
     // Store pagination data
     userLookupPagination.set(messageId, paginationData);
     
-    // Clean up old pagination data after 30 minutes
-    setTimeout(() => userLookupPagination.delete(messageId), 30 * 60 * 1000);
+    // Pagination data persists indefinitely for user reuse
     
     // Only show select menu and pagination buttons if Roblox data exists
     const components: any[] = [];
