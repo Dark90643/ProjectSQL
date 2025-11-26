@@ -17,6 +17,7 @@ interface WebhookConfig {
   banLogsEnabled: boolean;
   childServerBanChannelId: string | null;
   childServerBanEnabled: boolean;
+  childServerBanServerId?: string | null;
 }
 
 export default function SettingsPage() {
@@ -25,12 +26,23 @@ export default function SettingsPage() {
   const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState<any[]>([]);
+  const [linkedServers, setLinkedServers] = useState<any[]>([]);
+  const [childServerChannels, setChildServerChannels] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) return;
     loadWebhookConfig();
     loadChannels();
+    loadLinkedServers();
   }, [user]);
+
+  useEffect(() => {
+    if (webhookConfig?.childServerBanServerId) {
+      loadChildServerChannels(webhookConfig.childServerBanServerId);
+    } else {
+      setChildServerChannels([]);
+    }
+  }, [webhookConfig?.childServerBanServerId]);
 
   const loadWebhookConfig = async () => {
     try {
@@ -67,6 +79,33 @@ export default function SettingsPage() {
       setChannels(data.channels || []);
     } catch (error: any) {
       console.error("Error loading channels:", error);
+    }
+  };
+
+  const loadLinkedServers = async () => {
+    try {
+      const response = await fetch("/api/webhook/linked-servers", {
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to load linked servers");
+      const data = await response.json();
+      setLinkedServers(data.servers || []);
+    } catch (error: any) {
+      console.error("Error loading linked servers:", error);
+    }
+  };
+
+  const loadChildServerChannels = async (serverId: string) => {
+    try {
+      const response = await fetch(`/api/webhook/channels/${serverId}`, {
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to load channels");
+      const data = await response.json();
+      setChildServerChannels(data.channels || []);
+    } catch (error: any) {
+      console.error("Error loading child server channels:", error);
+      setChildServerChannels([]);
     }
   };
 
@@ -341,21 +380,41 @@ export default function SettingsPage() {
                     </div>
                   </div>
                   {webhookConfig.childServerBanEnabled && (
-                    <div className="space-y-2">
-                      <label className="font-mono text-xs uppercase text-muted-foreground">Child Server Channel</label>
-                      <select
-                        value={webhookConfig.childServerBanChannelId || ""}
-                        onChange={(e) => updateWebhookConfig({ childServerBanChannelId: e.target.value || null })}
-                        disabled={loading}
-                        className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded font-mono text-sm text-white focus:border-primary/50 focus:outline-none"
-                      >
-                        <option value="">SELECT CHANNEL</option>
-                        {channels.map((ch) => (
-                          <option key={ch.id} value={ch.id}>
-                            # {ch.name}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="font-mono text-xs uppercase text-muted-foreground">Select Child Server</label>
+                        <select
+                          value={webhookConfig.childServerBanServerId || ""}
+                          onChange={(e) => updateWebhookConfig({ childServerBanServerId: e.target.value || null, childServerBanChannelId: null })}
+                          disabled={loading}
+                          className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded font-mono text-sm text-white focus:border-primary/50 focus:outline-none"
+                        >
+                          <option value="">SELECT SERVER</option>
+                          {linkedServers.map((srv) => (
+                            <option key={srv.id} value={srv.id}>
+                              {srv.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {webhookConfig.childServerBanServerId && (
+                        <div className="space-y-2">
+                          <label className="font-mono text-xs uppercase text-muted-foreground">Child Server Channel</label>
+                          <select
+                            value={webhookConfig.childServerBanChannelId || ""}
+                            onChange={(e) => updateWebhookConfig({ childServerBanChannelId: e.target.value || null })}
+                            disabled={loading}
+                            className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded font-mono text-sm text-white focus:border-primary/50 focus:outline-none"
+                          >
+                            <option value="">SELECT CHANNEL</option>
+                            {childServerChannels.map((ch) => (
+                              <option key={ch.id} value={ch.id}>
+                                # {ch.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
                     </div>
                   )}
                 </CardContent>

@@ -2030,6 +2030,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get channels for a specific server
+  app.get("/api/webhook/channels/:serverId", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const serverId = req.params.serverId;
+      if (!serverId) {
+        return res.status(400).json({ error: "No server ID provided" });
+      }
+
+      // Fetch Discord guild and get text channels
+      const guild = await discordClient.guilds.fetch(serverId);
+      if (!guild) {
+        return res.json({ channels: [] });
+      }
+
+      const textChannels = guild.channels.cache
+        .filter((channel: any) => channel.type === 0) // 0 = GUILD_TEXT
+        .map((channel: any) => ({
+          id: channel.id,
+          name: channel.name,
+        }))
+        .sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+      res.json({ channels: textChannels });
+    } catch (error: any) {
+      console.error("Get webhook channels for server error:", error);
+      res.status(500).json({ error: "Failed to get channels", channels: [] });
+    }
+  });
+
+  // Get linked child servers
+  app.get("/api/webhook/linked-servers", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      // Get linked servers
+      const linkedServers = await storage.getLinkedServers(user.serverId);
+      
+      // Get server names from Discord
+      const servers = await Promise.all(
+        linkedServers.map(async (link) => {
+          try {
+            const guild = await discordClient.guilds.fetch(link.childServerId);
+            return {
+              id: link.childServerId,
+              name: guild.name,
+            };
+          } catch (error) {
+            return {
+              id: link.childServerId,
+              name: `Server ${link.childServerId}`,
+            };
+          }
+        })
+      );
+
+      res.json({ servers });
+    } catch (error: any) {
+      console.error("Get linked servers error:", error);
+      res.status(500).json({ error: "Failed to get linked servers", servers: [] });
+    }
+  });
+
   // Banned users operations
   app.get("/api/moderation/banned-users", requireAuth, async (req: Request, res: Response) => {
     try {
