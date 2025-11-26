@@ -12,6 +12,7 @@ import {
   ButtonStyle,
   ActivityType,
   StringSelectMenuBuilder,
+  PermissionFlagsBits,
 } from "discord.js";
 import { storage } from "./storage";
 
@@ -1364,19 +1365,23 @@ async function handleBan(interaction: any, user: any, reason: string) {
           userId: user.id,
           moderatorId: interaction.user.id,
           reason: `[Cascaded from main server] ${reason}`,
-          linkedBanId: mainBan?.id,
-          isMainServerBan: false,
         }).catch(() => {});
         
         // Try to ban in Discord if bot has access to the guild
         try {
           const childGuild = await discordClient?.guilds.fetch(childServerId);
           if (childGuild) {
-            try {
-              await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` });
-              console.log(`✅ Cascaded ban to Discord in child server ${childServerId}`);
-            } catch (banError) {
-              console.error(`❌ Failed to ban in child server ${childServerId}:`, banError);
+            // Check if bot has permission to ban
+            const botMember = await childGuild.members.fetchMe();
+            if (!botMember.permissions.has(PermissionFlagsBits.BanMembers)) {
+              console.log(`⚠️ Bot missing BAN_MEMBERS permission in child server ${childServerId}, ban recorded in database only`);
+            } else {
+              try {
+                await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` });
+                console.log(`✅ Cascaded ban to Discord in child server ${childServerId}`);
+              } catch (banError) {
+                console.error(`❌ Failed to ban in child server ${childServerId}:`, banError);
+              }
             }
           }
         } catch (discordError) {

@@ -1,0 +1,45 @@
+2025-11-26T11:32:25.000000000Z [inf]  Starting Container
+2025-11-26T11:32:26.283769189Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T11:32:26.283776023Z [inf]  
+2025-11-26T11:32:26.283781008Z [inf]  > rest-express@1.0.0 start
+2025-11-26T11:32:26.283785449Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T11:32:26.283789935Z [inf]  
+2025-11-26T11:32:26.612613016Z [inf]  Registering Discord bot commands...
+2025-11-26T11:32:26.651244259Z [inf]  11:32:26 AM [express] serving on port 8080
+2025-11-26T11:32:27.092550785Z [inf]  Discord bot commands registered successfully
+2025-11-26T11:32:27.417348639Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T11:32:27.417361426Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T11:32:27.417368158Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T11:33:17.451467145Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:33:17.451472836Z [inf]  11:33:11 AM [express] GET /api/auth/me 304 in 69ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:34:17.439458688Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:34:17.439465461Z [inf]  11:34:12 AM [express] GET /api/auth/me 304 in 65ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:35:17.555378663Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:35:17.555382334Z [inf]  11:35:13 AM [express] GET /api/auth/me 304 in 69ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:36:17.576546691Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:36:17.576553543Z [inf]  11:36:14 AM [express] GET /api/auth/me 304 in 68ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:37:17.609751773Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:37:17.609760474Z [inf]  11:37:15 AM [express] GET /api/auth/me 304 in 70ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T11:38:07.635031137Z [err]    code: 50013,
+2025-11-26T11:38:07.635041408Z [err]  (node:20) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+2025-11-26T11:38:07.635041926Z [err]    status: 403,
+2025-11-26T11:38:07.635049230Z [inf]  Could not send DM to user
+2025-11-26T11:38:07.635051488Z [err]    method: 'PUT',
+2025-11-26T11:38:07.635056889Z [inf]  Main server 1441447050024714252 has 1 child servers
+2025-11-26T11:38:07.635059931Z [err]    url: 'https://discord.com/api/v10/guilds/1308761613851168788/bans/1213237293209616474'
+2025-11-26T11:38:07.635064076Z [inf]  Cascading ban for SecureNet#7790 to child server 1308761613851168788
+2025-11-26T11:38:07.635071961Z [err]  ❌ Failed to ban in child server 1308761613851168788: DiscordAPIError[50013]: Missing Permissions
+2025-11-26T11:38:07.635077430Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T11:38:07.635083138Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T11:38:07.635089095Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T11:38:07.635095430Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T11:38:07.635101562Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T11:38:07.635106981Z [err]      at async GuildBanManager.create (/app/node_modules/discord.js/src/managers/GuildBanManager.js:169:5)
+2025-11-26T11:38:07.635115650Z [err]      at async handleBan (file:///app/dist/index.js:1404:15)
+2025-11-26T11:38:07.635123406Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:896:9) {
+2025-11-26T11:38:07.635130945Z [err]    requestBody: { files: undefined, json: { delete_message_seconds: undefined } },
+2025-11-26T11:38:07.635138440Z [err]    rawError: { message: 'Missing Permissions', code: 50013 },
+2025-11-26T11:38:07.635346161Z [err]  }
+2025-11-26T11:38:07.635354087Z [inf]  User SecureNet#7790 banned by sea8484: test
+2025-11-26T11:38:07.635360558Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T11:38:07.635367266Z [inf]  11:38:05 AM [express] GET /api/auth/me 304 in 67ms :: {"id":"579180906833641474:1441447050024714252",…
