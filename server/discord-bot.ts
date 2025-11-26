@@ -2678,6 +2678,86 @@ async function handleServerLockdown(interaction: any, lock: boolean, reason?: st
   }
 }
 
+async function handleBanLink(
+  interaction: any,
+  action: string,
+  code?: string | null
+) {
+  try {
+    await interaction.deferReply({ ephemeral: true });
+    
+    const guild = interaction.guild;
+    if (!guild) {
+      await interaction.editReply({
+        content: "This command can only be used in a server.",
+      });
+      return;
+    }
+    
+    // Check if user is server owner
+    if (guild.ownerId !== interaction.user.id) {
+      await interaction.editReply({
+        content: "❌ Only the server owner can use this command.",
+      });
+      return;
+    }
+    
+    if (action === "generate") {
+      // Generate verification code for this server to be a main server
+      const verification = await storage.createVerificationCode(guild.id);
+      
+      await interaction.editReply({
+        content: `✅ **Verification Code Generated**\n\n**Code:** \`${verification.verificationCode}\`\n\n**Expires in:** 24 hours\n\nShare this code with other server owners who want to link their servers as child servers.`,
+      });
+    } else if (action === "link") {
+      // Link this server as a child server to a main server using a verification code
+      if (!code) {
+        await interaction.editReply({
+          content: "❌ Please provide a verification code to link servers.",
+        });
+        return;
+      }
+      
+      const verification = await storage.getVerificationCode(code);
+      if (!verification) {
+        await interaction.editReply({
+          content: "❌ Invalid verification code.",
+        });
+        return;
+      }
+      
+      if (verification.expiresAt < new Date()) {
+        await interaction.editReply({
+          content: "❌ Verification code has expired.",
+        });
+        return;
+      }
+      
+      // Link this server as child to the main server
+      try {
+        await storage.linkServers(verification.mainServerId, guild.id);
+        
+        await interaction.editReply({
+          content: `✅ **Server Linked Successfully**\n\nThis server is now linked to the main server.\n\n**Effect:** Bans from the main server will cascade to this server automatically.`,
+        });
+        
+        console.log(`Server ${guild.name} (${guild.id}) linked as child to main server ${verification.mainServerId}`);
+      } catch (error) {
+        console.error("Error linking servers:", error);
+        await interaction.editReply({
+          content: "❌ Failed to link servers. Please try again.",
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Ban link error:", error);
+    await interaction.reply({
+      content: "Failed to execute ban link command.",
+      ephemeral: true,
+    });
+  }
+}
+
 async function handleUserLookup(
   interaction: any,
   discordUser: any,

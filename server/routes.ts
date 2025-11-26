@@ -2018,6 +2018,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Banned users operations
+  app.get("/api/moderation/banned-users", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      // Check if user has permission (Management or Overseer)
+      if (user.role !== "Management" && user.role !== "Overseer") {
+        return res.status(403).json({ error: "Insufficient permissions" });
+      }
+
+      // Get bans for this server and all linked child servers if user is accessing main server
+      const bans = await storage.getBannedUsersAcrossServers(user.serverId);
+      
+      res.json({ bans });
+    } catch (error: any) {
+      console.error("Get banned users error:", error);
+      res.status(500).json({ error: "Failed to get banned users", bans: [] });
+    }
+  });
+
+  app.post("/api/moderation/unban", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      const { userId, serverId } = req.body;
+      
+      if (!userId || !serverId) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      // Remove ban from database
+      await storage.unbanUserFromServer(serverId, userId);
+
+      // Try to unban in Discord
+      try {
+        const guild = await discordClient.guilds.fetch(serverId);
+        if (guild) {
+          await guild.bans.remove(userId, "Unbanned via admin panel").catch(() => {});
+        }
+      } catch (discordError) {
+        console.error("Failed to unban in Discord:", discordError);
+      }
+
+      // Log the action
+      try {
+        await storage.addModLog({
+          serverId,
+          userId: user.id,
+          targetId: userId,
+          action: "UNBAN",
+          reason: "Unbanned via admin panel",
+        });
+      } catch (logError) {
+        console.error("Failed to log unban action:", logError);
+      }
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Unban error:", error);
+      res.status(500).json({ error: "Failed to unban user" });
+    }
+  });
+
+  app.post("/api/moderation/manual-ban", requireAuth, requireRole("Management", "Overseer"), async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      if (!user?.serverId) {
+        return res.status(400).json({ error: "No server context" });
+      }
+
+      const { userId, reason, targetServer } = req.body;
+      
+      if (!userId || !reason) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      const serversToBan = targetServer === "main" 
+        ? [user.serverId]
+        : targetServer === "children"
+          ? await storage.getChildServers(user.serverId)
+          : [user.serverId];
+
+      // Ban user in all target servers
+      for (const serverId of serversToBan) {
+        try {
+          // Ban in database
+          await storage.addBan({
+            serverId,
+            userId,
+            moderatorId: user.id,
+            reason: `[Manual ban via admin panel] ${reason}`,
+          });
+
+          // Try to ban in Discord
+          try {
+            const guild = await discordClient.guilds.fetch(serverId);
+            if (guild) {
+              await guild.bans.create(userId, { reason }).catch(() => {});
+            }
+          } catch (discordError) {
+            console.error(`Failed to ban in Discord server ${serverId}:`, discordError);
+          }
+
+          // Log the action
+          try {
+            await storage.addModLog({
+              serverId,
+              userId: user.id,
+              targetId: userId,
+              action: "BAN",
+              reason,
+            });
+          } catch (logError) {
+            console.error("Failed to log ban action:", logError);
+          }
+        } catch (banError) {
+          console.error(`Failed to ban user ${userId} in server ${serverId}:`, banError);
+        }
+      }
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Manual ban error:", error);
+      res.status(500).json({ error: "Failed to ban user" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
