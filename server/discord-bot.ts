@@ -2684,7 +2684,17 @@ async function handleBanLink(
   code?: string | null
 ) {
   try {
-    const guild = interaction.guild;
+    let guild = interaction.guild;
+    
+    // Fetch guild if not available
+    if (!guild && interaction.guildId) {
+      try {
+        guild = await discordClient?.guilds.fetch(interaction.guildId);
+      } catch (error) {
+        console.error("Failed to fetch guild:", error);
+      }
+    }
+    
     if (!guild) {
       await interaction.reply({
         content: "This command can only be used in a server.",
