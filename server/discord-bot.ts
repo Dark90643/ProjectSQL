@@ -730,6 +730,8 @@ export async function initializeDiscordBot() {
         const user = interaction.options.getUser("user")!;
         await handleUnban(interaction, user);
       } else if (command === "unipban") {
+        // Defer immediately to avoid 3-second timeout
+        await interaction.deferReply({ ephemeral: false });
         const ip = interaction.options.getString("ip")!;
         await handleUnipban(interaction, ip);
       } else if (command === "modlog") {
@@ -1829,8 +1831,6 @@ async function handleUnban(interaction: any, user: any) {
 
 async function handleUnipban(interaction: any, ip: string) {
   try {
-    await interaction.deferReply({ ephemeral: false });
-    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
       await interaction.editReply({

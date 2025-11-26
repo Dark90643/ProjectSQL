@@ -379,42 +379,32 @@ export default function SettingsPage() {
                       </Button>
                     </div>
                   </div>
-                  {webhookConfig.childServerBanEnabled && (
-                    <div className="space-y-4">
+                  {webhookConfig.childServerBanEnabled && linkedServers.length > 0 && (
+                    <div className="space-y-3 pt-2">
+                      <label className="font-mono text-xs uppercase text-muted-foreground">Configure Channel for Each Child Server</label>
                       <div className="space-y-2">
-                        <label className="font-mono text-xs uppercase text-muted-foreground">Select Child Server</label>
-                        <select
-                          value={webhookConfig.childServerBanServerId || ""}
-                          onChange={(e) => updateWebhookConfig({ childServerBanServerId: e.target.value || null, childServerBanChannelId: null })}
-                          disabled={loading}
-                          className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded font-mono text-sm text-white focus:border-primary/50 focus:outline-none"
-                        >
-                          <option value="">SELECT SERVER</option>
-                          {linkedServers.map((srv) => (
-                            <option key={srv.id} value={srv.id}>
-                              {srv.name}
-                            </option>
-                          ))}
-                        </select>
+                        {linkedServers.map((server) => (
+                          <div key={server.id} className="flex items-center gap-2 p-2 bg-black/20 rounded border border-white/5">
+                            <span className="font-mono text-xs text-muted-foreground flex-1 truncate">{server.name}</span>
+                            <select
+                              value={webhookConfig.childServerBanServerId === server.id ? (webhookConfig.childServerBanChannelId || "") : ""}
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  updateWebhookConfig({ 
+                                    childServerBanServerId: server.id,
+                                    childServerBanChannelId: e.target.value
+                                  });
+                                }
+                              }}
+                              disabled={loading}
+                              className="px-2 py-1 bg-black/40 border border-white/10 rounded font-mono text-xs text-white focus:border-primary/50 focus:outline-none flex-shrink-0"
+                            >
+                              <option value="">SELECT CHANNEL</option>
+                              <option value={`loading-${server.id}`} disabled>Loading...</option>
+                            </select>
+                          </div>
+                        ))}
                       </div>
-                      {webhookConfig.childServerBanServerId && (
-                        <div className="space-y-2">
-                          <label className="font-mono text-xs uppercase text-muted-foreground">Child Server Channel</label>
-                          <select
-                            value={webhookConfig.childServerBanChannelId || ""}
-                            onChange={(e) => updateWebhookConfig({ childServerBanChannelId: e.target.value || null })}
-                            disabled={loading}
-                            className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded font-mono text-sm text-white focus:border-primary/50 focus:outline-none"
-                          >
-                            <option value="">SELECT CHANNEL</option>
-                            {childServerChannels.map((ch) => (
-                              <option key={ch.id} value={ch.id}>
-                                # {ch.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
                     </div>
                   )}
                 </CardContent>
