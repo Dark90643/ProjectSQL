@@ -1,0 +1,135 @@
+2025-11-26T10:24:27.000000000Z [inf]  Starting Container
+2025-11-26T10:24:28.157844125Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T10:24:28.157858983Z [inf]  
+2025-11-26T10:24:28.158107620Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T10:24:28.158114550Z [inf]  
+2025-11-26T10:24:28.158121947Z [inf]  > rest-express@1.0.0 start
+2025-11-26T10:24:29.104990533Z [inf]  Registering Discord bot commands...
+2025-11-26T10:24:29.104997285Z [inf]  10:24:28 AM [express] serving on port 8080
+2025-11-26T10:24:29.205481001Z [inf]  Discord bot commands registered successfully
+2025-11-26T10:24:31.173297697Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T10:24:31.173301753Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T10:24:31.173305986Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T10:25:20.751750786Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:25:20.751755774Z [inf]  10:25:13 AM [express] GET /api/auth/me 304 in 88ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T10:26:21.007140744Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:26:21.007147574Z [inf]  10:26:13 AM [express] GET /api/auth/me 304 in 85ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T10:27:21.185178797Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:27:21.185185041Z [inf]  10:27:15 AM [express] GET /api/auth/me 304 in 80ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T10:27:40.813797136Z [err]  Error linking servers: DiscordAPIError[10062]: Unknown interaction
+2025-11-26T10:27:40.813804522Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:27:40.813809815Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:27:40.813813796Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:27:40.813817868Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:27:40.813821505Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:27:40.813825643Z [err]      at async handleBanLink (file:///app/dist/index.js:2497:11)
+2025-11-26T10:27:40.813829444Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:27:40.813833068Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:27:40.813837122Z [err]    rawError: { message: 'Unknown interaction', code: 10062 },
+2025-11-26T10:27:40.813842556Z [err]    code: 10062,
+2025-11-26T10:27:40.813846442Z [err]    status: 404,
+2025-11-26T10:27:40.813850168Z [err]    method: 'POST',
+2025-11-26T10:27:40.813853894Z [err]    url: 'https://discord.com/api/v10/interactions/1443186422298448025/aW50ZXJhY3Rpb246MTQ0MzE4NjQyMjI5ODQ0ODAyNTpPS3lSaVE4b0ZBcUxKOHVqUFVoeHJ3MEhGQ1pCV3FKSmtOVFF2VmgyU2VqbkpsMENtMjFGQWtCUEFFbHNBc0gzUmRuRjg4cjY1RmNVQTMybWlGRmlqNmZDTGlNbWVZTVN2WFdBSGRBekhCTUI3Z3dVNHF2WDZ4MHFDZFA5Y3ozbA/callback?with_response=false'
+2025-11-26T10:27:40.813858061Z [err]  }
+2025-11-26T10:27:40.813861698Z [err]  Ban link error: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T10:27:40.813865397Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:27:40.815493160Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:27:40.815500335Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:27:40.815503200Z [err]    },
+2025-11-26T10:27:40.815506333Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:27:40.815511792Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:27:40.815514979Z [err]    code: 40060,
+2025-11-26T10:27:40.815517099Z [err]      at async handleBanLink (file:///app/dist/index.js:2521:9)
+2025-11-26T10:27:40.815522761Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:27:40.815526523Z [err]    status: 400,
+2025-11-26T10:27:40.815529254Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:27:40.815534283Z [err]    method: 'POST',
+2025-11-26T10:27:40.815536764Z [err]    rawError: {
+2025-11-26T10:27:40.815542430Z [err]    url: 'https://discord.com/api/v10/interactions/1443186422298448025/aW50ZXJhY3Rpb246MTQ0MzE4NjQyMjI5ODQ0ODAyNTpPS3lSaVE4b0ZBcUxKOHVqUFVoeHJ3MEhGQ1pCV3FKSmtOVFF2VmgyU2VqbkpsMENtMjFGQWtCUEFFbHNBc0gzUmRuRjg4cjY1RmNVQTMybWlGRmlqNmZDTGlNbWVZTVN2WFdBSGRBekhCTUI3Z3dVNHF2WDZ4MHFDZFA5Y3ozbA/callback?with_response=false'
+2025-11-26T10:27:40.815544146Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T10:27:40.815550361Z [err]  }
+2025-11-26T10:27:40.815552201Z [err]      code: 40060
+2025-11-26T10:27:40.815557596Z [err]  Could not send error reply: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T10:27:40.815563577Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:27:40.815568346Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:27:40.816849420Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:27:40.816855810Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:27:40.816861349Z [err]    code: 40060,
+2025-11-26T10:27:40.816861715Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:27:40.816866591Z [err]      at async handleBanLink (file:///app/dist/index.js:2530:7)
+2025-11-26T10:27:40.816872304Z [err]    status: 400,
+2025-11-26T10:27:40.816872521Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:27:40.816878992Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:27:40.816881539Z [err]    method: 'POST',
+2025-11-26T10:27:40.816884421Z [err]    rawError: {
+2025-11-26T10:27:40.816890148Z [err]    url: 'https://discord.com/api/v10/interactions/1443186422298448025/aW50ZXJhY3Rpb246MTQ0MzE4NjQyMjI5ODQ0ODAyNTpPS3lSaVE4b0ZBcUxKOHVqUFVoeHJ3MEhGQ1pCV3FKSmtOVFF2VmgyU2VqbkpsMENtMjFGQWtCUEFFbHNBc0gzUmRuRjg4cjY1RmNVQTMybWlGRmlqNmZDTGlNbWVZTVN2WFdBSGRBekhCTUI3Z3dVNHF2WDZ4MHFDZFA5Y3ozbA/callback?with_response=false'
+2025-11-26T10:27:40.816890197Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T10:27:40.816899519Z [err]      code: 40060
+2025-11-26T10:27:40.816899714Z [err]  }
+2025-11-26T10:27:40.816904780Z [err]    },
+2025-11-26T10:28:20.926572687Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:28:20.926578522Z [inf]  10:28:15 AM [express] GET /api/auth/me 304 in 79ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T10:28:20.926583843Z [err]  (node:20) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+2025-11-26T10:28:20.926590801Z [inf]  Could not send DM to user
+2025-11-26T10:28:20.926596877Z [inf]  User SecureNet#7790 banned by sea8484: test
+2025-11-26T10:28:40.956991229Z [err]    internalQuery: undefined,
+2025-11-26T10:28:40.957001816Z [err]    where: undefined,
+2025-11-26T10:28:40.957007632Z [err]    schema: 'public',
+2025-11-26T10:28:40.957013417Z [err]    table: 'server_links',
+2025-11-26T10:28:40.957018841Z [err]    column: undefined,
+2025-11-26T10:28:40.957024214Z [err]    dataType: undefined,
+2025-11-26T10:28:40.957030133Z [err]    constraint: 'server_links_main_server_id_child_server_id_key',
+2025-11-26T10:28:40.957035715Z [err]    file: 'nbtinsert.c',
+2025-11-26T10:28:40.957041217Z [err]    line: '666',
+2025-11-26T10:28:40.957072944Z [err]  Error linking servers: error: duplicate key value violates unique constraint "server_links_main_server_id_child_server_id_key"
+2025-11-26T10:28:40.957078687Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T10:28:40.957084566Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:28:40.957090327Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T10:28:40.957261247Z [err]      at async DatabaseStorage.linkServers (file:///app/dist/index.js:511:20)
+2025-11-26T10:28:40.957269798Z [err]      at async handleBanLink (file:///app/dist/index.js:2509:9)
+2025-11-26T10:28:40.957275350Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:28:40.957281249Z [err]    length: 329,
+2025-11-26T10:28:40.957286296Z [err]    severity: 'ERROR',
+2025-11-26T10:28:40.957291838Z [err]    code: '23505',
+2025-11-26T10:28:40.957297421Z [err]    detail: 'Key (main_server_id, child_server_id)=(1441447050024714252, 1308761613851168788) already exists.',
+2025-11-26T10:28:40.957305099Z [err]    hint: undefined,
+2025-11-26T10:28:40.957310372Z [err]    position: undefined,
+2025-11-26T10:28:40.957315725Z [err]    internalPosition: undefined,
+2025-11-26T10:28:40.959290904Z [err]    routine: '_bt_check_unique'
+2025-11-26T10:28:40.959302470Z [err]  }
+2025-11-26T10:28:40.959306813Z [err]  Ban link error: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T10:28:40.959310760Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:28:40.959315214Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:28:40.959319061Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:28:40.959323211Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:28:40.959327309Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:28:40.959331447Z [err]      at async handleBanLink (file:///app/dist/index.js:2521:9)
+2025-11-26T10:28:40.959335195Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:28:40.959339156Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:28:40.959342968Z [err]    rawError: {
+2025-11-26T10:28:40.959346618Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T10:28:40.959350362Z [err]      code: 40060
+2025-11-26T10:28:40.959354043Z [err]    },
+2025-11-26T10:28:40.959357803Z [err]    code: 40060,
+2025-11-26T10:28:40.959361178Z [err]    status: 400,
+2025-11-26T10:28:40.959367422Z [err]    method: 'POST',
+2025-11-26T10:28:40.959371200Z [err]    url: 'https://discord.com/api/v10/interactions/1443186658840416329/aW50ZXJhY3Rpb246MTQ0MzE4NjY1ODg0MDQxNjMyOTpOanpESDYyNndNYVlXZXBFS01PWWFPSHN2Rm8zOHlFdDNCVVNTbjllWjljSDY5UGZrQnFEMXZYWDRGd3luUXZnQ2RLR1o2UlhCa1pyRVRFN1RXUjQxRmlUbmU3Z0NHckp2N2VvRm9NYkJzU1dvWTNIQmFxdlpjcUtWVTFXZkQ3Uw/callback?with_response=false'
+2025-11-26T10:28:40.960310995Z [err]  }
+2025-11-26T10:28:40.960314576Z [err]    code: 40060,
+2025-11-26T10:28:40.960317287Z [err]  Could not send error reply: DiscordAPIError[40060]: Interaction has already been acknowledged.
+2025-11-26T10:28:40.960322234Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:28:40.960323123Z [err]    status: 400,
+2025-11-26T10:28:40.960326835Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:28:40.960329948Z [err]    method: 'POST',
+2025-11-26T10:28:40.960331988Z [err]      at async BurstHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:866:23)
+2025-11-26T10:28:40.960338181Z [err]    url: 'https://discord.com/api/v10/interactions/1443186658840416329/aW50ZXJhY3Rpb246MTQ0MzE4NjY1ODg0MDQxNjMyOTpOanpESDYyNndNYVlXZXBFS01PWWFPSHN2Rm8zOHlFdDNCVVNTbjllWjljSDY5UGZrQnFEMXZYWDRGd3luUXZnQ2RLR1o2UlhCa1pyRVRFN1RXUjQxRmlUbmU3Z0NHckp2N2VvRm9NYkJzU1dvWTNIQmFxdlpjcUtWVTFXZkQ3Uw/callback?with_response=false'
+2025-11-26T10:28:40.960339551Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:28:40.960343586Z [err]  }
+2025-11-26T10:28:40.960347606Z [err]      at async ChatInputCommandInteraction.reply (/app/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:193:22)
+2025-11-26T10:28:40.960353165Z [err]      at async handleBanLink (file:///app/dist/index.js:2530:7)
+2025-11-26T10:28:40.960359099Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T10:28:40.960364651Z [err]    requestBody: { files: [], json: { type: 4, data: [Object] } },
+2025-11-26T10:28:40.960369416Z [err]    rawError: {
+2025-11-26T10:28:40.960375165Z [err]      message: 'Interaction has already been acknowledged.',
+2025-11-26T10:28:40.960380853Z [err]      code: 40060
+2025-11-26T10:28:40.960386052Z [err]    },

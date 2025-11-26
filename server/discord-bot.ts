@@ -2735,61 +2735,82 @@ async function handleBanLink(
         return;
       }
       
+      // Defer reply immediately to avoid 3-second timeout
+      try {
+        await interaction.deferReply({ flags: 64 });
+      } catch (error) {
+        console.error("Failed to defer reply:", error);
+        return;
+      }
+      
       try {
         const verification = await storage.getVerificationCode(code);
         if (!verification) {
-          await interaction.reply({
+          await interaction.editReply({
             content: "❌ Invalid verification code.",
-            flags: 64,
           });
           return;
         }
         
         if (verification.expiresAt < new Date()) {
-          await interaction.reply({
+          await interaction.editReply({
             content: "❌ Verification code has expired.",
-            flags: 64,
           });
           return;
         }
         
         // Check if bot is in the current (child) server
+        let botPresent = true;
         try {
           await discordClient?.guilds.fetch(guildId);
         } catch (error) {
+          botPresent = false;
+        }
+        
+        if (!botPresent) {
           // Bot is not in this server, provide an invite link
           const botId = discordClient?.user?.id;
           if (!botId) {
-            await interaction.reply({
+            await interaction.editReply({
               content: "❌ Could not retrieve bot ID. Please try again.",
-              flags: 64,
             });
             return;
           }
           
           const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${botId}&permissions=8&scope=bot&guild_id=${guildId}`;
-          await interaction.reply({
-            content: `⚠️ **Bot Not in Server**\n\nI need to be added to your server before linking. Click the button below to add me:\n\n[Add Bot to Server](${inviteUrl})\n\nAfter adding me, use \`/ban-link link [code]\` again to complete the linking.`,
-            flags: 64,
+          await interaction.editReply({
+            content: `⚠️ **Bot Not in Server**\n\nI need to be added to your server before linking. Click the link below to add me:\n\n${inviteUrl}\n\nAfter adding me, use \`/ban-link link [code]\` again to complete the linking.`,
           });
           return;
         }
         
         // Link this server as child to the main server
-        await storage.linkServers(verification.mainServerId, guildId);
-        
-        await interaction.reply({
-          content: `✅ **Server Linked Successfully**\n\nThis server is now linked to the main server.\n\n**Effect:** Bans from the main server will cascade to this server automatically.`,
-          flags: 64,
-        });
-        
-        console.log(`Server ${guildId} linked as child to main server ${verification.mainServerId}`);
+        try {
+          await storage.linkServers(verification.mainServerId, guildId);
+          
+          await interaction.editReply({
+            content: `✅ **Server Linked Successfully**\n\nThis server is now linked to the main server.\n\n**Effect:** Bans from the main server will cascade to this server automatically.`,
+          });
+          
+          console.log(`Server ${guildId} linked as child to main server ${verification.mainServerId}`);
+        } catch (linkError: any) {
+          if (linkError?.code === '23505' || linkError?.message?.includes('duplicate key')) {
+            await interaction.editReply({
+              content: `⚠️ **Already Linked**\n\nThis server is already linked to that main server.`,
+            });
+          } else {
+            throw linkError;
+          }
+        }
       } catch (error) {
         console.error("Error linking servers:", error);
-        await interaction.reply({
-          content: "❌ Failed to link servers. Please try again.",
-          flags: 64,
-        });
+        try {
+          await interaction.editReply({
+            content: "❌ Failed to link servers. Please try again.",
+          });
+        } catch (editError) {
+          console.error("Failed to edit reply:", editError);
+        }
       }
     }
   } catch (error) {
