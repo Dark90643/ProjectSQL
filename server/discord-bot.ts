@@ -638,10 +638,13 @@ export async function initializeDiscordBot() {
           });
         } catch (error) {
           console.error("User lookup select menu error:", error);
-          await interaction.reply({
-            content: "An error occurred while fetching data.",
-            ephemeral: true,
-          });
+          try {
+            await interaction.update({
+              content: "An error occurred while fetching data.",
+            });
+          } catch (e) {
+            console.error("Failed to update interaction:", e);
+          }
         }
       }
       return;
@@ -2778,8 +2781,8 @@ async function fetchUserLookupData(robloxId: string, type: "badges" | "friends" 
     let dataKey = "";
     
     if (type === "badges") {
-      url = `https://www.roblox.com/api/users/${robloxId}/badges`;
-      dataKey = "badges";
+      url = `https://badges.roblox.com/v1/users/${robloxId}/badges?limit=100`;
+      dataKey = "data";
     } else if (type === "friends") {
       url = `https://friends.roblox.com/v1/users/${robloxId}/friends?limit=100`;
       dataKey = "data";
@@ -2872,42 +2875,33 @@ function createUserLookupEmbed(
     
     embed.addFields({ name: "Badges", value: gridText || "No badges found", inline: false });
   } else if (paginationData.type === "friends" && pageItems.length > 0) {
-    // Display friends in a grid
+    // Display friends with detailed info
     const friendTexts: string[] = [];
     for (const friend of pageItems) {
-      const name = friend.name || friend.username || "Unknown";
-      friendTexts.push(`👤 ${name}`);
+      const displayName = friend.displayName || "N/A";
+      const username = friend.name || "Unknown";
+      const userId = friend.id || "N/A";
+      const createdDate = new Date(friend.created);
+      const accountAge = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+      const profileLink = `https://www.roblox.com/users/${userId}/profile`;
+      
+      friendTexts.push(`**${displayName}** | ${username} | ID: ${userId} | ${accountAge}d | [Profile](${profileLink})`);
     }
     
-    // Create grid display (3 per row)
-    let gridText = "";
-    for (let i = 0; i < friendTexts.length; i += 3) {
-      const row = friendTexts.slice(i, i + 3).join(" | ");
-      gridText += row + "\n";
-    }
-    
-    embed.addFields({ name: "Friends", value: gridText || "No friends found", inline: false });
+    embed.addFields({ name: "Friends", value: friendTexts.join("\n") || "No friends found", inline: false });
   } else if (paginationData.type === "groups" && pageItems.length > 0) {
-    // Display groups in a grid
+    // Display groups with detailed info
     const groupTexts: string[] = [];
     for (const group of pageItems) {
       const groupName = group.group?.name || "Unknown Group";
+      const groupId = group.group?.id || "N/A";
+      const groupLink = `https://www.roblox.com/groups/${groupId}`;
       const role = group.role?.name || "Member";
-      groupTexts.push(`👥 ${groupName} (${role})`);
+      
+      groupTexts.push(`**${groupName}** | ID: ${groupId} | [Group Link](${groupLink}) | Role: ${role}`);
     }
     
-    // Create grid display (3 per row, but show role so might be longer)
-    let gridText = "";
-    for (let i = 0; i < groupTexts.length; i++) {
-      gridText += groupTexts[i];
-      if ((i + 1) % 3 === 0) {
-        gridText += "\n";
-      } else if (i < groupTexts.length - 1) {
-        gridText += " | ";
-      }
-    }
-    
-    embed.addFields({ name: "Groups", value: gridText || "No groups found", inline: false });
+    embed.addFields({ name: "Groups", value: groupTexts.join("\n") || "No groups found", inline: false });
   } else if (pageItems.length === 0) {
     embed.addFields({ 
       name: `${paginationData.type.charAt(0).toUpperCase() + paginationData.type.slice(1)}`,
