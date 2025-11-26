@@ -1,0 +1,48 @@
+2025-11-26T09:57:00.000000000Z [inf]  Starting Container
+2025-11-26T09:57:01.568705242Z [inf]  > rest-express@1.0.0 start
+2025-11-26T09:57:01.568715069Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T09:57:01.568722852Z [inf]  
+2025-11-26T09:57:01.568752099Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T09:57:01.568758693Z [inf]  
+2025-11-26T09:57:02.570057973Z [inf]  9:57:02 AM [express] serving on port 8080
+2025-11-26T09:57:02.570100405Z [inf]  Registering Discord bot commands...
+2025-11-26T09:57:02.751830547Z [inf]  Discord bot commands registered successfully
+2025-11-26T09:57:03.272309657Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T09:57:03.272322185Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T09:57:03.272330083Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T09:57:43.275338349Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:57:43.275342649Z [inf]  9:57:33 AM [express] GET /api/auth/me 304 in 87ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T09:58:03.275952329Z [err]  Failed to fetch guild: DiscordAPIError[10004]: Unknown Guild
+2025-11-26T09:58:03.275960531Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T09:58:03.275967168Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:58:03.275973037Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T09:58:03.275980673Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T09:58:03.275986444Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T09:58:03.275993242Z [err]      at async GuildManager.fetch (/app/node_modules/discord.js/src/managers/GuildManager.js:276:20)
+2025-11-26T09:58:03.275999183Z [err]      at async handleBanLink (file:///app/dist/index.js:2423:17)
+2025-11-26T09:58:03.276006954Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T09:58:03.276012613Z [err]    requestBody: { files: undefined, json: undefined },
+2025-11-26T09:58:03.276018716Z [err]    rawError: { message: 'Unknown Guild', code: 10004 },
+2025-11-26T09:58:03.276025654Z [err]    code: 10004,
+2025-11-26T09:58:03.276032339Z [err]    status: 404,
+2025-11-26T09:58:03.276038273Z [err]    method: 'GET',
+2025-11-26T09:58:03.276045991Z [err]    url: 'https://discord.com/api/v10/guilds/1308761613851168788?with_counts=true'
+2025-11-26T09:58:03.276052956Z [err]  }
+2025-11-26T09:58:33.274403452Z [err]    code: 10004,
+2025-11-26T09:58:33.274415209Z [err]    status: 404,
+2025-11-26T09:58:33.274424427Z [err]    method: 'GET',
+2025-11-26T09:58:33.274431127Z [err]    url: 'https://discord.com/api/v10/guilds/1308761613851168788?with_counts=true'
+2025-11-26T09:58:33.274437782Z [err]  }
+2025-11-26T09:58:33.274444559Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T09:58:33.274450524Z [inf]  9:58:33 AM [express] GET /api/auth/me 304 in 71ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T09:58:33.274464417Z [err]  Failed to fetch guild: DiscordAPIError[10004]: Unknown Guild
+2025-11-26T09:58:33.274471329Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T09:58:33.274478144Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T09:58:33.274484116Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T09:58:33.274490602Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T09:58:33.274496850Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T09:58:33.274504679Z [err]      at async GuildManager.fetch (/app/node_modules/discord.js/src/managers/GuildManager.js:276:20)
+2025-11-26T09:58:33.274510856Z [err]      at async handleBanLink (file:///app/dist/index.js:2423:17)
+2025-11-26T09:58:33.274517029Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:962:9) {
+2025-11-26T09:58:33.274524073Z [err]    requestBody: { files: undefined, json: undefined },
+2025-11-26T09:58:33.274529987Z [err]    rawError: { message: 'Unknown Guild', code: 10004 },
