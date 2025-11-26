@@ -1372,8 +1372,12 @@ async function handleBan(interaction: any, user: any, reason: string) {
         try {
           const childGuild = await discordClient?.guilds.fetch(childServerId);
           if (childGuild) {
-            await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` }).catch(() => {});
-            console.log(`✅ Cascaded ban to Discord in child server ${childServerId}`);
+            try {
+              await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` });
+              console.log(`✅ Cascaded ban to Discord in child server ${childServerId}`);
+            } catch (banError) {
+              console.error(`❌ Failed to ban in child server ${childServerId}:`, banError);
+            }
           }
         } catch (discordError) {
           console.log(`Bot not in child server ${childServerId}, but ban recorded in database`);
