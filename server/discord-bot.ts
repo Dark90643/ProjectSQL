@@ -1353,8 +1353,11 @@ async function handleBan(interaction: any, user: any, reason: string) {
 
     // Cascade ban to child servers if this is a main server
     const childServers = await storage.getChildServers(interaction.guildId);
+    console.log(`Main server ${interaction.guildId} has ${childServers.length} child servers`);
+    
     for (const childServerId of childServers) {
       try {
+        console.log(`Cascading ban for ${user.tag} to child server ${childServerId}`);
         // Always ban in database first (this succeeds regardless of Discord guild access)
         await storage.addBan({
           serverId: childServerId,
@@ -1370,6 +1373,7 @@ async function handleBan(interaction: any, user: any, reason: string) {
           const childGuild = await discordClient?.guilds.fetch(childServerId);
           if (childGuild) {
             await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` }).catch(() => {});
+            console.log(`✅ Cascaded ban to Discord in child server ${childServerId}`);
           }
         } catch (discordError) {
           console.log(`Bot not in child server ${childServerId}, but ban recorded in database`);
