@@ -2684,20 +2684,20 @@ async function handleBanLink(
   code?: string | null
 ) {
   try {
-    await interaction.deferReply({ ephemeral: true });
-    
     const guild = interaction.guild;
     if (!guild) {
-      await interaction.editReply({
+      await interaction.reply({
         content: "This command can only be used in a server.",
+        flags: 64,
       });
       return;
     }
     
     // Check if user is server owner
     if (guild.ownerId !== interaction.user.id) {
-      await interaction.editReply({
+      await interaction.reply({
         content: "❌ Only the server owner can use this command.",
+        flags: 64,
       });
       return;
     }
@@ -2706,29 +2706,33 @@ async function handleBanLink(
       // Generate verification code for this server to be a main server
       const verification = await storage.createVerificationCode(guild.id);
       
-      await interaction.editReply({
+      await interaction.reply({
         content: `✅ **Verification Code Generated**\n\n**Code:** \`${verification.verificationCode}\`\n\n**Expires in:** 24 hours\n\nShare this code with other server owners who want to link their servers as child servers.`,
+        flags: 64,
       });
     } else if (action === "link") {
       // Link this server as a child server to a main server using a verification code
       if (!code) {
-        await interaction.editReply({
+        await interaction.reply({
           content: "❌ Please provide a verification code to link servers.",
+          flags: 64,
         });
         return;
       }
       
       const verification = await storage.getVerificationCode(code);
       if (!verification) {
-        await interaction.editReply({
+        await interaction.reply({
           content: "❌ Invalid verification code.",
+          flags: 64,
         });
         return;
       }
       
       if (verification.expiresAt < new Date()) {
-        await interaction.editReply({
+        await interaction.reply({
           content: "❌ Verification code has expired.",
+          flags: 64,
         });
         return;
       }
@@ -2737,24 +2741,30 @@ async function handleBanLink(
       try {
         await storage.linkServers(verification.mainServerId, guild.id);
         
-        await interaction.editReply({
+        await interaction.reply({
           content: `✅ **Server Linked Successfully**\n\nThis server is now linked to the main server.\n\n**Effect:** Bans from the main server will cascade to this server automatically.`,
+          flags: 64,
         });
         
         console.log(`Server ${guild.name} (${guild.id}) linked as child to main server ${verification.mainServerId}`);
       } catch (error) {
         console.error("Error linking servers:", error);
-        await interaction.editReply({
+        await interaction.reply({
           content: "❌ Failed to link servers. Please try again.",
+          flags: 64,
         });
       }
     }
   } catch (error) {
     console.error("Ban link error:", error);
-    await interaction.reply({
-      content: "Failed to execute ban link command.",
-      ephemeral: true,
-    });
+    try {
+      await interaction.reply({
+        content: "Failed to execute ban link command.",
+        flags: 64,
+      });
+    } catch (replyError) {
+      console.error("Could not send error reply:", replyError);
+    }
   }
 }
 
