@@ -154,6 +154,10 @@ export const webhookConfigs = pgTable("webhook_configs", {
   casePostEnabled: boolean("case_post_enabled").notNull().default(false),
   caseReleaseChannelId: text("case_release_channel_id"),
   caseReleaseEnabled: boolean("case_release_enabled").notNull().default(false),
+  banLogsChannelId: text("ban_logs_channel_id"),
+  banLogsEnabled: boolean("ban_logs_enabled").notNull().default(false),
+  childServerBanChannelId: text("child_server_ban_channel_id"),
+  childServerBanEnabled: boolean("child_server_ban_enabled").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
