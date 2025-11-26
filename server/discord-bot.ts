@@ -2822,29 +2822,36 @@ function createUserLookupEmbed(
   const startIdx = currentPage * itemsPerPage;
   
   let title = "User Lookup Results";
-  let description = "";
-  
-  // Add user info to description
-  if (paginationData.discordUser) {
-    description += `**Discord:** ${paginationData.discordUser.tag} (${paginationData.discordUser.id})\n`;
-    description += `**Account Age:** ${Math.floor((Date.now() - paginationData.discordUser.createdTimestamp) / (1000 * 60 * 60 * 24))} days\n`;
-  }
-  
-  if (paginationData.robloxData) {
-    description += `**Roblox:** ${paginationData.robloxData.name} (ID: ${paginationData.robloxData.id})\n`;
-    description += `**Display Name:** ${paginationData.robloxData.displayName || "N/A"}\n`;
-    const createdDate = new Date(paginationData.robloxData.created);
-    const accountAge = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
-    description += `**Account Age:** ${accountAge} days (Created: ${createdDate.toLocaleDateString()})\n`;
-  }
-  
-  description += `\n**Viewing:** ${paginationData.type.charAt(0).toUpperCase() + paginationData.type.slice(1)}`;
+  let description = `**Viewing:** ${paginationData.type.charAt(0).toUpperCase() + paginationData.type.slice(1)}`;
   
   const embed = new EmbedBuilder()
     .setColor(Colors.Blurple)
     .setTitle(title)
     .setDescription(description)
     .setTimestamp();
+  
+  // Add Discord user info as separate fields
+  if (paginationData.discordUser) {
+    const discordAge = Math.floor((Date.now() - paginationData.discordUser.createdTimestamp) / (1000 * 60 * 60 * 24));
+    embed.addFields(
+      { name: "Discord User", value: `${paginationData.discordUser.tag}`, inline: true },
+      { name: "Discord ID", value: `${paginationData.discordUser.id}`, inline: true },
+      { name: "Discord Account Age", value: `${discordAge} days`, inline: true }
+    );
+  }
+  
+  // Add Roblox user info as separate fields
+  if (paginationData.robloxData) {
+    const createdDate = new Date(paginationData.robloxData.created);
+    const robloxAge = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+    embed.addFields(
+      { name: "Roblox Username", value: `${paginationData.robloxData.name}`, inline: true },
+      { name: "Roblox ID", value: `${paginationData.robloxData.id}`, inline: true },
+      { name: "Roblox Display Name", value: `${paginationData.robloxData.displayName || "N/A"}`, inline: true },
+      { name: "Roblox Account Age", value: `${robloxAge} days`, inline: true },
+      { name: "Roblox Account Created", value: `${createdDate.toLocaleDateString()}`, inline: true }
+    );
+  }
   
   // Format items based on type
   if (paginationData.type === "badges" && pageItems.length > 0) {
