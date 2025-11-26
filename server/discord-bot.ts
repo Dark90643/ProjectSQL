@@ -2753,6 +2753,28 @@ async function handleBanLink(
           return;
         }
         
+        // Check if bot is in the current (child) server
+        try {
+          await discordClient?.guilds.fetch(guildId);
+        } catch (error) {
+          // Bot is not in this server, provide an invite link
+          const botId = discordClient?.user?.id;
+          if (!botId) {
+            await interaction.reply({
+              content: "❌ Could not retrieve bot ID. Please try again.",
+              flags: 64,
+            });
+            return;
+          }
+          
+          const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${botId}&permissions=8&scope=bot&guild_id=${guildId}`;
+          await interaction.reply({
+            content: `⚠️ **Bot Not in Server**\n\nI need to be added to your server before linking. Click the button below to add me:\n\n[Add Bot to Server](${inviteUrl})\n\nAfter adding me, use \`/ban-link link [code]\` again to complete the linking.`,
+            flags: 64,
+          });
+          return;
+        }
+        
         // Link this server as child to the main server
         await storage.linkServers(verification.mainServerId, guildId);
         
