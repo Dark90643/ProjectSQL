@@ -1,0 +1,392 @@
+2025-11-26T12:07:43.000000000Z [inf]  Starting Container
+2025-11-26T12:07:44.054330231Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T12:07:44.054335428Z [inf]  
+2025-11-26T12:07:44.054340260Z [inf]  > rest-express@1.0.0 start
+2025-11-26T12:07:44.054344781Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T12:07:44.054348695Z [inf]  
+2025-11-26T12:07:44.453537916Z [inf]  Registering Discord bot commands...
+2025-11-26T12:07:44.492578517Z [inf]  12:07:44 PM [express] serving on port 8080
+2025-11-26T12:07:44.625934894Z [err]        [Object], [Object], [Object]
+2025-11-26T12:07:44.625942717Z [err]  Failed to register Discord commands: DiscordAPIError[50035]: Invalid Form Body
+2025-11-26T12:07:44.625943602Z [err]      ]
+2025-11-26T12:07:44.625949820Z [err]  5.options[2][APPLICATION_COMMAND_OPTIONS_REQUIRED_INVALID]: Required options must be placed before non-required options
+2025-11-26T12:07:44.625951422Z [err]    },
+2025-11-26T12:07:44.625955361Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T12:07:44.625959907Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:07:44.625964038Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T12:07:44.625968361Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T12:07:44.625973301Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T12:07:44.625978102Z [err]      at async initializeDiscordBot (file:///app/dist/index.js:733:5) {
+2025-11-26T12:07:44.625982009Z [err]    requestBody: {
+2025-11-26T12:07:44.625987288Z [err]      files: undefined,
+2025-11-26T12:07:44.625991532Z [err]      json: [
+2025-11-26T12:07:44.625996253Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626000830Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626005712Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626009543Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626014060Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626018014Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626022218Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626026190Z [err]        [Object], [Object], [Object],
+2025-11-26T12:07:44.626286297Z [err]    rawError: {
+2025-11-26T12:07:44.626295737Z [err]      message: 'Invalid Form Body',
+2025-11-26T12:07:44.626302681Z [err]      code: 50035,
+2025-11-26T12:07:44.626309477Z [err]      errors: { '5': [Object] }
+2025-11-26T12:07:44.626315873Z [err]    },
+2025-11-26T12:07:44.626324792Z [err]    code: 50035,
+2025-11-26T12:07:44.626331479Z [err]    status: 400,
+2025-11-26T12:07:44.626338247Z [err]    method: 'PUT',
+2025-11-26T12:07:44.626345544Z [err]    url: 'https://discord.com/api/v10/applications/1442053672694714529/commands'
+2025-11-26T12:07:44.626350140Z [err]  }
+2025-11-26T12:07:45.061844832Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T12:07:45.061901805Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T12:07:45.061905633Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T12:08:05.062242077Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:08:05.062247524Z [inf]  12:08:04 PM [express] GET /api/auth/me 304 in 69ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:08:45.046384713Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:08:45.046389748Z [inf]  12:08:42 PM [express] GET /api/auth/me 304 in 67ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:09:15.125317278Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:09:15.125325228Z [inf]  12:09:05 PM [express] GET /api/auth/me 304 in 66ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:09:45.142294216Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:09:45.142306916Z [inf]  12:09:43 PM [express] GET /api/auth/me 304 in 282ms :: {"id":"579180906833641474:1441447050024714252"…
+2025-11-26T12:10:15.152824308Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:10:15.152833361Z [inf]  12:10:06 PM [express] GET /api/auth/me 304 in 67ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:10:45.148548107Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:10:45.148554507Z [inf]  12:10:44 PM [express] GET /api/auth/me 304 in 68ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:11:15.163833696Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:11:15.163844235Z [inf]  12:11:07 PM [express] GET /api/auth/me 304 in 67ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:11:45.162653416Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:11:45.201077245Z [inf]  12:11:45 PM [express] GET /api/auth/me 304 in 67ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:12:05.246570540Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:05.246579119Z [err]  }
+2025-11-26T12:12:05.246587238Z [inf]  12:12:00 PM [express] GET /api/webhook/channels 304 in 72ms :: {"channels":[{"id":"144205171176925188…
+2025-11-26T12:12:05.246593207Z [inf]  12:12:00 PM [express] GET /api/webhook/config 500 in 345ms :: {"error":"Failed to get webhook config"}
+2025-11-26T12:12:05.246649203Z [inf]  12:11:56 PM [express] GET /api/auth/check-ip 304 in 144ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-26T12:12:05.246655360Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246660798Z [inf]  12:11:57 PM [express] GET /api/auth/me 304 in 66ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:12:05.246666539Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246672137Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246677780Z [inf]  Support team check: {
+2025-11-26T12:12:05.246693883Z [inf]    discordId: '579180906833641474',
+2025-11-26T12:12:05.246699720Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-26T12:12:05.246705444Z [inf]    isOwner: true,
+2025-11-26T12:12:05.246713330Z [inf]    isAdmin: true,
+2025-11-26T12:12:05.246719320Z [inf]    isSupportTeam: true
+2025-11-26T12:12:05.246724962Z [inf]  }
+2025-11-26T12:12:05.246730749Z [inf]  12:11:57 PM [express] GET /api/users 304 in 134ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:05.246737189Z [inf]  12:11:57 PM [express] GET /api/auth/check-support-team-status 304 in 137ms :: {"isSupportTeam":true}
+2025-11-26T12:12:05.246743081Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246748517Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246754582Z [inf]  12:11:57 PM [express] GET /api/cases 304 in 202ms :: []
+2025-11-26T12:12:05.246760400Z [inf]  12:11:58 PM [express] GET /api/logs 304 in 263ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:05.246765808Z [inf]  12:11:58 PM [express] GET /api/auth/discord/servers 400 in 68ms :: {"error":"Discord ID required"}
+2025-11-26T12:12:05.246771363Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246777152Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:05.246783410Z [err]  Get webhook config error: error: column "ban_logs_channel_id" does not exist
+2025-11-26T12:12:05.246791172Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:05.246796670Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:05.246802557Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:05.246808059Z [err]      at async DatabaseStorage.getWebhookConfig (file:///app/dist/index.js:489:22)
+2025-11-26T12:12:05.246813383Z [err]      at async file:///app/dist/index.js:4536:20 {
+2025-11-26T12:12:05.246819457Z [err]    length: 120,
+2025-11-26T12:12:05.246825410Z [err]    severity: 'ERROR',
+2025-11-26T12:12:05.246832561Z [err]    code: '42703',
+2025-11-26T12:12:05.246838257Z [err]    detail: undefined,
+2025-11-26T12:12:05.246843792Z [err]    hint: undefined,
+2025-11-26T12:12:05.246849720Z [err]    position: '172',
+2025-11-26T12:12:05.246856683Z [err]    internalPosition: undefined,
+2025-11-26T12:12:05.246862297Z [err]    internalQuery: undefined,
+2025-11-26T12:12:05.246869343Z [err]    where: undefined,
+2025-11-26T12:12:05.246875198Z [err]    schema: undefined,
+2025-11-26T12:12:05.246881445Z [err]    table: undefined,
+2025-11-26T12:12:05.246886985Z [err]    column: undefined,
+2025-11-26T12:12:05.246892513Z [err]    dataType: undefined,
+2025-11-26T12:12:05.246898063Z [err]    constraint: undefined,
+2025-11-26T12:12:05.246903607Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:05.246909919Z [err]    line: '3722',
+2025-11-26T12:12:07.054464261Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.054472618Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.247732845Z [inf]  12:12:07 PM [express] GET /api/cases/encrypted/list 304 in 136ms :: []
+2025-11-26T12:12:07.251197655Z [inf]  12:12:07 PM [express] GET /api/server-members 304 in 202ms :: [{"id":"579180906833641474","username":…
+2025-11-26T12:12:07.251208191Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.261891560Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.271541631Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.391503517Z [inf]  12:12:07 PM [express] GET /api/users 304 in 133ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:07.477105344Z [inf]  12:12:07 PM [express] GET /api/cases 304 in 204ms :: []
+2025-11-26T12:12:07.521835768Z [inf]  12:12:07 PM [express] GET /api/logs 304 in 253ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:07.716805360Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.756865762Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:07.768464372Z [inf]  12:12:07 PM [express] GET /api/auth/me 304 in 65ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:12:07.934268993Z [inf]  12:12:07 PM [express] GET /api/users 304 in 185ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:08.076078593Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:08.076084414Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:08.278916042Z [inf]  12:12:08 PM [express] GET /api/logs 304 in 197ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:08.278920449Z [inf]  12:12:08 PM [express] GET /api/cases 304 in 203ms :: []
+2025-11-26T12:12:08.510756664Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:08.638782610Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:08.638794087Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:08.643746887Z [inf]  12:12:08 PM [express] GET /api/users 304 in 136ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:08.831305316Z [inf]  12:12:08 PM [express] GET /api/logs 304 in 195ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:08.841790003Z [inf]  12:12:08 PM [express] GET /api/cases 304 in 199ms :: []
+2025-11-26T12:12:08.996803535Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:09.116191797Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:09.116702096Z [inf]  12:12:09 PM [express] GET /api/users 304 in 132ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:09.324315966Z [inf]  12:12:09 PM [express] GET /api/recovery/deleted-cases 304 in 200ms :: [{"id":"8f80a339-a045-4ec7-b8c7…
+2025-11-26T12:12:09.388325399Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:09.388332009Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:09.579091202Z [inf]  12:12:09 PM [express] GET /api/logs 304 in 193ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:09.583850639Z [inf]  12:12:09 PM [express] GET /api/cases 304 in 198ms :: []
+2025-11-26T12:12:10.552392905Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:11.059689052Z [inf]  12:12:11 PM [express] GET /api/support/all-cases 200 in 477ms :: {"cases":[],"serverStats":[{"serverI…
+2025-11-26T12:12:13.500013209Z [inf]  12:12:13 PM [express] GET /api/auth/discord/servers 400 in 67ms :: {"error":"Discord ID required"}
+2025-11-26T12:12:15.666276899Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:15.813967090Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:15.813976828Z [err]  }
+2025-11-26T12:12:15.813979178Z [err]    position: '64',
+2025-11-26T12:12:15.813988993Z [err]    internalPosition: undefined,
+2025-11-26T12:12:15.813996233Z [err]    internalQuery: undefined,
+2025-11-26T12:12:15.814000119Z [err]  Get banned users error: error: column "duration" does not exist
+2025-11-26T12:12:15.814003792Z [err]    where: undefined,
+2025-11-26T12:12:15.814006102Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:15.814010876Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:15.814012006Z [err]    schema: undefined,
+2025-11-26T12:12:15.814015864Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:15.814019347Z [err]    table: undefined,
+2025-11-26T12:12:15.814021566Z [err]      at async DatabaseStorage.getBannedUsersAcrossServers (file:///app/dist/index.js:546:18)
+2025-11-26T12:12:15.814025920Z [err]      at async file:///app/dist/index.js:4648:20 {
+2025-11-26T12:12:15.814027475Z [err]    column: undefined,
+2025-11-26T12:12:15.814030622Z [err]    length: 108,
+2025-11-26T12:12:15.814035812Z [err]    dataType: undefined,
+2025-11-26T12:12:15.814035876Z [err]    severity: 'ERROR',
+2025-11-26T12:12:15.814040648Z [err]    code: '42703',
+2025-11-26T12:12:15.814045321Z [err]    detail: undefined,
+2025-11-26T12:12:15.814047318Z [err]    constraint: undefined,
+2025-11-26T12:12:15.814050643Z [err]    hint: undefined,
+2025-11-26T12:12:15.814056521Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:15.814062148Z [err]    line: '3722',
+2025-11-26T12:12:15.866192406Z [inf]  12:12:15 PM [express] GET /api/moderation/banned-users 500 in 199ms :: {"error":"Failed to get banned…
+2025-11-26T12:12:20.664120995Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:20.791782171Z [err]  Get banned users error: error: column "duration" does not exist
+2025-11-26T12:12:20.791782904Z [err]    line: '3722',
+2025-11-26T12:12:20.791793038Z [err]    code: '42703',
+2025-11-26T12:12:20.791793802Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:20.791796131Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:20.791803726Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:20.791807641Z [err]    detail: undefined,
+2025-11-26T12:12:20.791809519Z [err]  }
+2025-11-26T12:12:20.791811175Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:20.791818715Z [err]      at async DatabaseStorage.getBannedUsersAcrossServers (file:///app/dist/index.js:546:18)
+2025-11-26T12:12:20.791819244Z [err]    hint: undefined,
+2025-11-26T12:12:20.791826357Z [err]      at async file:///app/dist/index.js:4648:20 {
+2025-11-26T12:12:20.791829584Z [err]    position: '64',
+2025-11-26T12:12:20.791832903Z [err]    length: 108,
+2025-11-26T12:12:20.791839371Z [err]    severity: 'ERROR',
+2025-11-26T12:12:20.791841550Z [err]    internalPosition: undefined,
+2025-11-26T12:12:20.791851372Z [err]    internalQuery: undefined,
+2025-11-26T12:12:20.791860362Z [err]    where: undefined,
+2025-11-26T12:12:20.791869444Z [err]    schema: undefined,
+2025-11-26T12:12:20.791878811Z [err]    table: undefined,
+2025-11-26T12:12:20.791904105Z [err]    column: undefined,
+2025-11-26T12:12:20.791910165Z [err]    dataType: undefined,
+2025-11-26T12:12:20.791916127Z [err]    constraint: undefined,
+2025-11-26T12:12:20.791921594Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:21.060331252Z [inf]  12:12:21 PM [express] GET /api/moderation/banned-users 500 in 390ms :: {"error":"Failed to get banned…
+2025-11-26T12:12:23.996507238Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.148375934Z [inf]  12:12:24 PM [express] GET /api/cases/encrypted/list 304 in 131ms :: []
+2025-11-26T12:12:24.216242711Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.476268269Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.476275260Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.476281401Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.476288085Z [inf]  12:12:24 PM [express] GET /api/logs 304 in 257ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:24.558950045Z [inf]  12:12:24 PM [express] GET /api/users 304 in 132ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:24.617872354Z [inf]  12:12:24 PM [express] GET /api/cases 304 in 196ms :: []
+2025-11-26T12:12:24.629085729Z [inf]  12:12:24 PM [express] GET /api/server-members 304 in 203ms :: [{"id":"579180906833641474","username":…
+2025-11-26T12:12:24.835719527Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.897028752Z [inf]  12:12:24 PM [express] GET /api/auth/discord/servers 400 in 67ms :: {"error":"Discord ID required"}
+2025-11-26T12:12:24.908389988Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:24.987202373Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:25.025409895Z [inf]  12:12:25 PM [express] GET /api/logs 304 in 196ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T12:12:25.040272231Z [inf]  12:12:25 PM [express] GET /api/users 304 in 133ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:12:25.188528245Z [inf]  12:12:25 PM [express] GET /api/cases 304 in 201ms :: []
+2025-11-26T12:12:27.478271983Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:27.699980652Z [inf]  12:12:27 PM [express] GET /api/recovery/deleted-cases 304 in 262ms :: [{"id":"8f80a339-a045-4ec7-b8c7…
+2025-11-26T12:12:28.598753598Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:28.598761087Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:28.658719756Z [err]  Get webhook config error: error: column "ban_logs_channel_id" does not exist
+2025-11-26T12:12:28.658725930Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:28.658730980Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:28.658735103Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:28.658740143Z [err]      at async DatabaseStorage.getWebhookConfig (file:///app/dist/index.js:489:22)
+2025-11-26T12:12:28.658744110Z [err]      at async file:///app/dist/index.js:4536:20 {
+2025-11-26T12:12:28.658747839Z [err]    length: 120,
+2025-11-26T12:12:28.658753009Z [err]    severity: 'ERROR',
+2025-11-26T12:12:28.658757366Z [err]    code: '42703',
+2025-11-26T12:12:28.658762912Z [err]    detail: undefined,
+2025-11-26T12:12:28.658768884Z [err]    hint: undefined,
+2025-11-26T12:12:28.658774923Z [err]    position: '172',
+2025-11-26T12:12:28.658780440Z [err]    internalPosition: undefined,
+2025-11-26T12:12:28.658786202Z [err]    internalQuery: undefined,
+2025-11-26T12:12:28.658792869Z [err]    where: undefined,
+2025-11-26T12:12:28.658798774Z [err]    schema: undefined,
+2025-11-26T12:12:28.658802851Z [err]    table: undefined,
+2025-11-26T12:12:28.658806792Z [err]    column: undefined,
+2025-11-26T12:12:28.658810666Z [err]    dataType: undefined,
+2025-11-26T12:12:28.658814549Z [err]    constraint: undefined,
+2025-11-26T12:12:28.658819222Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:28.658822888Z [err]    line: '3722',
+2025-11-26T12:12:28.658828780Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:28.658842119Z [err]  }
+2025-11-26T12:12:28.658849043Z [inf]  12:12:28 PM [express] GET /api/webhook/channels 304 in 67ms :: {"channels":[{"id":"144205171176925188…
+2025-11-26T12:12:28.742143270Z [inf]  12:12:28 PM [express] GET /api/webhook/config 500 in 134ms :: {"error":"Failed to get webhook config"}
+2025-11-26T12:12:32.881208092Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:32.881217700Z [inf]  Update webhook config - User: {
+2025-11-26T12:12:32.881224221Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:12:32.881231132Z [inf]    role: 'Overseer',
+2025-11-26T12:12:32.881237420Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:12:32.881243602Z [inf]  }
+2025-11-26T12:12:32.881249762Z [inf]  Updating webhook config with: {
+2025-11-26T12:12:32.881255886Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:12:32.881264610Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:12:32.881271150Z [inf]    casePostEnabled: false,
+2025-11-26T12:12:32.881276113Z [inf]    caseReleaseEnabled: false
+2025-11-26T12:12:32.881280627Z [inf]  }
+2025-11-26T12:12:32.941181561Z [err]  Update webhook config error: error: column "ban_logs_channel_id" does not exist
+2025-11-26T12:12:32.941191556Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:32.941192659Z [err]    line: '3722',
+2025-11-26T12:12:32.941196539Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:32.941202274Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:32.941206652Z [err]      at async DatabaseStorage.getWebhookConfig (file:///app/dist/index.js:489:22)
+2025-11-26T12:12:32.941207384Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:32.941211590Z [err]      at async DatabaseStorage.createOrUpdateWebhookConfig (file:///app/dist/index.js:493:22)
+2025-11-26T12:12:32.941213887Z [err]  }
+2025-11-26T12:12:32.941216935Z [err]      at async file:///app/dist/index.js:4584:22 {
+2025-11-26T12:12:32.941221216Z [err]    length: 120,
+2025-11-26T12:12:32.941225097Z [err]    severity: 'ERROR',
+2025-11-26T12:12:32.941229159Z [err]    code: '42703',
+2025-11-26T12:12:32.941234823Z [err]    detail: undefined,
+2025-11-26T12:12:32.941238639Z [err]    hint: undefined,
+2025-11-26T12:12:32.941242532Z [err]    position: '172',
+2025-11-26T12:12:32.941246079Z [err]    internalPosition: undefined,
+2025-11-26T12:12:32.941250212Z [err]    internalQuery: undefined,
+2025-11-26T12:12:32.941256428Z [err]    where: undefined,
+2025-11-26T12:12:32.941260585Z [err]    schema: undefined,
+2025-11-26T12:12:32.941264722Z [err]    table: undefined,
+2025-11-26T12:12:32.941269330Z [err]    column: undefined,
+2025-11-26T12:12:32.941273097Z [err]    dataType: undefined,
+2025-11-26T12:12:32.941277616Z [err]    constraint: undefined,
+2025-11-26T12:12:32.941281842Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:33.007295702Z [inf]  12:12:33 PM [express] POST /api/webhook/config 500 in 136ms :: {"error":"Failed to update webhook con…
+2025-11-26T12:12:34.951667805Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:34.951677880Z [inf]  Update webhook config - User: {
+2025-11-26T12:12:34.951685160Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:12:34.951693055Z [inf]    role: 'Overseer',
+2025-11-26T12:12:34.951697168Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:12:34.951701733Z [inf]  }
+2025-11-26T12:12:34.951706005Z [inf]  Updating webhook config with: {
+2025-11-26T12:12:34.951709985Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:12:34.951713509Z [inf]    auditTrailEnabled: false,
+2025-11-26T12:12:34.951717417Z [inf]    casePostEnabled: false,
+2025-11-26T12:12:34.951720799Z [inf]    caseReleaseEnabled: false
+2025-11-26T12:12:34.951725055Z [inf]  }
+2025-11-26T12:12:35.016787009Z [err]  Update webhook config error: error: column "ban_logs_channel_id" does not exist
+2025-11-26T12:12:35.016792804Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:35.016795347Z [err]    internalQuery: undefined,
+2025-11-26T12:12:35.016797970Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:35.016802433Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:35.016807325Z [err]      at async DatabaseStorage.getWebhookConfig (file:///app/dist/index.js:489:22)
+2025-11-26T12:12:35.016808018Z [err]    where: undefined,
+2025-11-26T12:12:35.016812243Z [err]      at async DatabaseStorage.createOrUpdateWebhookConfig (file:///app/dist/index.js:493:22)
+2025-11-26T12:12:35.016816963Z [err]    schema: undefined,
+2025-11-26T12:12:35.016817574Z [err]      at async file:///app/dist/index.js:4584:22 {
+2025-11-26T12:12:35.016822664Z [err]    length: 120,
+2025-11-26T12:12:35.016825343Z [err]    table: undefined,
+2025-11-26T12:12:35.016827934Z [err]    severity: 'ERROR',
+2025-11-26T12:12:35.016833613Z [err]    code: '42703',
+2025-11-26T12:12:35.016834133Z [err]    column: undefined,
+2025-11-26T12:12:35.016838102Z [err]    detail: undefined,
+2025-11-26T12:12:35.016843532Z [err]    dataType: undefined,
+2025-11-26T12:12:35.016844084Z [err]    hint: undefined,
+2025-11-26T12:12:35.016849776Z [err]    position: '172',
+2025-11-26T12:12:35.016851526Z [err]    constraint: undefined,
+2025-11-26T12:12:35.016855588Z [err]    internalPosition: undefined,
+2025-11-26T12:12:35.016858918Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:35.016865101Z [err]    line: '3722',
+2025-11-26T12:12:35.016870806Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:35.016876869Z [err]  }
+2025-11-26T12:12:35.287680465Z [inf]  12:12:35 PM [express] POST /api/webhook/config 500 in 338ms :: {"error":"Failed to update webhook con…
+2025-11-26T12:12:36.314112242Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:36.314118521Z [inf]  Update webhook config - User: {
+2025-11-26T12:12:36.314124470Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:12:36.314130366Z [inf]    role: 'Overseer',
+2025-11-26T12:12:36.314136780Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:12:36.314142536Z [inf]  }
+2025-11-26T12:12:36.314148705Z [inf]  Updating webhook config with: {
+2025-11-26T12:12:36.314154583Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:12:36.314160925Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:12:36.314166691Z [inf]    casePostEnabled: false,
+2025-11-26T12:12:36.314178025Z [inf]    caseReleaseEnabled: false
+2025-11-26T12:12:36.314183948Z [inf]  }
+2025-11-26T12:12:36.374905355Z [err]      at async file:///app/dist/index.js:4584:22 {
+2025-11-26T12:12:36.374908552Z [err]    table: undefined,
+2025-11-26T12:12:36.374916696Z [err]    length: 120,
+2025-11-26T12:12:36.374917136Z [err]    column: undefined,
+2025-11-26T12:12:36.374919820Z [err]  Update webhook config error: error: column "ban_logs_channel_id" does not exist
+2025-11-26T12:12:36.374924330Z [err]    dataType: undefined,
+2025-11-26T12:12:36.374926606Z [err]    severity: 'ERROR',
+2025-11-26T12:12:36.374928328Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:36.374930908Z [err]    constraint: undefined,
+2025-11-26T12:12:36.374936768Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:36.374936780Z [err]    code: '42703',
+2025-11-26T12:12:36.374937212Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:36.374943800Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:36.374945103Z [err]    line: '3722',
+2025-11-26T12:12:36.374950877Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:36.374951022Z [err]      at async DatabaseStorage.getWebhookConfig (file:///app/dist/index.js:489:22)
+2025-11-26T12:12:36.374955350Z [err]    detail: undefined,
+2025-11-26T12:12:36.374957265Z [err]  }
+2025-11-26T12:12:36.374960097Z [err]      at async DatabaseStorage.createOrUpdateWebhookConfig (file:///app/dist/index.js:493:22)
+2025-11-26T12:12:36.374962618Z [err]    hint: undefined,
+2025-11-26T12:12:36.374966605Z [err]    position: '172',
+2025-11-26T12:12:36.374970605Z [err]    internalPosition: undefined,
+2025-11-26T12:12:36.374974518Z [err]    internalQuery: undefined,
+2025-11-26T12:12:36.374980412Z [err]    where: undefined,
+2025-11-26T12:12:36.374987046Z [err]    schema: undefined,
+2025-11-26T12:12:36.644634885Z [inf]  12:12:36 PM [express] POST /api/webhook/config 500 in 331ms :: {"error":"Failed to update webhook con…
+2025-11-26T12:12:37.947838059Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:12:37.947838132Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:12:37.947848118Z [inf]  }
+2025-11-26T12:12:37.947848688Z [inf]  Update webhook config - User: {
+2025-11-26T12:12:37.947855560Z [inf]  Updating webhook config with: {
+2025-11-26T12:12:37.947856819Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:12:37.947862945Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:12:37.947865149Z [inf]    role: 'Overseer',
+2025-11-26T12:12:37.947869019Z [inf]    auditTrailEnabled: false,
+2025-11-26T12:12:37.947875232Z [inf]    casePostEnabled: false,
+2025-11-26T12:12:37.947881094Z [inf]    caseReleaseEnabled: false
+2025-11-26T12:12:37.947886616Z [inf]  }
+2025-11-26T12:12:38.010828677Z [err]  Update webhook config error: error: column "ban_logs_channel_id" does not exist
+2025-11-26T12:12:38.010834560Z [err]    hint: undefined,
+2025-11-26T12:12:38.010835078Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T12:12:38.010841412Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:12:38.010847895Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T12:12:38.010850108Z [err]    position: '172',
+2025-11-26T12:12:38.010854292Z [err]      at async DatabaseStorage.getWebhookConfig (file:///app/dist/index.js:489:22)
+2025-11-26T12:12:38.010859393Z [err]    internalPosition: undefined,
+2025-11-26T12:12:38.010861333Z [err]      at async DatabaseStorage.createOrUpdateWebhookConfig (file:///app/dist/index.js:493:22)
+2025-11-26T12:12:38.010866645Z [err]    internalQuery: undefined,
+2025-11-26T12:12:38.010868032Z [err]      at async file:///app/dist/index.js:4584:22 {
+2025-11-26T12:12:38.010873371Z [err]    where: undefined,
+2025-11-26T12:12:38.010875012Z [err]    length: 120,
+2025-11-26T12:12:38.010881939Z [err]    schema: undefined,
+2025-11-26T12:12:38.010882291Z [err]    severity: 'ERROR',
+2025-11-26T12:12:38.010889151Z [err]    code: '42703',
+2025-11-26T12:12:38.010890455Z [err]    table: undefined,
+2025-11-26T12:12:38.010897937Z [err]    column: undefined,
+2025-11-26T12:12:38.010898536Z [err]    detail: undefined,
+2025-11-26T12:12:38.010905075Z [err]    dataType: undefined,
+2025-11-26T12:12:38.010919478Z [err]    constraint: undefined,
+2025-11-26T12:12:38.010925250Z [err]    file: 'parse_relation.c',
+2025-11-26T12:12:38.010930596Z [err]    line: '3722',
+2025-11-26T12:12:38.010935961Z [err]    routine: 'errorMissingColumn'
+2025-11-26T12:12:38.010942254Z [err]  }
+2025-11-26T12:12:38.274076156Z [inf]  12:12:38 PM [express] POST /api/webhook/config 500 in 326ms :: {"error":"Failed to update webhook con…
