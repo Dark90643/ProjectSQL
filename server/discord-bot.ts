@@ -2723,44 +2723,51 @@ async function handleUserLookup(
     // Create main embed with user info
     const embed = createUserLookupEmbed(paginationData, pageItems, 0, totalPages);
     
-    // Create select menu for choosing data type
-    const selectMenu = new StringSelectMenuBuilder()
-      .setCustomId(`userlookup_type_${messageId}`)
-      .setPlaceholder("Select what to view")
-      .addOptions(
-        { label: "Badges", value: "badges", description: "View user badges" },
-        { label: "Friends", value: "friends", description: "View user friends" },
-        { label: "Groups", value: "groups", description: "View user groups" }
-      );
-    
-    const selectRow = new ActionRowBuilder()
-      .addComponents(selectMenu);
-    
-    // Create pagination buttons
-    const prevButton = new ButtonBuilder()
-      .setCustomId(`userlookup_prev_${messageId}`)
-      .setLabel("⬅️ Previous")
-      .setStyle(ButtonStyle.Primary)
-      .setDisabled(true);
-    
-    const nextButton = new ButtonBuilder()
-      .setCustomId(`userlookup_next_${messageId}`)
-      .setLabel("Next ➡️")
-      .setStyle(ButtonStyle.Primary)
-      .setDisabled(totalPages <= 1);
-    
-    const buttonRow = new ActionRowBuilder()
-      .addComponents(prevButton, nextButton);
-    
     // Store pagination data
     userLookupPagination.set(messageId, paginationData);
     
     // Clean up old pagination data after 10 minutes
     setTimeout(() => userLookupPagination.delete(messageId), 10 * 60 * 1000);
     
+    // Only show select menu and pagination buttons if Roblox data exists
+    const components: any[] = [];
+    
+    if (robloxData) {
+      // Create select menu for choosing data type
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId(`userlookup_type_${messageId}`)
+        .setPlaceholder("Select what to view")
+        .addOptions(
+          { label: "Badges", value: "badges", description: "View user badges" },
+          { label: "Friends", value: "friends", description: "View user friends" },
+          { label: "Groups", value: "groups", description: "View user groups" }
+        );
+      
+      const selectRow = new ActionRowBuilder()
+        .addComponents(selectMenu);
+      components.push(selectRow as any);
+      
+      // Create pagination buttons
+      const prevButton = new ButtonBuilder()
+        .setCustomId(`userlookup_prev_${messageId}`)
+        .setLabel("⬅️ Previous")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true);
+      
+      const nextButton = new ButtonBuilder()
+        .setCustomId(`userlookup_next_${messageId}`)
+        .setLabel("Next ➡️")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(totalPages <= 1);
+      
+      const buttonRow = new ActionRowBuilder()
+        .addComponents(prevButton, nextButton);
+      components.push(buttonRow as any);
+    }
+    
     await interaction.editReply({
       embeds: [embed],
-      components: [selectRow as any, buttonRow as any],
+      components: components.length > 0 ? components : [],
     });
     
     console.log(
