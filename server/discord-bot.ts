@@ -148,15 +148,15 @@ const commands = [
     )
     .addStringOption((option) =>
       option
-        .setName("duration")
-        .setDescription("Ban duration (e.g., 1h, 1d, 7d, or permanent). Default: permanent")
-        .setRequired(false)
-    )
-    .addStringOption((option) =>
-      option
         .setName("reason")
         .setDescription("Reason for ban")
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("duration")
+        .setDescription("Ban duration (e.g., 1h, 1d, 7d, or permanent). Default: permanent")
+        .setRequired(false)
     ),
   new SlashCommandBuilder()
     .setName("mute")
@@ -289,16 +289,16 @@ const commands = [
   new SlashCommandBuilder()
     .setName("set-command-permissions")
     .setDescription("Configure who can use bot commands (admin only)")
-    .addRoleOption((option) =>
-      option
-        .setName("role")
-        .setDescription("Role that can use commands (leave empty to remove)")
-        .setRequired(false)
-    )
     .addBooleanOption((option) =>
       option
         .setName("allow_administrators")
         .setDescription("Allow server administrators to use commands (default: true)")
+        .setRequired(false)
+    )
+    .addRoleOption((option) =>
+      option
+        .setName("role")
+        .setDescription("Role that can use commands (leave empty to remove)")
         .setRequired(false)
     ),
   // User history tracking commands
