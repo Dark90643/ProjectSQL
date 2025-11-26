@@ -725,6 +725,8 @@ export async function initializeDiscordBot() {
         const user = interaction.options.getUser("user")!;
         await handleUnwarn(interaction, user);
       } else if (command === "unban") {
+        // Defer immediately to avoid 3-second timeout
+        await interaction.deferReply({ ephemeral: false });
         const user = interaction.options.getUser("user")!;
         await handleUnban(interaction, user);
       } else if (command === "unipban") {
@@ -1755,8 +1757,6 @@ async function handleUnwarn(interaction: any, user: any) {
 
 async function handleUnban(interaction: any, user: any) {
   try {
-    await interaction.deferReply({ ephemeral: false });
-    
     // Check permissions
     if (!(await checkModPermission(interaction))) {
       await interaction.editReply({
