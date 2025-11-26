@@ -1,0 +1,333 @@
+2025-11-26T12:38:51.000000000Z [inf]  Starting Container
+2025-11-26T12:38:51.926318458Z [inf]  
+2025-11-26T12:38:51.926325060Z [inf]  > rest-express@1.0.0 start
+2025-11-26T12:38:51.926337026Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T12:38:51.926371781Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T12:38:51.926378200Z [inf]  
+2025-11-26T12:38:52.372768143Z [inf]  Registering Discord bot commands...
+2025-11-26T12:38:52.405377303Z [inf]  12:38:52 PM [express] serving on port 8080
+2025-11-26T12:38:52.554748227Z [err]  Failed to register Discord commands: DiscordAPIError[50035]: Invalid Form Body
+2025-11-26T12:38:52.554755242Z [err]  5.options[2][APPLICATION_COMMAND_OPTIONS_REQUIRED_INVALID]: Required options must be placed before non-required options
+2025-11-26T12:38:52.554758321Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554761069Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T12:38:52.554765601Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T12:38:52.554770952Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T12:38:52.554771607Z [err]        [Object], [Object], [Object]
+2025-11-26T12:38:52.554776085Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T12:38:52.554780329Z [err]      ]
+2025-11-26T12:38:52.554781452Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T12:38:52.554786682Z [err]      at async initializeDiscordBot (file:///app/dist/index.js:733:5) {
+2025-11-26T12:38:52.554787089Z [err]    },
+2025-11-26T12:38:52.554791069Z [err]    requestBody: {
+2025-11-26T12:38:52.554794852Z [err]      files: undefined,
+2025-11-26T12:38:52.554798849Z [err]      json: [
+2025-11-26T12:38:52.554802336Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554807542Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554811677Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554815272Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554819597Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554823216Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.554827053Z [err]        [Object], [Object], [Object],
+2025-11-26T12:38:52.555195063Z [err]    rawError: {
+2025-11-26T12:38:52.555202186Z [err]      message: 'Invalid Form Body',
+2025-11-26T12:38:52.555206900Z [err]      code: 50035,
+2025-11-26T12:38:52.555211300Z [err]      errors: { '5': [Object] }
+2025-11-26T12:38:52.555215680Z [err]    },
+2025-11-26T12:38:52.555220035Z [err]    code: 50035,
+2025-11-26T12:38:52.555224903Z [err]    status: 400,
+2025-11-26T12:38:52.555229915Z [err]    method: 'PUT',
+2025-11-26T12:38:52.555234195Z [err]    url: 'https://discord.com/api/v10/applications/1442053672694714529/commands'
+2025-11-26T12:38:52.555239117Z [err]  }
+2025-11-26T12:38:52.927471777Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T12:38:52.927475424Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T12:38:52.927479614Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T12:39:42.889099460Z [inf]  12:39:39 PM [express] GET /api/auth/discord/servers 400 in 67ms :: {"error":"Discord ID required"}
+2025-11-26T12:39:42.889107070Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.889112073Z [inf]  12:39:41 PM [express] GET /api/server-members 304 in 199ms :: [{"id":"579180906833641474","username":…
+2025-11-26T12:39:42.889117010Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.889121773Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.889171791Z [inf]  12:39:38 PM [express] GET /api/auth/check-ip 304 in 147ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-26T12:39:42.889176053Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.889179794Z [inf]  12:39:38 PM [express] GET /api/auth/me 304 in 66ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:39:42.889184852Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.889188623Z [inf]  Support team check: {
+2025-11-26T12:39:42.889192527Z [inf]    discordId: '579180906833641474',
+2025-11-26T12:39:42.889197730Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-26T12:39:42.889202050Z [inf]    isOwner: true,
+2025-11-26T12:39:42.889205637Z [inf]    isAdmin: true,
+2025-11-26T12:39:42.889209388Z [inf]    isSupportTeam: true
+2025-11-26T12:39:42.889218153Z [inf]  }
+2025-11-26T12:39:42.889221753Z [inf]  12:39:39 PM [express] GET /api/auth/check-support-team-status 304 in 142ms :: {"isSupportTeam":true}
+2025-11-26T12:39:42.889226425Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.889230497Z [inf]  12:39:39 PM [express] GET /api/cases 304 in 208ms :: []
+2025-11-26T12:39:42.894364901Z [inf]  12:39:41 PM [express] GET /api/users 304 in 131ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:39:42.894372532Z [inf]  12:39:41 PM [express] GET /api/cases/encrypted/list 304 in 135ms :: []
+2025-11-26T12:39:42.894377904Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894383426Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894389999Z [inf]  12:39:41 PM [express] GET /api/cases 304 in 195ms :: []
+2025-11-26T12:39:42.894396790Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894404046Z [inf]  12:39:42 PM [express] GET /api/users 304 in 130ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:39:42.894410912Z [inf]  12:39:42 PM [express] GET /api/logs 200 in 428ms :: [{"id":"eea00a82-5623-4b6d-9c09-50afba4bc2e3","se…
+2025-11-26T12:39:42.894417494Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894422633Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894427249Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894431859Z [inf]  12:39:42 PM [express] GET /api/logs 304 in 196ms :: [{"id":"eea00a82-5623-4b6d-9c09-50afba4bc2e3","se…
+2025-11-26T12:39:42.894436026Z [inf]  12:39:42 PM [express] GET /api/cases 304 in 201ms :: []
+2025-11-26T12:39:42.894440463Z [inf]  12:39:42 PM [express] GET /api/users 304 in 135ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:39:42.894444642Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.894449284Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.964860070Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:42.982110831Z [inf]  12:39:42 PM [express] GET /api/cases 304 in 202ms :: []
+2025-11-26T12:39:43.053064491Z [inf]  12:39:43 PM [express] GET /api/logs 304 in 265ms :: [{"id":"eea00a82-5623-4b6d-9c09-50afba4bc2e3","se…
+2025-11-26T12:39:43.064762880Z [inf]  12:39:43 PM [express] GET /api/users 304 in 130ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:39:43.333651603Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:43.414034670Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:43.414373914Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:43.527686490Z [inf]  12:39:43 PM [express] GET /api/cases 304 in 193ms :: []
+2025-11-26T12:39:43.550062532Z [inf]  12:39:43 PM [express] GET /api/users 304 in 132ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:39:43.622698866Z [inf]  12:39:43 PM [express] GET /api/logs 304 in 204ms :: [{"id":"eea00a82-5623-4b6d-9c09-50afba4bc2e3","se…
+2025-11-26T12:39:43.904206594Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:44.013203086Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:44.104802786Z [inf]  12:39:44 PM [express] GET /api/recovery/deleted-cases 304 in 204ms :: [{"id":"8f80a339-a045-4ec7-b8c7…
+2025-11-26T12:39:44.276956428Z [inf]  12:39:44 PM [express] GET /api/logs 304 in 264ms :: [{"id":"eea00a82-5623-4b6d-9c09-50afba4bc2e3","se…
+2025-11-26T12:39:44.965597647Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:44.979417609Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:44.980401860Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:45.050900102Z [inf]  12:39:45 PM [express] GET /api/webhook/channels 304 in 70ms :: {"channels":[{"id":"144205171176925188…
+2025-11-26T12:39:45.133653788Z [inf]  12:39:45 PM [express] GET /api/webhook/linked-servers 304 in 138ms :: {"servers":[{"id":"130876161385…
+2025-11-26T12:39:45.276942361Z [inf]  12:39:45 PM [express] GET /api/webhook/config 200 in 226ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302c…
+2025-11-26T12:39:45.489199613Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:45.555334982Z [inf]  12:39:45 PM [express] GET /api/webhook/channels/1308761613851168788 304 in 69ms :: {"channels":[{"id"…
+2025-11-26T12:39:47.305471958Z [inf]  }
+2025-11-26T12:39:47.305492244Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:47.305499820Z [inf]  Update webhook config - User: {
+2025-11-26T12:39:47.305507397Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:39:47.305514201Z [inf]    role: 'Overseer',
+2025-11-26T12:39:47.305521729Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:39:47.305528237Z [inf]  }
+2025-11-26T12:39:47.305534799Z [inf]  Updating webhook config with: {
+2025-11-26T12:39:47.305542528Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:47.305549495Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:47.305557611Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:47.305564729Z [inf]    caseReleaseEnabled: true
+2025-11-26T12:39:47.395911726Z [inf]  Webhook config updated successfully: {
+2025-11-26T12:39:47.395920988Z [inf]    id: 'f976adc2-4f26-4adc-a3fc-06e2302c1333',
+2025-11-26T12:39:47.395927318Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:47.395933896Z [inf]    auditTrailChannelId: '1442051711769251880',
+2025-11-26T12:39:47.395939694Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:47.395946566Z [inf]    casePostChannelId: '1442047340071358505',
+2025-11-26T12:39:47.395952098Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:47.395957468Z [inf]    caseReleaseChannelId: '1442050231691776000',
+2025-11-26T12:39:47.395963055Z [inf]    caseReleaseEnabled: true,
+2025-11-26T12:39:47.395968903Z [inf]    banLogsChannelId: '1442051711769251880',
+2025-11-26T12:39:47.395975249Z [inf]    banLogsEnabled: true,
+2025-11-26T12:39:47.395981428Z [inf]    childServerBanChannelId: '1308761614341898291',
+2025-11-26T12:39:47.395987506Z [inf]    childServerBanEnabled: true,
+2025-11-26T12:39:47.395992903Z [inf]    createdAt: 2025-11-25T14:28:25.181Z,
+2025-11-26T12:39:47.395998735Z [inf]    updatedAt: 2025-11-26T12:39:47.323Z
+2025-11-26T12:39:47.396005428Z [inf]  }
+2025-11-26T12:39:47.543793420Z [inf]  12:39:47 PM [express] POST /api/webhook/config 200 in 278ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302…
+2025-11-26T12:39:47.766162158Z [inf]  ✓ Audit trail message sent to channel: 1442051711769251880
+2025-11-26T12:39:50.019946334Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:50.019953502Z [inf]  Update webhook config - User: {
+2025-11-26T12:39:50.019960462Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:39:50.019968710Z [inf]    role: 'Overseer',
+2025-11-26T12:39:50.019975782Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:39:50.019982552Z [inf]  }
+2025-11-26T12:39:50.019988974Z [inf]  Updating webhook config with: {
+2025-11-26T12:39:50.019996089Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:50.020002863Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:50.020009179Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:50.020016084Z [inf]    caseReleaseEnabled: true
+2025-11-26T12:39:50.020022296Z [inf]  }
+2025-11-26T12:39:50.139254657Z [inf]  Webhook config updated successfully: {
+2025-11-26T12:39:50.139257012Z [inf]    createdAt: 2025-11-25T14:28:25.181Z,
+2025-11-26T12:39:50.139262223Z [inf]    id: 'f976adc2-4f26-4adc-a3fc-06e2302c1333',
+2025-11-26T12:39:50.139267604Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:50.139270090Z [inf]    updatedAt: 2025-11-26T12:39:50.070Z
+2025-11-26T12:39:50.139273371Z [inf]    auditTrailChannelId: '1442051711769251880',
+2025-11-26T12:39:50.139278414Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:50.139280576Z [inf]  }
+2025-11-26T12:39:50.139284187Z [inf]    casePostChannelId: '1442047340071358505',
+2025-11-26T12:39:50.139288401Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:50.139292811Z [inf]    caseReleaseChannelId: '1442050231691776000',
+2025-11-26T12:39:50.139297273Z [inf]    caseReleaseEnabled: true,
+2025-11-26T12:39:50.139301727Z [inf]    banLogsChannelId: '1442051711769251880',
+2025-11-26T12:39:50.139305766Z [inf]    banLogsEnabled: true,
+2025-11-26T12:39:50.139309670Z [inf]    childServerBanChannelId: null,
+2025-11-26T12:39:50.139313897Z [inf]    childServerBanEnabled: false,
+2025-11-26T12:39:50.286494742Z [inf]  12:39:50 PM [express] POST /api/webhook/config 200 in 268ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302…
+2025-11-26T12:39:50.398780267Z [inf]  ✓ Audit trail message sent to channel: 1442051711769251880
+2025-11-26T12:39:51.144653242Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:51.144663572Z [inf]  Update webhook config - User: {
+2025-11-26T12:39:51.144671420Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:39:51.144677352Z [inf]    role: 'Overseer',
+2025-11-26T12:39:51.144683350Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:39:51.144689259Z [inf]  }
+2025-11-26T12:39:51.144694797Z [inf]  Updating webhook config with: {
+2025-11-26T12:39:51.144700284Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:51.144707175Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:51.144713732Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:51.144720968Z [inf]    caseReleaseEnabled: true
+2025-11-26T12:39:51.144726485Z [inf]  }
+2025-11-26T12:39:51.296251610Z [inf]  }
+2025-11-26T12:39:51.296295623Z [inf]    casePostChannelId: '1442047340071358505',
+2025-11-26T12:39:51.296303315Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:51.296311734Z [inf]    caseReleaseChannelId: '1442050231691776000',
+2025-11-26T12:39:51.296321098Z [inf]    caseReleaseEnabled: true,
+2025-11-26T12:39:51.296337249Z [inf]    banLogsChannelId: '1442051711769251880',
+2025-11-26T12:39:51.296348003Z [inf]    banLogsEnabled: true,
+2025-11-26T12:39:51.296358451Z [inf]    childServerBanChannelId: null,
+2025-11-26T12:39:51.296366725Z [inf]    childServerBanEnabled: true,
+2025-11-26T12:39:51.296375034Z [inf]    createdAt: 2025-11-25T14:28:25.181Z,
+2025-11-26T12:39:51.296382662Z [inf]    updatedAt: 2025-11-26T12:39:51.197Z
+2025-11-26T12:39:51.296559156Z [inf]  Webhook config updated successfully: {
+2025-11-26T12:39:51.296565450Z [inf]    id: 'f976adc2-4f26-4adc-a3fc-06e2302c1333',
+2025-11-26T12:39:51.296571855Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:51.296577748Z [inf]    auditTrailChannelId: '1442051711769251880',
+2025-11-26T12:39:51.296585183Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:51.407855703Z [inf]  12:39:51 PM [express] POST /api/webhook/config 200 in 270ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302…
+2025-11-26T12:39:51.525311247Z [inf]  ✓ Audit trail message sent to channel: 1442051711769251880
+2025-11-26T12:39:52.812908326Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:52.812912636Z [inf]  Update webhook config - User: {
+2025-11-26T12:39:52.812916577Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:39:52.812920686Z [inf]    role: 'Overseer',
+2025-11-26T12:39:52.812924827Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:39:52.812928934Z [inf]  }
+2025-11-26T12:39:52.812932698Z [inf]  Updating webhook config with: {
+2025-11-26T12:39:52.812936707Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:52.812940451Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:52.812944666Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:52.812949375Z [inf]    caseReleaseEnabled: true
+2025-11-26T12:39:52.812953371Z [inf]  }
+2025-11-26T12:39:52.938955953Z [inf]  Webhook config updated successfully: {
+2025-11-26T12:39:52.938961141Z [inf]    id: 'f976adc2-4f26-4adc-a3fc-06e2302c1333',
+2025-11-26T12:39:52.938965205Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:52.938969012Z [inf]    auditTrailChannelId: '1442051711769251880',
+2025-11-26T12:39:52.938972952Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:52.938980340Z [inf]    casePostChannelId: '1442047340071358505',
+2025-11-26T12:39:52.938984064Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:52.938987606Z [inf]    caseReleaseChannelId: '1442050231691776000',
+2025-11-26T12:39:52.938991485Z [inf]    caseReleaseEnabled: true,
+2025-11-26T12:39:52.938995077Z [inf]    banLogsChannelId: '1442051711769251880',
+2025-11-26T12:39:52.938998592Z [inf]    banLogsEnabled: true,
+2025-11-26T12:39:52.939001982Z [inf]    childServerBanChannelId: null,
+2025-11-26T12:39:52.939006040Z [inf]    childServerBanEnabled: true,
+2025-11-26T12:39:52.939009730Z [inf]    createdAt: 2025-11-25T14:28:25.181Z,
+2025-11-26T12:39:52.939014316Z [inf]    updatedAt: 2025-11-26T12:39:52.869Z
+2025-11-26T12:39:52.939020246Z [inf]  }
+2025-11-26T12:39:53.077952000Z [inf]  12:39:53 PM [express] POST /api/webhook/config 200 in 268ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302…
+2025-11-26T12:39:53.297857798Z [inf]  ✓ Audit trail message sent to channel: 1442051711769251880
+2025-11-26T12:39:54.692484223Z [inf]    caseReleaseEnabled: true
+2025-11-26T12:39:54.692485646Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:39:54.692494898Z [inf]  Update webhook config - User: {
+2025-11-26T12:39:54.692495143Z [inf]  }
+2025-11-26T12:39:54.692501134Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:39:54.692507405Z [inf]    role: 'Overseer',
+2025-11-26T12:39:54.692512411Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:39:54.692519923Z [inf]  }
+2025-11-26T12:39:54.692525005Z [inf]  Updating webhook config with: {
+2025-11-26T12:39:54.692529950Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:54.692534598Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:54.692539978Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:54.821801323Z [inf]    childServerBanChannelId: null,
+2025-11-26T12:39:54.821807989Z [inf]  Webhook config updated successfully: {
+2025-11-26T12:39:54.821811077Z [inf]    childServerBanEnabled: true,
+2025-11-26T12:39:54.821813905Z [inf]    id: 'f976adc2-4f26-4adc-a3fc-06e2302c1333',
+2025-11-26T12:39:54.821816032Z [inf]    casePostEnabled: true,
+2025-11-26T12:39:54.821818373Z [inf]    createdAt: 2025-11-25T14:28:25.181Z,
+2025-11-26T12:39:54.821820376Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:39:54.821825215Z [inf]    updatedAt: 2025-11-26T12:39:54.752Z
+2025-11-26T12:39:54.821826308Z [inf]    auditTrailChannelId: '1442051711769251880',
+2025-11-26T12:39:54.821827809Z [inf]    caseReleaseChannelId: '1442050231691776000',
+2025-11-26T12:39:54.821832299Z [inf]  }
+2025-11-26T12:39:54.821832485Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:39:54.821836075Z [inf]    caseReleaseEnabled: true,
+2025-11-26T12:39:54.821838325Z [inf]    casePostChannelId: '1442047340071358505',
+2025-11-26T12:39:54.821843424Z [inf]    banLogsChannelId: '1442051711769251880',
+2025-11-26T12:39:54.821850108Z [inf]    banLogsEnabled: true,
+2025-11-26T12:39:54.956016327Z [inf]  12:39:54 PM [express] POST /api/webhook/config 200 in 268ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302…
+2025-11-26T12:39:55.183433230Z [inf]  ✓ Audit trail message sent to channel: 1442051711769251880
+2025-11-26T12:40:35.190664423Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.190670473Z [inf]  Update webhook config - User: {
+2025-11-26T12:40:35.190677123Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-26T12:40:35.190683162Z [inf]    role: 'Overseer',
+2025-11-26T12:40:35.190688466Z [inf]    serverId: '1441447050024714252'
+2025-11-26T12:40:35.190695192Z [inf]  }
+2025-11-26T12:40:35.190700751Z [inf]  Updating webhook config with: {
+2025-11-26T12:40:35.190707234Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:40:35.190713379Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:40:35.190719631Z [inf]    casePostEnabled: true,
+2025-11-26T12:40:35.190726109Z [inf]    caseReleaseEnabled: true
+2025-11-26T12:40:35.190733708Z [inf]  }
+2025-11-26T12:40:35.190740464Z [inf]  Webhook config updated successfully: {
+2025-11-26T12:40:35.190746741Z [inf]    id: 'f976adc2-4f26-4adc-a3fc-06e2302c1333',
+2025-11-26T12:40:35.190753981Z [inf]    serverId: '1441447050024714252',
+2025-11-26T12:40:35.190761926Z [inf]    auditTrailChannelId: '1442051711769251880',
+2025-11-26T12:40:35.190769048Z [inf]    auditTrailEnabled: true,
+2025-11-26T12:40:35.190775661Z [inf]    casePostChannelId: '1442047340071358505',
+2025-11-26T12:40:35.190781788Z [inf]    casePostEnabled: true,
+2025-11-26T12:40:35.190789641Z [inf]    caseReleaseChannelId: '1442050231691776000',
+2025-11-26T12:40:35.190795665Z [inf]    caseReleaseEnabled: true,
+2025-11-26T12:40:35.190802722Z [inf]    banLogsChannelId: '1442051711769251880',
+2025-11-26T12:40:35.190810067Z [inf]    banLogsEnabled: true,
+2025-11-26T12:40:35.190817196Z [inf]    childServerBanChannelId: null,
+2025-11-26T12:40:35.190823533Z [inf]    childServerBanEnabled: false,
+2025-11-26T12:40:35.190830919Z [inf]    createdAt: 2025-11-25T14:28:25.181Z,
+2025-11-26T12:40:35.190838205Z [inf]    updatedAt: 2025-11-26T12:40:27.373Z
+2025-11-26T12:40:35.191140232Z [inf]  }
+2025-11-26T12:40:35.191148485Z [inf]  ✓ Audit trail message sent to channel: 1442051711769251880
+2025-11-26T12:40:35.191155205Z [inf]  12:40:27 PM [express] POST /api/webhook/config 200 in 472ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302…
+2025-11-26T12:40:35.191161799Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191167996Z [inf]  12:40:28 PM [express] GET /api/cases/encrypted/list 304 in 136ms :: []
+2025-11-26T12:40:35.191175183Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191183009Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191196540Z [inf]  12:40:28 PM [express] GET /api/users 304 in 133ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:40:35.191204315Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191211166Z [inf]  12:40:28 PM [express] GET /api/server-members 304 in 211ms :: [{"id":"579180906833641474","username":…
+2025-11-26T12:40:35.191218148Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191224429Z [inf]  12:40:29 PM [express] GET /api/cases 304 in 206ms :: []
+2025-11-26T12:40:35.191230405Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191235762Z [inf]  12:40:29 PM [express] GET /api/users 304 in 135ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:40:35.191240004Z [inf]  12:40:29 PM [express] GET /api/logs 200 in 418ms :: [{"id":"e181b651-6e41-4978-bff2-e7afc5c806c8","se…
+2025-11-26T12:40:35.191244393Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191952446Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191952508Z [inf]  12:40:30 PM [express] GET /api/webhook/channels 304 in 66ms :: {"channels":[{"id":"144205171176925188…
+2025-11-26T12:40:35.191957908Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191967352Z [inf]  12:40:29 PM [express] GET /api/logs 304 in 204ms :: [{"id":"e181b651-6e41-4978-bff2-e7afc5c806c8","se…
+2025-11-26T12:40:35.191969940Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191970728Z [inf]  12:40:30 PM [express] GET /api/logs 304 in 204ms :: [{"id":"e181b651-6e41-4978-bff2-e7afc5c806c8","se…
+2025-11-26T12:40:35.191977230Z [inf]  12:40:29 PM [express] GET /api/cases 304 in 197ms :: []
+2025-11-26T12:40:35.191981479Z [inf]  12:40:30 PM [express] GET /api/cases 304 in 204ms :: []
+2025-11-26T12:40:35.191982659Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191987138Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191991025Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191992371Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.191996934Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.192000725Z [inf]  12:40:30 PM [express] GET /api/users 304 in 136ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:40:35.192005716Z [inf]  12:40:30 PM [express] GET /api/users 304 in 133ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T12:40:35.192980436Z [inf]  12:40:31 PM [express] GET /api/recovery/deleted-cases 304 in 200ms :: [{"id":"8f80a339-a045-4ec7-b8c7…
+2025-11-26T12:40:35.192981391Z [inf]  12:40:30 PM [express] GET /api/webhook/config 200 in 136ms :: {"id":"f976adc2-4f26-4adc-a3fc-06e2302c…
+2025-11-26T12:40:35.192991648Z [inf]  12:40:32 PM [express] GET /api/auth/discord/servers 400 in 68ms :: {"error":"Discord ID required"}
+2025-11-26T12:40:35.192991854Z [inf]  12:40:30 PM [express] GET /api/webhook/linked-servers 304 in 134ms :: {"servers":[{"id":"130876161385…
+2025-11-26T12:40:35.193000671Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.193002253Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.193010968Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.193011445Z [inf]  12:40:33 PM [express] GET /api/moderation/banned-users 304 in 212ms :: {"bans":[]}
+2025-11-26T12:40:35.193019545Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:35.193026575Z [inf]  12:40:30 PM [express] GET /api/cases 304 in 198ms :: []
+2025-11-26T12:40:35.193033135Z [inf]  12:40:31 PM [express] GET /api/logs 304 in 262ms :: [{"id":"e181b651-6e41-4978-bff2-e7afc5c806c8","se…
+2025-11-26T12:40:38.723163965Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:38.936480813Z [inf]  12:40:38 PM [express] GET /api/moderation/banned-users 304 in 209ms :: {"bans":[]}
+2025-11-26T12:40:39.728049128Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:39.788105389Z [inf]  12:40:39 PM [express] GET /api/auth/me 304 in 68ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T12:40:43.712443556Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:43.906133313Z [inf]  12:40:43 PM [express] GET /api/moderation/banned-users 304 in 203ms :: {"bans":[]}
+2025-11-26T12:40:48.719250149Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:48.918370481Z [inf]  12:40:48 PM [express] GET /api/moderation/banned-users 304 in 204ms :: {"bans":[]}
+2025-11-26T12:40:53.742874601Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:53.910235344Z [inf]  12:40:53 PM [express] GET /api/moderation/banned-users 304 in 210ms :: {"bans":[]}
+2025-11-26T12:40:58.857739048Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:40:59.023557527Z [inf]  12:40:58 PM [express] GET /api/moderation/banned-users 304 in 201ms :: {"bans":[]}
+2025-11-26T12:41:03.834865645Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T12:41:03.888859270Z [inf]  12:41:03 PM [express] GET /api/moderation/banned-users 304 in 203ms :: {"bans":[]}

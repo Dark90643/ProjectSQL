@@ -1921,8 +1921,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           caseReleaseEnabled: false,
           banLogsChannelId: null,
           banLogsEnabled: false,
-          childServerBanChannelId: null,
           childServerBanEnabled: false,
+          childServerBanChannels: {},
         });
       }
 
@@ -1952,8 +1952,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseReleaseEnabled,
         banLogsChannelId,
         banLogsEnabled,
-        childServerBanChannelId,
         childServerBanEnabled,
+        childServerBanChannels,
       } = req.body;
 
       console.log("Updating webhook config with:", {
@@ -1973,8 +1973,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseReleaseEnabled,
         banLogsChannelId: banLogsEnabled ? banLogsChannelId : null,
         banLogsEnabled,
-        childServerBanChannelId: childServerBanEnabled ? childServerBanChannelId : null,
         childServerBanEnabled,
+        childServerBanChannels: childServerBanChannels || {},
       });
 
       console.log("Webhook config updated successfully:", config);
