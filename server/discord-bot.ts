@@ -2843,7 +2843,7 @@ function createUserLookupEmbed(
     );
   }
   
-  // Add Roblox user info as separate fields
+  // Add Roblox user info as separate fields (only if Roblox data exists)
   if (paginationData.robloxData) {
     const createdDate = new Date(paginationData.robloxData.created);
     const robloxAge = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -2853,6 +2853,10 @@ function createUserLookupEmbed(
       { name: "Roblox Display Name", value: `${paginationData.robloxData.displayName || "N/A"}`, inline: true },
       { name: "Roblox Account Age", value: `${robloxAge} days`, inline: true },
       { name: "Roblox Account Created", value: `${createdDate.toLocaleDateString()}`, inline: true }
+    );
+  } else if (paginationData.discordUser) {
+    embed.addFields(
+      { name: "Note", value: "Roblox data not available. Provide a Roblox username or ID to view Roblox information.", inline: false }
     );
   }
   
