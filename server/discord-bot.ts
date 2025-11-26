@@ -2645,13 +2645,24 @@ async function handleUserLookup(
     // Resolve Roblox ID from username if needed
     if (robloxUsername) {
       try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        
         const response = await fetch(
-          `https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(robloxUsername)}`
+          `https://users.roblox.com/v1/usernames/users`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usernames: [robloxUsername], excludeBannedUsers: true }),
+            signal: controller.signal
+          }
         );
+        clearTimeout(timeout);
+        
         if (response.ok) {
           const data = await response.json();
-          if (data.Id) {
-            robloxId = data.Id.toString();
+          if (data.data && data.data.length > 0) {
+            robloxId = data.data[0].id.toString();
             robloxUserId = robloxId;
           }
         }
@@ -2665,7 +2676,14 @@ async function handleUserLookup(
     // Fetch Roblox user data if we have an ID
     if (robloxId) {
       try {
-        const response = await fetch(`https://users.roblox.com/v1/users/${robloxId}`);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(`https://users.roblox.com/v1/users/${robloxId}`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        
         if (response.ok) {
           robloxData = await response.json();
         }
