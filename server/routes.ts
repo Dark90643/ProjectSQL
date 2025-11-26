@@ -2071,7 +2071,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         await storage.addModLog({
           serverId,
-          userId: user.id,
+          moderatorId: user.id,
           targetId: userId,
           action: "UNBAN",
           reason: "Unbanned via admin panel",

@@ -1,0 +1,132 @@
+2025-11-26T10:14:50.000000000Z [inf]  Starting Container
+2025-11-26T10:14:52.077847371Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-26T10:14:52.077856585Z [inf]  
+2025-11-26T10:14:52.077868061Z [inf]  > rest-express@1.0.0 start
+2025-11-26T10:14:52.077877124Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-26T10:14:52.077888262Z [inf]  
+2025-11-26T10:14:52.373431001Z [inf]  Registering Discord bot commands...
+2025-11-26T10:14:52.433947500Z [inf]  10:14:52 AM [express] serving on port 8080
+2025-11-26T10:14:53.183298954Z [inf]  Discord bot commands registered successfully
+2025-11-26T10:14:53.183305472Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-26T10:14:53.183311480Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-26T10:14:53.183318681Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-26T10:15:00.260609120Z [inf]  10:15:00 AM [express] GET /api/auth/discord/check-bot 304 in 72ms :: {"hasBotInServer":true}
+2025-11-26T10:15:00.959111012Z [inf]    serverId: '1441447050024714252',
+2025-11-26T10:15:00.959118019Z [inf]    discordId: '579180906833641474',
+2025-11-26T10:15:00.959123985Z [inf]    discordUsername: 'sea8484'
+2025-11-26T10:15:00.959132404Z [inf]  }
+2025-11-26T10:15:00.959133257Z [inf]    isAdmin: true
+2025-11-26T10:15:00.959145484Z [inf]  }
+2025-11-26T10:15:00.959149356Z [inf]    role: 'Overseer',
+2025-11-26T10:15:00.959155358Z [inf]  Discord user session established: {
+2025-11-26T10:15:00.959156493Z [inf]  User role assignment: {
+2025-11-26T10:15:00.959161655Z [inf]  Updating server member with Discord username: {
+2025-11-26T10:15:00.959162004Z [inf]    isOwner: true,
+2025-11-26T10:15:00.959167511Z [inf]    discordId: '579180906833641474',
+2025-11-26T10:15:00.959170322Z [inf]    isAdmin: true
+2025-11-26T10:15:00.959177440Z [inf]    serverId: '1441447050024714252',
+2025-11-26T10:15:00.959177551Z [inf]  }
+2025-11-26T10:15:00.959182601Z [inf]  Updated member result: {
+2025-11-26T10:15:00.959192209Z [inf]    id: 'e649c810-ea86-4a6c-a706-a96bd30da923',
+2025-11-26T10:15:00.959201730Z [inf]    serverId: '1441447050024714252',
+2025-11-26T10:15:00.959210684Z [inf]    discordUserId: '579180906833641474',
+2025-11-26T10:15:00.959219614Z [inf]    discordUsername: 'sea8484',
+2025-11-26T10:15:00.959229399Z [inf]    roles: [],
+2025-11-26T10:15:00.959238554Z [inf]    isOwner: true,
+2025-11-26T10:15:00.959246525Z [inf]    isAdmin: true,
+2025-11-26T10:15:00.959255576Z [inf]    joinedAt: 2025-11-23T10:12:39.882Z
+2025-11-26T10:15:00.959264850Z [inf]  }
+2025-11-26T10:15:00.959272965Z [inf]  Server member found: {
+2025-11-26T10:15:00.959282046Z [inf]    serverId: '1441447050024714252',
+2025-11-26T10:15:00.959289587Z [inf]    discordId: '579180906833641474',
+2025-11-26T10:15:00.959297801Z [inf]    discordUsername: 'sea8484',
+2025-11-26T10:15:00.959307032Z [inf]    isOwner: true,
+2025-11-26T10:15:00.961248708Z [inf]    id: '579180906833641474:1441447050024714252',
+2025-11-26T10:15:00.961254163Z [inf]    serverId: '1441447050024714252',
+2025-11-26T10:15:00.961259977Z [inf]    role: 'Overseer',
+2025-11-26T10:15:00.961266535Z [inf]    discordUsername: 'sea8484',
+2025-11-26T10:15:00.961274631Z [inf]    avatar: undefined
+2025-11-26T10:15:00.961280112Z [inf]  }
+2025-11-26T10:15:00.992195214Z [inf]  10:15:00 AM [express] POST /api/auth/discord/select-server 200 in 339ms :: {"id":"579180906833641474:…
+2025-11-26T10:15:01.370143954Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:01.491410823Z [inf]  10:15:01 AM [express] GET /api/cases 304 in 128ms :: []
+2025-11-26T10:15:01.611128089Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:02.087125794Z [inf]  10:15:01 AM [express] GET /api/logs 304 in 207ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T10:15:02.087142251Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:02.087150028Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:02.087325973Z [inf]  10:15:01 AM [express] GET /api/auth/discord/servers 400 in 63ms :: {"error":"Discord ID required"}
+2025-11-26T10:15:02.087334393Z [inf]  10:15:01 AM [express] GET /api/users 304 in 131ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T10:15:02.087342380Z [inf]  10:15:02 AM [express] GET /api/cases 304 in 195ms :: []
+2025-11-26T10:15:02.244971662Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:02.313694236Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:02.436979762Z [inf]  10:15:02 AM [express] GET /api/logs 304 in 195ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T10:15:02.443318759Z [inf]  10:15:02 AM [express] GET /api/users 304 in 130ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T10:15:22.438274890Z [inf]  10:15:19 AM [express] GET /api/auth/check-ip 304 in 141ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-26T10:15:22.438283839Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:22.438293166Z [inf]  10:15:19 AM [express] GET /api/auth/me 200 in 72ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T10:15:22.438301856Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:22.438309957Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:22.438318073Z [inf]  10:15:20 AM [express] GET /api/cases 304 in 211ms :: []
+2025-11-26T10:15:22.438326496Z [inf]  Support team check: {
+2025-11-26T10:15:22.438335948Z [inf]    discordId: '579180906833641474',
+2025-11-26T10:15:22.438344214Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-26T10:15:22.438350905Z [inf]    isOwner: true,
+2025-11-26T10:15:22.438358794Z [inf]    isAdmin: true,
+2025-11-26T10:15:22.438368396Z [inf]    isSupportTeam: true
+2025-11-26T10:15:22.438377371Z [inf]  }
+2025-11-26T10:15:22.438428736Z [inf]  10:15:20 AM [express] GET /api/auth/check-support-team-status 304 in 130ms :: {"isSupportTeam":true}
+2025-11-26T10:15:22.438442494Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:22.438451387Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:22.438460445Z [inf]  10:15:20 AM [express] GET /api/users 304 in 130ms :: [{"id":"aba94766-c067-4b36-abb7-e27e87c887d5","u…
+2025-11-26T10:15:22.438469816Z [inf]  10:15:20 AM [express] GET /api/logs 304 in 247ms :: [{"id":"8f80a339-a045-4ec7-b8c7-30b77f9fda92","se…
+2025-11-26T10:15:22.438478363Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:22.440910132Z [inf]  10:15:20 AM [express] GET /api/moderation/banned-users 200 in 208ms :: {"bans":[{"id":"005e1df2-3e35-…
+2025-11-26T10:15:23.605886426Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:24.388828548Z [err]    internalPosition: undefined,
+2025-11-26T10:15:24.388831550Z [err]    table: 'mod_logs',
+2025-11-26T10:15:24.388839471Z [err]    internalQuery: undefined,
+2025-11-26T10:15:24.388842303Z [err]    column: 'moderator_id',
+2025-11-26T10:15:24.388846254Z [err]    where: undefined,
+2025-11-26T10:15:24.388852666Z [err]    dataType: undefined,
+2025-11-26T10:15:24.388855939Z [err]    schema: 'public',
+2025-11-26T10:15:24.388862240Z [err]    constraint: undefined,
+2025-11-26T10:15:24.388869940Z [err]    file: 'execMain.c',
+2025-11-26T10:15:24.388877805Z [err]    line: '2021',
+2025-11-26T10:15:24.388890371Z [err]    routine: 'ExecConstraints'
+2025-11-26T10:15:24.388911476Z [err]  Failed to log unban action: error: null value in column "moderator_id" of relation "mod_logs" violates not-null constraint
+2025-11-26T10:15:24.388918030Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-26T10:15:24.388923828Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:15:24.388930152Z [err]      at async NeonPreparedQuery.execute (file:///app/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2025-11-26T10:15:24.388936725Z [err]      at async DatabaseStorage.addModLog (file:///app/dist/index.js:450:22)
+2025-11-26T10:15:24.388942854Z [err]      at async file:///app/dist/index.js:4475:9 {
+2025-11-26T10:15:24.388949663Z [err]    length: 359,
+2025-11-26T10:15:24.388957413Z [err]    severity: 'ERROR',
+2025-11-26T10:15:24.388970360Z [err]    code: '23502',
+2025-11-26T10:15:24.388977850Z [err]    detail: 'Failing row contains (6b1d5378-9480-45b2-88ee-74d31703bfb0, 1441447050024714252, UNBAN, null, 1213237293209616474, Unbanned via admin panel, null, 2025-11-26 10:15:24.051992).',
+2025-11-26T10:15:24.388984330Z [err]    hint: undefined,
+2025-11-26T10:15:24.388990841Z [err]    position: undefined,
+2025-11-26T10:15:24.394938545Z [err]  }
+2025-11-26T10:15:24.394943220Z [inf]  10:15:24 AM [express] POST /api/moderation/unban 200 in 557ms :: {"success":true}
+2025-11-26T10:15:24.561291424Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:15:25.205855911Z [inf]  10:15:24 AM [express] GET /api/moderation/banned-users 200 in 194ms :: {"bans":[]}
+2025-11-26T10:16:25.292987040Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-26T10:16:25.292995310Z [inf]  10:16:21 AM [express] GET /api/auth/me 304 in 67ms :: {"id":"579180906833641474:1441447050024714252",…
+2025-11-26T10:17:05.423236433Z [err]  (node:20) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+2025-11-26T10:17:05.423241354Z [inf]  Could not send DM to user
+2025-11-26T10:17:06.238160613Z [err]    code: 10004,
+2025-11-26T10:17:06.238170705Z [err]    status: 404,
+2025-11-26T10:17:06.238178799Z [err]    method: 'GET',
+2025-11-26T10:17:06.238186475Z [err]    url: 'https://discord.com/api/v10/guilds/1308761613851168788?with_counts=true'
+2025-11-26T10:17:06.238193613Z [err]  }
+2025-11-26T10:17:06.238285683Z [err]  Failed to cascade ban to child server 1308761613851168788: DiscordAPIError[10004]: Unknown Guild
+2025-11-26T10:17:06.238294745Z [err]      at handleErrors (/app/node_modules/@discordjs/rest/dist/index.js:762:13)
+2025-11-26T10:17:06.238303171Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-26T10:17:06.238310604Z [err]      at async SequentialHandler.runRequest (/app/node_modules/@discordjs/rest/dist/index.js:1163:23)
+2025-11-26T10:17:06.238324744Z [err]      at async SequentialHandler.queueRequest (/app/node_modules/@discordjs/rest/dist/index.js:994:14)
+2025-11-26T10:17:06.238333299Z [err]      at async _REST.request (/app/node_modules/@discordjs/rest/dist/index.js:1307:22)
+2025-11-26T10:17:06.238340060Z [err]      at async GuildManager.fetch (/app/node_modules/discord.js/src/managers/GuildManager.js:276:20)
+2025-11-26T10:17:06.238342924Z [err]      at async handleBan (file:///app/dist/index.js:1389:28)
+2025-11-26T10:17:06.238356661Z [err]      at async Client.<anonymous> (file:///app/dist/index.js:895:9) {
+2025-11-26T10:17:06.238365319Z [err]    requestBody: { files: undefined, json: undefined },
+2025-11-26T10:17:06.238404204Z [err]    rawError: { message: 'Unknown Guild', code: 10004 },
+2025-11-26T10:17:06.297305968Z [inf]  User SecureNet#7790 banned by sea8484: test

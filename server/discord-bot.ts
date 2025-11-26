@@ -1355,19 +1355,24 @@ async function handleBan(interaction: any, user: any, reason: string) {
     const childServers = await storage.getChildServers(interaction.guildId);
     for (const childServerId of childServers) {
       try {
-        const childGuild = await discordClient?.guilds.fetch(childServerId);
-        if (childGuild) {
-          // Ban in Discord
-          await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` }).catch(() => {});
-          // Ban in database
-          await storage.addBan({
-            serverId: childServerId,
-            userId: user.id,
-            moderatorId: interaction.user.id,
-            reason: `[Cascaded from main server] ${reason}`,
-            linkedBanId: mainBan?.id,
-            isMainServerBan: false,
-          }).catch(() => {});
+        // Always ban in database first (this succeeds regardless of Discord guild access)
+        await storage.addBan({
+          serverId: childServerId,
+          userId: user.id,
+          moderatorId: interaction.user.id,
+          reason: `[Cascaded from main server] ${reason}`,
+          linkedBanId: mainBan?.id,
+          isMainServerBan: false,
+        }).catch(() => {});
+        
+        // Try to ban in Discord if bot has access to the guild
+        try {
+          const childGuild = await discordClient?.guilds.fetch(childServerId);
+          if (childGuild) {
+            await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` }).catch(() => {});
+          }
+        } catch (discordError) {
+          console.log(`Bot not in child server ${childServerId}, but ban recorded in database`);
         }
       } catch (cascadeError) {
         console.error(`Failed to cascade ban to child server ${childServerId}:`, cascadeError);
