@@ -393,7 +393,7 @@ const commands = [
     ),
   // Multi-server ban linking command
   new SlashCommandBuilder()
-    .setName("ban-link")
+    .setName("secured-net")
     .setDescription("Link servers for multi-server banning (owner only)")
     .addStringOption((option) =>
       option
@@ -776,7 +776,7 @@ export async function initializeDiscordBot() {
         const robloxUsername = interaction.options.getString("username");
         const robloxUserId = interaction.options.getString("user_id");
         await handleUserLookup(interaction, discordUser, robloxUsername, robloxUserId);
-      } else if (command === "ban-link") {
+      } else if (command === "secured-net") {
         const action = interaction.options.getString("action")!;
         const code = interaction.options.getString("code");
         await handleBanLink(interaction, action, code);
@@ -2870,7 +2870,7 @@ async function handleBanLink(
           
           const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${botId}&permissions=8&scope=bot&guild_id=${guildId}`;
           await interaction.editReply({
-            content: `⚠️ **Bot Not in Server**\n\nI need to be added to your server before linking. Click the link below to add me:\n\n${inviteUrl}\n\nAfter adding me, use \`/ban-link link [code]\` again to complete the linking.`,
+            content: `⚠️ **Bot Not in Server**\n\nI need to be added to your server before linking. Click the link below to add me:\n\n${inviteUrl}\n\nAfter adding me, use \`/secured-net link [code]\` again to complete the linking.`,
           });
           return;
         }
