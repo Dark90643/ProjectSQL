@@ -13,6 +13,7 @@ import CaseView from "@/pages/case-view";
 import AdminPanel from "@/pages/admin";
 import SettingsPage from "@/pages/settings";
 import Recovery from "@/pages/recovery";
+import BannedUsers from "@/pages/banned-users";
 import PublicDashboard from "@/pages/public-dashboard";
 import Layout from "@/components/layout";
 import NotFound from "@/pages/not-found";
@@ -71,6 +72,9 @@ function RouterContent() {
       </Route>
       <Route path="/recovery">
         <Layout><ProtectedRoute component={Recovery} path="/recovery" /></Layout>
+      </Route>
+      <Route path="/banned-users">
+        <Layout><ProtectedRoute component={BannedUsers} path="/banned-users" /></Layout>
       </Route>
       
       <Route component={NotFound} />

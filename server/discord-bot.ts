@@ -383,6 +383,26 @@ const commands = [
         .setDescription("Roblox user ID to look up")
         .setRequired(false)
     ),
+  // Multi-server ban linking command
+  new SlashCommandBuilder()
+    .setName("ban-link")
+    .setDescription("Link servers for multi-server banning (owner only)")
+    .addStringOption((option) =>
+      option
+        .setName("action")
+        .setDescription("Action to perform")
+        .addChoices(
+          { name: "Generate Code", value: "generate" },
+          { name: "Link Child Server", value: "link" }
+        )
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("code")
+        .setDescription("Verification code (required for linking)")
+        .setRequired(false)
+    ),
 ].map((command) => command.toJSON());
 
 export async function initializeDiscordBot() {
@@ -745,6 +765,10 @@ export async function initializeDiscordBot() {
         const robloxUsername = interaction.options.getString("username");
         const robloxUserId = interaction.options.getString("user_id");
         await handleUserLookup(interaction, discordUser, robloxUsername, robloxUserId);
+      } else if (command === "ban-link") {
+        const action = interaction.options.getString("action")!;
+        const code = interaction.options.getString("code");
+        await handleBanLink(interaction, action, code);
       }
     } catch (error) {
       console.error("Error handling command:", error);
@@ -1314,15 +1338,40 @@ async function handleBan(interaction: any, user: any, reason: string) {
     await interaction.guild?.bans.create(user.id, { reason });
 
     // Save ban to database
+    let mainBan: any;
     try {
-      await storage.addBan({
+      mainBan = await storage.addBan({
         serverId: interaction.guildId,
         userId: user.id,
         moderatorId: interaction.user.id,
         reason: reason,
+        isMainServerBan: true,
       });
     } catch (dbError) {
       console.error("Failed to save ban to database:", dbError);
+    }
+
+    // Cascade ban to child servers if this is a main server
+    try {
+      const childServers = await storage.getChildServers(interaction.guildId);
+      for (const childServerId of childServers) {
+        const childGuild = await discordClient?.guilds.fetch(childServerId);
+        if (childGuild) {
+          // Ban in Discord
+          await childGuild.bans.create(user.id, { reason: `[Cascaded from main server] ${reason}` }).catch(() => {});
+          // Ban in database
+          await storage.addBan({
+            serverId: childServerId,
+            userId: user.id,
+            moderatorId: interaction.user.id,
+            reason: `[Cascaded from main server] ${reason}`,
+            linkedBanId: mainBan?.id,
+            isMainServerBan: false,
+          });
+        }
+      }
+    } catch (cascadeError) {
+      console.error("Failed to cascade ban to child servers:", cascadeError);
     }
 
     const embed = new EmbedBuilder()
