@@ -25,6 +25,10 @@ import {
   type InsertServerMember,
   type WebhookConfig,
   type InsertWebhookConfig,
+  type ServerLink,
+  type InsertServerLink,
+  type ServerLinkVerification,
+  type InsertServerLinkVerification,
   users,
   cases,
   logs,
@@ -38,8 +42,10 @@ import {
   serverWorkspaces,
   serverMembers,
   webhookConfigs,
+  serverLinks,
+  serverLinkVerifications,
 } from "@shared/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, or } from "drizzle-orm";
 
 export interface IStorage {
   // Discord operations
@@ -106,6 +112,19 @@ export interface IStorage {
   // Webhook config operations
   getWebhookConfig(serverId: string): Promise<WebhookConfig | undefined>;
   createOrUpdateWebhookConfig(config: InsertWebhookConfig & { serverId: string }): Promise<WebhookConfig>;
+  
+  // Server linking operations
+  createVerificationCode(mainServerId: string): Promise<ServerLinkVerification>;
+  getVerificationCode(code: string): Promise<ServerLinkVerification | undefined>;
+  linkServers(mainServerId: string, childServerId: string): Promise<ServerLink>;
+  unlinkServers(mainServerId: string, childServerId: string): Promise<boolean>;
+  getLinkedServers(serverId: string): Promise<ServerLink[]>;
+  getChildServers(mainServerId: string): Promise<string[]>;
+  
+  // Banned users operations
+  getBannedUsersForServer(serverId: string): Promise<(ModBan & { serverName?: string })[]>;
+  getBannedUsersAcrossServers(mainServerId: string): Promise<(ModBan & { serverName?: string; linkedFrom?: string })[]>;
+  unbanUserFromServer(serverId: string, userId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -391,6 +410,70 @@ export class DatabaseStorage implements IStorage {
       const [created] = await db.insert(webhookConfigs).values(config).returning();
       return created;
     }
+  }
+  
+  // Server linking operations
+  async createVerificationCode(mainServerId: string): Promise<ServerLinkVerification> {
+    const code = Math.random().toString(36).substring(2, 12).toUpperCase();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const [verification] = await db.insert(serverLinkVerifications).values({
+      mainServerId,
+      verificationCode: code,
+      expiresAt,
+    }).returning();
+    return verification;
+  }
+  
+  async getVerificationCode(code: string): Promise<ServerLinkVerification | undefined> {
+    const [verification] = await db.select().from(serverLinkVerifications).where(eq(serverLinkVerifications.verificationCode, code));
+    return verification;
+  }
+  
+  async linkServers(mainServerId: string, childServerId: string): Promise<ServerLink> {
+    const [link] = await db.insert(serverLinks).values({
+      mainServerId,
+      childServerId,
+    }).returning();
+    return link;
+  }
+  
+  async unlinkServers(mainServerId: string, childServerId: string): Promise<boolean> {
+    await db.delete(serverLinks).where(
+      and(eq(serverLinks.mainServerId, mainServerId), eq(serverLinks.childServerId, childServerId))
+    );
+    return true;
+  }
+  
+  async getLinkedServers(serverId: string): Promise<ServerLink[]> {
+    return await db.select().from(serverLinks).where(
+      or(eq(serverLinks.mainServerId, serverId), eq(serverLinks.childServerId, serverId))
+    );
+  }
+  
+  async getChildServers(mainServerId: string): Promise<string[]> {
+    const links = await db.select().from(serverLinks).where(eq(serverLinks.mainServerId, mainServerId));
+    return links.map(link => link.childServerId);
+  }
+  
+  async getBannedUsersForServer(serverId: string): Promise<(ModBan & { serverName?: string })[]> {
+    const bans = await db.select().from(modBans).where(eq(modBans.serverId, serverId));
+    return bans;
+  }
+  
+  async getBannedUsersAcrossServers(mainServerId: string): Promise<(ModBan & { serverName?: string; linkedFrom?: string })[]> {
+    const childServers = await this.getChildServers(mainServerId);
+    const allServerIds = [mainServerId, ...childServers];
+    const bans = await db.select().from(modBans).where(
+      or(...allServerIds.map(id => eq(modBans.serverId, id)))
+    );
+    return bans;
+  }
+  
+  async unbanUserFromServer(serverId: string, userId: string): Promise<boolean> {
+    await db.delete(modBans).where(
+      and(eq(modBans.serverId, serverId), eq(modBans.userId, userId))
+    );
+    return true;
   }
 }
 
