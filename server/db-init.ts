@@ -6,6 +6,36 @@ export async function initializeDatabase() {
     // Test connection first
     await pool.query("SELECT 1");
     
+    // Migrate webhook_configs table if it has old schema
+    try {
+      const result = await pool.query(
+        `SELECT column_name FROM information_schema.columns WHERE table_name = 'webhook_configs' AND column_name = 'case_log_webhook_url'`
+      );
+      
+      if (result.rows.length > 0) {
+        // Old schema exists, migrate it
+        console.log("Migrating webhook_configs table schema...");
+        await pool.query(`
+          ALTER TABLE webhook_configs DROP COLUMN IF EXISTS case_log_webhook_url;
+          ALTER TABLE webhook_configs DROP COLUMN IF EXISTS mod_log_webhook_url;
+          ALTER TABLE webhook_configs DROP COLUMN IF EXISTS case_publish_webhook_url;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS audit_trail_channel_id text;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS audit_trail_enabled boolean NOT NULL DEFAULT false;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS case_post_channel_id text;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS case_post_enabled boolean NOT NULL DEFAULT false;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS case_release_channel_id text;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS case_release_enabled boolean NOT NULL DEFAULT false;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS ban_logs_channel_id text;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS ban_logs_enabled boolean NOT NULL DEFAULT false;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS child_server_ban_channel_id text;
+          ALTER TABLE webhook_configs ADD COLUMN IF NOT EXISTS child_server_ban_enabled boolean NOT NULL DEFAULT false;
+        `);
+        console.log("Webhook_configs table migrated successfully");
+      }
+    } catch (e: any) {
+      console.warn("Warning: Could not check/migrate webhook_configs schema:", e.message);
+    }
+    
     // Create session table if it doesn't exist (for express-session)
     await pool.query(`
       CREATE TABLE IF NOT EXISTS "session" (

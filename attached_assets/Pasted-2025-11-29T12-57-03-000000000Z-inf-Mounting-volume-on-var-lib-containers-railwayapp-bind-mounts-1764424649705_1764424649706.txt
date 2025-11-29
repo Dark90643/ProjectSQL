@@ -1,0 +1,127 @@
+2025-11-29T12:57:03.000000000Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/aacbc823-d9c2-42bd-a5c5-9701f6b6986b/vol_yvge81z8gd00s2gk
+2025-11-29T12:57:04.000000000Z [inf]  Starting Container
+2025-11-29T12:57:05.757852181Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-29T12:57:05.757858614Z [inf]  
+2025-11-29T12:57:05.757864600Z [inf]  > rest-express@1.0.0 start
+2025-11-29T12:57:05.757870667Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-29T12:57:05.757876804Z [inf]  
+2025-11-29T12:57:05.883399280Z [inf]  Database initialized successfully
+2025-11-29T12:57:05.899995339Z [inf]  Registering Discord bot commands...
+2025-11-29T12:57:05.932211550Z [inf]  12:57:05 PM [express] serving on port 8080
+2025-11-29T12:57:06.188375397Z [inf]  Discord bot commands registered successfully
+2025-11-29T12:57:06.806761298Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-29T12:57:06.806766692Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-29T12:57:06.806771242Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-29T12:57:56.473602090Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T12:57:56.473612534Z [inf]  12:57:49 PM [express] GET /api/auth/me 304 in 8ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T12:58:56.483364308Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T12:58:56.483370172Z [inf]  12:58:50 PM [express] GET /api/auth/me 304 in 4ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T12:59:56.488212207Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T12:59:56.488218596Z [inf]  12:59:50 PM [express] GET /api/auth/me 304 in 2ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T13:00:56.493626266Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:00:56.493634377Z [inf]  1:00:51 PM [express] GET /api/auth/me 304 in 3ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T13:01:56.526120654Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:01:56.526126382Z [inf]  1:01:53 PM [express] GET /api/auth/me 304 in 2ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T13:57:08.275138430Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:08.275143178Z [inf]  1:57:01 PM [express] GET /api/auth/me 304 in 3ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T13:57:10.647239307Z [inf]  1:57:10 PM [express] GET /api/auth/check-ip 200 in 21ms :: {"ip":"100.64.0.5","isBanned":false}
+2025-11-29T13:57:10.986606542Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:10.986612984Z [inf]  1:57:10 PM [express] GET /api/auth/me 304 in 2ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T13:57:11.338519842Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.338535095Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.338541386Z [inf]  1:57:11 PM [express] GET /api/users 304 in 5ms :: []
+2025-11-29T13:57:11.398136969Z [inf]  Support team check: {
+2025-11-29T13:57:11.398146757Z [inf]    discordId: '579180906833641474',
+2025-11-29T13:57:11.398153973Z [inf]    officialBotServer: '1441447050024714252',
+2025-11-29T13:57:11.398160178Z [inf]    isOwner: true,
+2025-11-29T13:57:11.398166272Z [inf]    isAdmin: true,
+2025-11-29T13:57:11.398172980Z [inf]    isSupportTeam: true
+2025-11-29T13:57:11.398179875Z [inf]  }
+2025-11-29T13:57:11.399665291Z [inf]  1:57:11 PM [express] GET /api/auth/check-support-team-status 304 in 75ms :: {"isSupportTeam":true}
+2025-11-29T13:57:11.565408881Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.565423191Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.565430332Z [inf]  1:57:11 PM [express] GET /api/logs 304 in 4ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T13:57:11.565435882Z [inf]  1:57:11 PM [express] GET /api/cases 304 in 5ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T13:57:11.773977348Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.775945561Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.777671659Z [inf]  1:57:11 PM [express] GET /api/webhook/channels 304 in 4ms :: {"channels":[{"id":"1442051711769251880…
+2025-11-29T13:57:11.784500547Z [inf]  1:57:11 PM [express] GET /api/webhook/linked-servers 304 in 4ms :: {"servers":[]}
+2025-11-29T13:57:11.799230239Z [err]    severity_local: 'ERROR',
+2025-11-29T13:57:11.799273215Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:11.799277524Z [err]  Get webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T13:57:11.799283785Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T13:57:11.799287573Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T13:57:11.799292553Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T13:57:11.799297758Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T13:57:11.799301908Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T13:57:11.799306241Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T13:57:11.799309970Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T13:57:11.799313811Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T13:57:11.799327791Z [err]    severity: 'ERROR',
+2025-11-29T13:57:11.799335154Z [err]    code: '42703',
+2025-11-29T13:57:11.799343993Z [err]    position: '27',
+2025-11-29T13:57:11.799350816Z [err]    file: 'parse_relation.c',
+2025-11-29T13:57:11.799356442Z [err]    line: '3716',
+2025-11-29T13:57:11.799361989Z [err]    routine: 'errorMissingColumn'
+2025-11-29T13:57:11.799369079Z [err]  }
+2025-11-29T13:57:11.799376977Z [inf]  1:57:11 PM [express] GET /api/webhook/config 500 in 4ms :: {"error":"Failed to get webhook config"}
+2025-11-29T13:57:13.579890622Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:13.579899195Z [inf]  Update webhook config - User: {
+2025-11-29T13:57:13.579906954Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-29T13:57:13.579917261Z [inf]    role: 'Overseer',
+2025-11-29T13:57:13.579942066Z [inf]    serverId: '1441447050024714252'
+2025-11-29T13:57:13.579949831Z [inf]  }
+2025-11-29T13:57:13.579979149Z [inf]  Updating webhook config with: {
+2025-11-29T13:57:13.579987077Z [inf]    serverId: '1441447050024714252',
+2025-11-29T13:57:13.579995999Z [inf]    auditTrailEnabled: true,
+2025-11-29T13:57:13.580019727Z [inf]    casePostEnabled: false,
+2025-11-29T13:57:13.580043364Z [inf]    caseReleaseEnabled: false
+2025-11-29T13:57:13.580051977Z [inf]  }
+2025-11-29T13:57:13.580060713Z [err]  Update webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T13:57:13.580083452Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T13:57:13.580093986Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T13:57:13.580103020Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T13:57:13.580123503Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T13:57:13.580132711Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T13:57:13.580140755Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T13:57:13.580150149Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T13:57:13.580179983Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T13:57:13.580206442Z [err]    severity_local: 'ERROR',
+2025-11-29T13:57:13.580215068Z [err]    severity: 'ERROR',
+2025-11-29T13:57:13.582513829Z [err]    code: '42703',
+2025-11-29T13:57:13.582521778Z [err]    position: '27',
+2025-11-29T13:57:13.582591319Z [err]    file: 'parse_relation.c',
+2025-11-29T13:57:13.582597751Z [err]    line: '3716',
+2025-11-29T13:57:13.582603376Z [err]    routine: 'errorMissingColumn'
+2025-11-29T13:57:13.582609783Z [err]  }
+2025-11-29T13:57:13.582616906Z [inf]  1:57:13 PM [express] POST /api/webhook/config 500 in 5ms :: {"error":"Failed to update webhook confi…
+2025-11-29T13:57:16.343240634Z [inf]  }
+2025-11-29T13:57:16.343248599Z [inf]  Updating webhook config with: {
+2025-11-29T13:57:16.343254437Z [inf]    serverId: '1441447050024714252',
+2025-11-29T13:57:16.343258780Z [inf]    auditTrailEnabled: true,
+2025-11-29T13:57:16.343264422Z [inf]    casePostEnabled: false,
+2025-11-29T13:57:16.343269413Z [inf]    caseReleaseEnabled: false
+2025-11-29T13:57:16.343275694Z [inf]  }
+2025-11-29T13:57:16.343281013Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T13:57:16.343283186Z [err]  Update webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T13:57:16.343290636Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T13:57:16.343292157Z [inf]  Update webhook config - User: {
+2025-11-29T13:57:16.343300175Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T13:57:16.343301782Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-29T13:57:16.343307627Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T13:57:16.343312751Z [inf]    role: 'Overseer',
+2025-11-29T13:57:16.343314772Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T13:57:16.343322133Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T13:57:16.343322990Z [inf]    serverId: '1441447050024714252'
+2025-11-29T13:57:16.343328737Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T13:57:16.343334828Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T13:57:16.343341294Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T13:57:16.343347872Z [err]    severity_local: 'ERROR',
+2025-11-29T13:57:16.343354116Z [err]    severity: 'ERROR',
+2025-11-29T13:57:16.344494589Z [inf]  1:57:16 PM [express] POST /api/webhook/config 500 in 5ms :: {"error":"Failed to update webhook confi…
+2025-11-29T13:57:16.344499197Z [err]    code: '42703',
+2025-11-29T13:57:16.344503885Z [err]    position: '27',
+2025-11-29T13:57:16.344508843Z [err]    file: 'parse_relation.c',
+2025-11-29T13:57:16.344513628Z [err]    line: '3716',
+2025-11-29T13:57:16.344517976Z [err]    routine: 'errorMissingColumn'
+2025-11-29T13:57:16.344522197Z [err]  }
