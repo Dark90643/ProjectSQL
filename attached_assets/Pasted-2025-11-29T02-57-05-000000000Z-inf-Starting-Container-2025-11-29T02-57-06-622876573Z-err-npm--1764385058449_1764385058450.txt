@@ -1,0 +1,28 @@
+2025-11-29T02:57:05.000000000Z [inf]  Starting Container
+2025-11-29T02:57:06.622876573Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-29T02:57:06.622887181Z [inf]  
+2025-11-29T02:57:06.622896172Z [inf]  > rest-express@1.0.0 start
+2025-11-29T02:57:06.622905065Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-29T02:57:06.622913620Z [inf]  
+2025-11-29T02:57:06.737803184Z [inf]  Registering Discord bot commands...
+2025-11-29T02:57:06.787053658Z [inf]  2:57:06 AM [express] serving on port 8080
+2025-11-29T02:57:07.046932311Z [inf]  Discord bot commands registered successfully
+2025-11-29T02:57:07.604460434Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-29T02:57:07.604465956Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-29T02:57:07.604471955Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-29T02:57:27.441016297Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:57:27.441028298Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:57:27.441035176Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:57:27.441047740Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:57:27.441053612Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:57:27.441059444Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:57:27.441065325Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:57:27.441070341Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:57:27.441075600Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:57:27.441080857Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:57:27.441086074Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:57:27.441091296Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:57:28.085504065Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:57:28.085512692Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:57:28.085520252Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:57:28.085525755Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
