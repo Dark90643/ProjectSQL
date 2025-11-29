@@ -1,0 +1,43 @@
+2025-11-29T03:35:21.000000000Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/2b98f54e-3e7c-4547-9428-d845b1b2a868/vol_yvge81z8gd00s2gk
+2025-11-29T03:35:22.000000000Z [inf]  Starting Container
+2025-11-29T03:35:22.656310008Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-29T03:35:22.656317976Z [inf]  
+2025-11-29T03:35:22.656325304Z [inf]  > rest-express@1.0.0 start
+2025-11-29T03:35:22.656332170Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-29T03:35:22.656338734Z [inf]  
+2025-11-29T03:35:23.202637506Z [inf]  Registering Discord bot commands...
+2025-11-29T03:35:23.237749741Z [inf]  3:35:23 AM [express] serving on port 8080
+2025-11-29T03:35:23.670479654Z [inf]  Discord bot commands registered successfully
+2025-11-29T03:35:23.940152028Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-29T03:35:23.941586900Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-29T03:35:23.941593272Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-29T09:48:01.989775767Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T09:48:01.989896075Z [err]  error: relation "session" does not exist
+2025-11-29T09:48:01.989902332Z [err]      at /app/node_modules/pg-pool/index.js:45:11
+2025-11-29T09:48:01.989908525Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T09:48:01.989914624Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T09:48:01.989921227Z [err]  error: relation "session" does not exist
+2025-11-29T09:48:01.989926777Z [err]      at /app/node_modules/pg-pool/index.js:45:11
+2025-11-29T09:48:01.989933085Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T10:02:55.278061927Z [err]    schema: undefined,
+2025-11-29T10:02:55.278071452Z [err]    table: undefined,
+2025-11-29T10:02:55.278077445Z [err]    column: undefined,
+2025-11-29T10:02:55.278082736Z [err]    dataType: undefined,
+2025-11-29T10:02:55.278087373Z [err]    constraint: undefined,
+2025-11-29T10:02:55.278092560Z [err]    file: 'parse_relation.c',
+2025-11-29T10:02:55.278097109Z [err]    line: '1449',
+2025-11-29T10:02:55.278101919Z [err]    routine: 'parserOpenTable'
+2025-11-29T10:02:55.278107796Z [err]  }
+2025-11-29T10:02:55.278167518Z [err]  Failed to prune sessions: error: relation "session" does not exist
+2025-11-29T10:02:55.278171789Z [err]      at /app/node_modules/pg-pool/index.js:45:11
+2025-11-29T10:02:55.278176025Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T10:02:55.278181072Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T10:02:55.278186035Z [err]    length: 106,
+2025-11-29T10:02:55.278190423Z [err]    severity: 'ERROR',
+2025-11-29T10:02:55.278194687Z [err]    code: '42P01',
+2025-11-29T10:02:55.278199181Z [err]    detail: undefined,
+2025-11-29T10:02:55.278204242Z [err]    hint: undefined,
+2025-11-29T10:02:55.278207981Z [err]    position: '13',
+2025-11-29T10:02:55.278214393Z [err]    internalPosition: undefined,
+2025-11-29T10:02:55.278218803Z [err]    internalQuery: undefined,
+2025-11-29T10:02:55.278223651Z [err]    where: undefined,
