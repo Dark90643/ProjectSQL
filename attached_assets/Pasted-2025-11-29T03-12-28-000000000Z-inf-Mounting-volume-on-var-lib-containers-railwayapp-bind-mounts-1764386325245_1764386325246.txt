@@ -1,0 +1,23 @@
+2025-11-29T03:12:28.000000000Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/a8766f1b-a2e1-4df1-a279-8983bde743d3/vol_yvge81z8gd00s2gk
+2025-11-29T03:12:29.000000000Z [inf]  Starting Container
+2025-11-29T03:12:30.094120498Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-29T03:12:30.094127299Z [inf]  
+2025-11-29T03:12:30.094133415Z [inf]  > rest-express@1.0.0 start
+2025-11-29T03:12:30.094140937Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-29T03:12:30.094147151Z [inf]  
+2025-11-29T03:12:30.555352887Z [inf]  Registering Discord bot commands...
+2025-11-29T03:12:30.594098457Z [inf]  3:12:30 AM [express] serving on port 8080
+2025-11-29T03:12:30.782296516Z [inf]  Discord bot commands registered successfully
+2025-11-29T03:12:31.143505220Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-29T03:12:31.143511149Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-29T03:12:31.143517181Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-29T03:13:01.188271973Z [err]  Error
+2025-11-29T03:13:01.188284269Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T03:13:01.188291778Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T03:13:01.188298811Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T03:13:01.188309479Z [err]  Error
+2025-11-29T03:13:01.188316025Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T03:13:01.188322045Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T03:13:01.188327323Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T03:17:14.000000000Z [inf]  Stopping Container
+2025-11-29T03:17:17.000000000Z [inf]  Stopping Container
