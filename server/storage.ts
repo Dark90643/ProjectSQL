@@ -252,8 +252,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCase(id: string, userId: string): Promise<boolean> {
-    const result = await db.delete(cases).where(eq(cases.id, id));
-    return result.rowCount ? result.rowCount > 0 : false;
+    await db.delete(cases).where(eq(cases.id, id));
+    return true;
   }
 
   async getCasesWithCodes(): Promise<Case[]> {
