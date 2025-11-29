@@ -152,6 +152,9 @@ Preferred communication style: Simple, everyday language.
 - Discord.js v14 for bot functionality with comprehensive slash commands
 - **Server-Scoped Case Search**: `/search`, `/case`, `/cases` commands only show cases from the current Discord server with pagination (Previous/Next buttons)
 - **Moderation Commands**: `/warn`, `/kick`, `/ban`, `/mute`, `/unmute`, `/modlog`
+  - **Ban Logging**: All bans (main server + cascaded bans) log to primary server's ban log channel
+  - **Cascaded Ban Indicators**: Ban log embeds show "Banned in Child Servers" listing child servers affected
+  - **Consolidated Logging**: Removed separate child server ban channels - all bans centralized in main server log
 - **IP Ban Command**: `/ipban` for banning IP addresses from servers
 - **User Tracking Commands**: `/userhistory`, `/userwarnings`, `/userbans`, `/usermutes` for viewing individual moderation records
 - **Intel Research Command**: `/user-lookup` for searching Discord users and Roblox accounts

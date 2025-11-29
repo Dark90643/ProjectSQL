@@ -1,0 +1,1001 @@
+2025-11-28T16:44:35.314707049Z [err]    file: undefined,
+2025-11-28T16:44:35.314714790Z [err]    line: undefined,
+2025-11-28T16:44:35.314723283Z [err]    routine: undefined
+2025-11-28T16:56:16.189123336Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T16:56:16.189134283Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T16:56:16.189142219Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T16:56:16.189146998Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T16:56:16.189151758Z [err]    length: 88,
+2025-11-28T16:56:16.189157034Z [err]    severity: 'ERROR',
+2025-11-28T16:56:16.189161393Z [err]    code: 'XX000',
+2025-11-28T16:56:16.189167672Z [err]    detail: undefined,
+2025-11-28T16:56:16.189171710Z [err]    hint: undefined,
+2025-11-28T16:56:16.189176046Z [err]    position: undefined,
+2025-11-28T16:56:16.189180668Z [err]    internalPosition: undefined,
+2025-11-28T16:56:16.189185569Z [err]    internalQuery: undefined,
+2025-11-28T16:56:16.189189536Z [err]    where: undefined,
+2025-11-28T16:56:16.189193660Z [err]    schema: undefined,
+2025-11-28T16:56:16.189198101Z [err]    table: undefined,
+2025-11-28T16:56:16.189202531Z [err]    column: undefined,
+2025-11-28T16:56:16.189207006Z [err]    dataType: undefined,
+2025-11-28T16:56:16.189211309Z [err]    constraint: undefined,
+2025-11-28T16:56:16.189215450Z [err]    file: undefined,
+2025-11-28T16:56:16.189221177Z [err]    line: undefined,
+2025-11-28T16:56:16.189225468Z [err]    routine: undefined
+2025-11-28T16:56:16.189230343Z [err]  }
+2025-11-28T17:12:29.063210654Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T17:12:29.063219792Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T17:12:29.063227325Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T17:12:29.063233853Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T17:12:29.063239329Z [err]    length: 88,
+2025-11-28T17:12:29.063244462Z [err]    severity: 'ERROR',
+2025-11-28T17:12:29.063249676Z [err]    code: 'XX000',
+2025-11-28T17:12:29.063255450Z [err]    detail: undefined,
+2025-11-28T17:12:29.063260471Z [err]    hint: undefined,
+2025-11-28T17:12:29.063265780Z [err]    position: undefined,
+2025-11-28T17:12:29.063271367Z [err]    internalPosition: undefined,
+2025-11-28T17:12:29.063276876Z [err]    internalQuery: undefined,
+2025-11-28T17:12:29.063282915Z [err]    where: undefined,
+2025-11-28T17:12:29.063288143Z [err]    schema: undefined,
+2025-11-28T17:12:29.063293965Z [err]    table: undefined,
+2025-11-28T17:12:29.063299141Z [err]    column: undefined,
+2025-11-28T17:12:29.063304818Z [err]    dataType: undefined,
+2025-11-28T17:12:29.063310263Z [err]    constraint: undefined,
+2025-11-28T17:12:29.063315740Z [err]    file: undefined,
+2025-11-28T17:12:29.063320115Z [err]    line: undefined,
+2025-11-28T17:12:29.063331648Z [err]    routine: undefined
+2025-11-28T17:12:29.063336583Z [err]  }
+2025-11-28T17:20:30.180999591Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T17:20:30.181015606Z [err]    table: undefined,
+2025-11-28T17:20:30.181024566Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T17:20:30.181027098Z [err]    column: undefined,
+2025-11-28T17:20:30.181034718Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T17:20:30.181035018Z [err]    dataType: undefined,
+2025-11-28T17:20:30.181040922Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T17:20:30.181045115Z [err]    constraint: undefined,
+2025-11-28T17:20:30.181046784Z [err]    length: 88,
+2025-11-28T17:20:30.181052889Z [err]    severity: 'ERROR',
+2025-11-28T17:20:30.181054274Z [err]    file: undefined,
+2025-11-28T17:20:30.181059452Z [err]    code: 'XX000',
+2025-11-28T17:20:30.181063177Z [err]    line: undefined,
+2025-11-28T17:20:30.181065453Z [err]    detail: undefined,
+2025-11-28T17:20:30.181071110Z [err]    routine: undefined
+2025-11-28T17:20:30.181071229Z [err]    hint: undefined,
+2025-11-28T17:20:30.181077634Z [err]    position: undefined,
+2025-11-28T17:20:30.181079336Z [err]  }
+2025-11-28T17:20:30.181083193Z [err]    internalPosition: undefined,
+2025-11-28T17:20:30.181087511Z [err]    internalQuery: undefined,
+2025-11-28T17:20:30.181092177Z [err]    where: undefined,
+2025-11-28T17:20:30.181096130Z [err]    schema: undefined,
+2025-11-28T17:37:11.221335325Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T17:37:11.221342429Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T17:37:11.221345418Z [err]    where: undefined,
+2025-11-28T17:37:11.221348099Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T17:37:11.221352807Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T17:37:11.221357809Z [err]    length: 88,
+2025-11-28T17:37:11.221360390Z [err]    schema: undefined,
+2025-11-28T17:37:11.221362886Z [err]    severity: 'ERROR',
+2025-11-28T17:37:11.221369231Z [err]    code: 'XX000',
+2025-11-28T17:37:11.221371621Z [err]    table: undefined,
+2025-11-28T17:37:11.221374951Z [err]    detail: undefined,
+2025-11-28T17:37:11.221380733Z [err]    hint: undefined,
+2025-11-28T17:37:11.221382208Z [err]    column: undefined,
+2025-11-28T17:37:11.221385974Z [err]    position: undefined,
+2025-11-28T17:37:11.221392034Z [err]    internalPosition: undefined,
+2025-11-28T17:37:11.221393464Z [err]    dataType: undefined,
+2025-11-28T17:37:11.221399782Z [err]    internalQuery: undefined,
+2025-11-28T17:37:11.221403423Z [err]    constraint: undefined,
+2025-11-28T17:37:11.221412375Z [err]    file: undefined,
+2025-11-28T17:37:11.221420100Z [err]    line: undefined,
+2025-11-28T17:37:11.221427576Z [err]    routine: undefined
+2025-11-28T17:37:11.221436566Z [err]  }
+2025-11-28T17:49:12.111781111Z [err]  }
+2025-11-28T17:49:12.111807211Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T17:49:12.111817201Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T17:49:12.111825224Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T17:49:12.111832279Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T17:49:12.111838889Z [err]    length: 88,
+2025-11-28T17:49:12.111846030Z [err]    severity: 'ERROR',
+2025-11-28T17:49:12.111853388Z [err]    code: 'XX000',
+2025-11-28T17:49:12.111862421Z [err]    detail: undefined,
+2025-11-28T17:49:12.111869521Z [err]    hint: undefined,
+2025-11-28T17:49:12.111877172Z [err]    position: undefined,
+2025-11-28T17:49:12.111883708Z [err]    internalPosition: undefined,
+2025-11-28T17:49:12.111890382Z [err]    internalQuery: undefined,
+2025-11-28T17:49:12.111896799Z [err]    where: undefined,
+2025-11-28T17:49:12.111903476Z [err]    schema: undefined,
+2025-11-28T17:49:12.111910404Z [err]    table: undefined,
+2025-11-28T17:49:12.111917832Z [err]    column: undefined,
+2025-11-28T17:49:12.111924277Z [err]    dataType: undefined,
+2025-11-28T17:49:12.111931151Z [err]    constraint: undefined,
+2025-11-28T17:49:12.111937509Z [err]    file: undefined,
+2025-11-28T17:49:12.111943705Z [err]    line: undefined,
+2025-11-28T17:49:12.111950271Z [err]    routine: undefined
+2025-11-28T18:06:32.704373297Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T18:06:32.704387028Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T18:06:32.704395825Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T18:06:32.704404991Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T18:06:32.704414003Z [err]    length: 88,
+2025-11-28T18:06:32.704423248Z [err]    severity: 'ERROR',
+2025-11-28T18:06:32.704433174Z [err]    code: 'XX000',
+2025-11-28T18:06:32.704441671Z [err]    detail: undefined,
+2025-11-28T18:06:32.704450392Z [err]    hint: undefined,
+2025-11-28T18:06:32.704460185Z [err]    position: undefined,
+2025-11-28T18:06:32.704470015Z [err]    internalPosition: undefined,
+2025-11-28T18:06:32.704477623Z [err]    internalQuery: undefined,
+2025-11-28T18:06:32.704484215Z [err]    where: undefined,
+2025-11-28T18:06:32.704491026Z [err]    schema: undefined,
+2025-11-28T18:06:32.704499175Z [err]    table: undefined,
+2025-11-28T18:06:32.704506391Z [err]    column: undefined,
+2025-11-28T18:06:32.704513304Z [err]    dataType: undefined,
+2025-11-28T18:06:32.704520972Z [err]    constraint: undefined,
+2025-11-28T18:06:32.704526985Z [err]    file: undefined,
+2025-11-28T18:06:32.704533038Z [err]    line: undefined,
+2025-11-28T18:06:32.704539481Z [err]    routine: undefined
+2025-11-28T18:06:32.704545241Z [err]  }
+2025-11-28T18:28:54.569697844Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T18:28:54.569706189Z [err]    file: undefined,
+2025-11-28T18:28:54.569706667Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T18:28:54.569713385Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T18:28:54.569719897Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T18:28:54.569720527Z [err]    line: undefined,
+2025-11-28T18:28:54.569726804Z [err]    length: 88,
+2025-11-28T18:28:54.569731617Z [err]    routine: undefined
+2025-11-28T18:28:54.569733860Z [err]    severity: 'ERROR',
+2025-11-28T18:28:54.569742122Z [err]  }
+2025-11-28T18:28:54.569743307Z [err]    code: 'XX000',
+2025-11-28T18:28:54.569751407Z [err]    detail: undefined,
+2025-11-28T18:28:54.569758117Z [err]    hint: undefined,
+2025-11-28T18:28:54.569763557Z [err]    position: undefined,
+2025-11-28T18:28:54.569771174Z [err]    internalPosition: undefined,
+2025-11-28T18:28:54.569776503Z [err]    internalQuery: undefined,
+2025-11-28T18:28:54.569781688Z [err]    where: undefined,
+2025-11-28T18:28:54.569786687Z [err]    schema: undefined,
+2025-11-28T18:28:54.569791908Z [err]    table: undefined,
+2025-11-28T18:28:54.569799272Z [err]    column: undefined,
+2025-11-28T18:28:54.569805042Z [err]    dataType: undefined,
+2025-11-28T18:28:54.569810233Z [err]    constraint: undefined,
+2025-11-28T18:50:17.468845355Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T18:50:17.468858048Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T18:50:17.468864867Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T18:50:17.468872791Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T18:50:17.468880504Z [err]    length: 88,
+2025-11-28T18:50:17.468886981Z [err]    severity: 'ERROR',
+2025-11-28T18:50:17.468893325Z [err]    code: 'XX000',
+2025-11-28T18:50:17.468900140Z [err]    detail: undefined,
+2025-11-28T18:50:17.468906058Z [err]    hint: undefined,
+2025-11-28T18:50:17.468912225Z [err]    position: undefined,
+2025-11-28T18:50:17.468918671Z [err]    internalPosition: undefined,
+2025-11-28T18:50:17.468924645Z [err]    internalQuery: undefined,
+2025-11-28T18:50:17.468931007Z [err]    where: undefined,
+2025-11-28T18:50:17.468937136Z [err]    schema: undefined,
+2025-11-28T18:50:17.468943540Z [err]    table: undefined,
+2025-11-28T18:50:17.468949321Z [err]    column: undefined,
+2025-11-28T18:50:17.468955023Z [err]    dataType: undefined,
+2025-11-28T18:50:17.468962009Z [err]    constraint: undefined,
+2025-11-28T18:50:17.468968388Z [err]    file: undefined,
+2025-11-28T18:50:17.468975179Z [err]    line: undefined,
+2025-11-28T18:50:17.468982031Z [err]    routine: undefined
+2025-11-28T18:50:17.468987491Z [err]  }
+2025-11-28T19:06:38.839616159Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T19:06:38.839625177Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T19:06:38.839632388Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T19:06:38.839640698Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T19:06:38.839648169Z [err]    length: 88,
+2025-11-28T19:06:38.839655195Z [err]    severity: 'ERROR',
+2025-11-28T19:06:38.839661139Z [err]    code: 'XX000',
+2025-11-28T19:06:38.839666501Z [err]    detail: undefined,
+2025-11-28T19:06:38.839672327Z [err]    hint: undefined,
+2025-11-28T19:06:38.839676576Z [err]    position: undefined,
+2025-11-28T19:06:38.839680386Z [err]    internalPosition: undefined,
+2025-11-28T19:06:38.839685485Z [err]    internalQuery: undefined,
+2025-11-28T19:06:38.839689039Z [err]    where: undefined,
+2025-11-28T19:06:38.839692542Z [err]    schema: undefined,
+2025-11-28T19:06:38.839695988Z [err]    table: undefined,
+2025-11-28T19:06:38.839700232Z [err]    column: undefined,
+2025-11-28T19:06:38.839704431Z [err]    dataType: undefined,
+2025-11-28T19:06:38.839708670Z [err]    constraint: undefined,
+2025-11-28T19:06:38.839712116Z [err]    file: undefined,
+2025-11-28T19:06:38.839715983Z [err]    line: undefined,
+2025-11-28T19:06:38.839720287Z [err]    routine: undefined
+2025-11-28T19:06:38.839724222Z [err]  }
+2025-11-28T19:19:19.854912651Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T19:19:19.854918829Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T19:19:19.854922986Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T19:19:19.854927093Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T19:19:19.854930898Z [err]    length: 88,
+2025-11-28T19:19:19.854935364Z [err]    severity: 'ERROR',
+2025-11-28T19:19:19.854939133Z [err]    code: 'XX000',
+2025-11-28T19:19:19.854944265Z [err]    detail: undefined,
+2025-11-28T19:19:19.854958232Z [err]    hint: undefined,
+2025-11-28T19:19:19.854962670Z [err]    position: undefined,
+2025-11-28T19:19:19.854967092Z [err]    internalPosition: undefined,
+2025-11-28T19:19:19.854971379Z [err]    internalQuery: undefined,
+2025-11-28T19:19:19.854976538Z [err]    where: undefined,
+2025-11-28T19:19:19.854980933Z [err]    schema: undefined,
+2025-11-28T19:19:19.854985460Z [err]    table: undefined,
+2025-11-28T19:19:19.854989178Z [err]    column: undefined,
+2025-11-28T19:19:19.854992719Z [err]    dataType: undefined,
+2025-11-28T19:19:19.854996918Z [err]    constraint: undefined,
+2025-11-28T19:19:19.855000702Z [err]    file: undefined,
+2025-11-28T19:19:19.855004866Z [err]    line: undefined,
+2025-11-28T19:19:19.855008946Z [err]    routine: undefined
+2025-11-28T19:19:19.855013049Z [err]  }
+2025-11-28T19:29:51.582855399Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T19:29:51.582867389Z [err]    constraint: undefined,
+2025-11-28T19:29:51.582868332Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T19:29:51.582880012Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T19:29:51.582880021Z [err]    file: undefined,
+2025-11-28T19:29:51.582890922Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T19:29:51.582891286Z [err]    line: undefined,
+2025-11-28T19:29:51.582899962Z [err]    length: 88,
+2025-11-28T19:29:51.582901836Z [err]    routine: undefined
+2025-11-28T19:29:51.582909279Z [err]    severity: 'ERROR',
+2025-11-28T19:29:51.582910223Z [err]  }
+2025-11-28T19:29:51.582917445Z [err]    code: 'XX000',
+2025-11-28T19:29:51.582925108Z [err]    detail: undefined,
+2025-11-28T19:29:51.582935140Z [err]    hint: undefined,
+2025-11-28T19:29:51.582943810Z [err]    position: undefined,
+2025-11-28T19:29:51.582951950Z [err]    internalPosition: undefined,
+2025-11-28T19:29:51.582959389Z [err]    internalQuery: undefined,
+2025-11-28T19:29:51.582974876Z [err]    where: undefined,
+2025-11-28T19:29:51.582982612Z [err]    schema: undefined,
+2025-11-28T19:29:51.582988472Z [err]    table: undefined,
+2025-11-28T19:29:51.582993972Z [err]    column: undefined,
+2025-11-28T19:29:51.582999792Z [err]    dataType: undefined,
+2025-11-28T19:40:52.973919373Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T19:40:52.973924474Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T19:40:52.973929953Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T19:40:52.973933830Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T19:40:52.973941154Z [err]    length: 88,
+2025-11-28T19:40:52.973946964Z [err]    severity: 'ERROR',
+2025-11-28T19:40:52.973951496Z [err]    code: 'XX000',
+2025-11-28T19:40:52.973956673Z [err]    detail: undefined,
+2025-11-28T19:40:52.973962517Z [err]    hint: undefined,
+2025-11-28T19:40:52.973966624Z [err]    position: undefined,
+2025-11-28T19:40:52.973971012Z [err]    internalPosition: undefined,
+2025-11-28T19:40:52.973974910Z [err]    internalQuery: undefined,
+2025-11-28T19:40:52.973979617Z [err]    where: undefined,
+2025-11-28T19:40:52.973983410Z [err]    schema: undefined,
+2025-11-28T19:40:52.973987466Z [err]    table: undefined,
+2025-11-28T19:40:52.973992187Z [err]    column: undefined,
+2025-11-28T19:40:52.973997227Z [err]    dataType: undefined,
+2025-11-28T19:40:52.974001416Z [err]    constraint: undefined,
+2025-11-28T19:40:52.974005676Z [err]    file: undefined,
+2025-11-28T19:40:52.974009391Z [err]    line: undefined,
+2025-11-28T19:40:52.974013095Z [err]    routine: undefined
+2025-11-28T19:40:52.974017367Z [err]  }
+2025-11-28T19:49:53.469370173Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T19:49:53.469372097Z [err]    column: undefined,
+2025-11-28T19:49:53.469381277Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T19:49:53.469381587Z [err]    dataType: undefined,
+2025-11-28T19:49:53.469388317Z [err]    constraint: undefined,
+2025-11-28T19:49:53.469390398Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T19:49:53.469393620Z [err]    file: undefined,
+2025-11-28T19:49:53.469398924Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T19:49:53.469399304Z [err]    line: undefined,
+2025-11-28T19:49:53.469406739Z [err]    routine: undefined
+2025-11-28T19:49:53.469408537Z [err]    length: 88,
+2025-11-28T19:49:53.469412297Z [err]  }
+2025-11-28T19:49:53.469418401Z [err]    severity: 'ERROR',
+2025-11-28T19:49:53.469426160Z [err]    code: 'XX000',
+2025-11-28T19:49:53.469433562Z [err]    detail: undefined,
+2025-11-28T19:49:53.469440531Z [err]    hint: undefined,
+2025-11-28T19:49:53.469447527Z [err]    position: undefined,
+2025-11-28T19:49:53.469454258Z [err]    internalPosition: undefined,
+2025-11-28T19:49:53.469461746Z [err]    internalQuery: undefined,
+2025-11-28T19:49:53.469469097Z [err]    where: undefined,
+2025-11-28T19:49:53.469476681Z [err]    schema: undefined,
+2025-11-28T19:49:53.469485209Z [err]    table: undefined,
+2025-11-28T20:02:05.223598671Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T20:02:05.223608616Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T20:02:05.223616771Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T20:02:05.223618191Z [err]    schema: undefined,
+2025-11-28T20:02:05.223623565Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T20:02:05.223630519Z [err]    table: undefined,
+2025-11-28T20:02:05.223631919Z [err]    routine: undefined
+2025-11-28T20:02:05.223632353Z [err]    length: 88,
+2025-11-28T20:02:05.223640156Z [err]    severity: 'ERROR',
+2025-11-28T20:02:05.223641042Z [err]  }
+2025-11-28T20:02:05.223642428Z [err]    column: undefined,
+2025-11-28T20:02:05.223650176Z [err]    dataType: undefined,
+2025-11-28T20:02:05.223656413Z [err]    code: 'XX000',
+2025-11-28T20:02:05.223656831Z [err]    constraint: undefined,
+2025-11-28T20:02:05.223663285Z [err]    detail: undefined,
+2025-11-28T20:02:05.223664260Z [err]    file: undefined,
+2025-11-28T20:02:05.223669876Z [err]    hint: undefined,
+2025-11-28T20:02:05.223671633Z [err]    line: undefined,
+2025-11-28T20:02:05.223675763Z [err]    position: undefined,
+2025-11-28T20:02:05.223680768Z [err]    internalPosition: undefined,
+2025-11-28T20:02:05.223686542Z [err]    internalQuery: undefined,
+2025-11-28T20:02:05.223691595Z [err]    where: undefined,
+2025-11-28T20:24:07.240914092Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T20:24:07.240929993Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T20:24:07.240940044Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T20:24:07.240950188Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T20:24:07.240953373Z [err]    routine: undefined
+2025-11-28T20:24:07.240958614Z [err]    length: 88,
+2025-11-28T20:24:07.240965570Z [err]  }
+2025-11-28T20:24:07.240967666Z [err]    severity: 'ERROR',
+2025-11-28T20:24:07.240975081Z [err]    code: 'XX000',
+2025-11-28T20:24:07.240982842Z [err]    detail: undefined,
+2025-11-28T20:24:07.240989924Z [err]    hint: undefined,
+2025-11-28T20:24:07.240998417Z [err]    position: undefined,
+2025-11-28T20:24:07.241007109Z [err]    internalPosition: undefined,
+2025-11-28T20:24:07.241014822Z [err]    internalQuery: undefined,
+2025-11-28T20:24:07.241021883Z [err]    where: undefined,
+2025-11-28T20:24:07.241029322Z [err]    schema: undefined,
+2025-11-28T20:24:07.241037515Z [err]    table: undefined,
+2025-11-28T20:24:07.241045829Z [err]    column: undefined,
+2025-11-28T20:24:07.241053171Z [err]    dataType: undefined,
+2025-11-28T20:24:07.241062541Z [err]    constraint: undefined,
+2025-11-28T20:24:07.241070438Z [err]    file: undefined,
+2025-11-28T20:24:07.241078738Z [err]    line: undefined,
+2025-11-28T20:32:07.594846933Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T20:32:07.594858958Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T20:32:07.594869331Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T20:32:07.594877561Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T20:32:07.594884709Z [err]    length: 88,
+2025-11-28T20:32:07.594893991Z [err]    severity: 'ERROR',
+2025-11-28T20:32:07.594902121Z [err]    code: 'XX000',
+2025-11-28T20:32:07.594908293Z [err]    detail: undefined,
+2025-11-28T20:32:07.594914345Z [err]    hint: undefined,
+2025-11-28T20:32:07.594921889Z [err]    position: undefined,
+2025-11-28T20:32:07.594929005Z [err]    internalPosition: undefined,
+2025-11-28T20:32:07.594935965Z [err]    internalQuery: undefined,
+2025-11-28T20:32:07.594942502Z [err]    where: undefined,
+2025-11-28T20:32:07.594949305Z [err]    schema: undefined,
+2025-11-28T20:32:07.594958749Z [err]    table: undefined,
+2025-11-28T20:32:07.594966572Z [err]    column: undefined,
+2025-11-28T20:32:07.594974309Z [err]    dataType: undefined,
+2025-11-28T20:32:07.594981545Z [err]    constraint: undefined,
+2025-11-28T20:32:07.594988242Z [err]    file: undefined,
+2025-11-28T20:32:07.594995843Z [err]    line: undefined,
+2025-11-28T20:32:07.595002362Z [err]    routine: undefined
+2025-11-28T20:32:07.595009022Z [err]  }
+2025-11-28T20:45:28.450918636Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T20:45:28.450931047Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T20:45:28.450938826Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T20:45:28.450944614Z [err]    where: undefined,
+2025-11-28T20:45:28.450946833Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T20:45:28.450954686Z [err]    length: 88,
+2025-11-28T20:45:28.450958130Z [err]    schema: undefined,
+2025-11-28T20:45:28.450963220Z [err]    severity: 'ERROR',
+2025-11-28T20:45:28.450966889Z [err]    table: undefined,
+2025-11-28T20:45:28.450972573Z [err]    code: 'XX000',
+2025-11-28T20:45:28.450975611Z [err]    column: undefined,
+2025-11-28T20:45:28.450981762Z [err]    detail: undefined,
+2025-11-28T20:45:28.450982974Z [err]    dataType: undefined,
+2025-11-28T20:45:28.450990394Z [err]    constraint: undefined,
+2025-11-28T20:45:28.450991169Z [err]    hint: undefined,
+2025-11-28T20:45:28.450996979Z [err]    position: undefined,
+2025-11-28T20:45:28.450998977Z [err]    file: undefined,
+2025-11-28T20:45:28.451002467Z [err]    internalPosition: undefined,
+2025-11-28T20:45:28.451006565Z [err]    line: undefined,
+2025-11-28T20:45:28.451008086Z [err]    internalQuery: undefined,
+2025-11-28T20:45:28.451013205Z [err]    routine: undefined
+2025-11-28T20:45:28.451019667Z [err]  }
+2025-11-28T20:54:40.115354316Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T20:54:40.115364246Z [err]    file: undefined,
+2025-11-28T20:54:40.115367574Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T20:54:40.115374661Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T20:54:40.115379491Z [err]    line: undefined,
+2025-11-28T20:54:40.115381657Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T20:54:40.115388853Z [err]    length: 88,
+2025-11-28T20:54:40.115390896Z [err]    routine: undefined
+2025-11-28T20:54:40.115392239Z [err]    internalQuery: undefined,
+2025-11-28T20:54:40.115394812Z [err]    severity: 'ERROR',
+2025-11-28T20:54:40.115401276Z [err]  }
+2025-11-28T20:54:40.115401864Z [err]    code: 'XX000',
+2025-11-28T20:54:40.115407822Z [err]    where: undefined,
+2025-11-28T20:54:40.115408436Z [err]    detail: undefined,
+2025-11-28T20:54:40.115413823Z [err]    hint: undefined,
+2025-11-28T20:54:40.115419433Z [err]    schema: undefined,
+2025-11-28T20:54:40.115420026Z [err]    position: undefined,
+2025-11-28T20:54:40.115429121Z [err]    internalPosition: undefined,
+2025-11-28T20:54:40.115430284Z [err]    table: undefined,
+2025-11-28T20:54:40.115442953Z [err]    column: undefined,
+2025-11-28T20:54:40.115451413Z [err]    dataType: undefined,
+2025-11-28T20:54:40.115458498Z [err]    constraint: undefined,
+2025-11-28T21:17:02.607711808Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T21:17:02.607717787Z [err]    routine: undefined
+2025-11-28T21:17:02.607723233Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T21:17:02.607730636Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T21:17:02.607738863Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T21:17:02.607741673Z [err]  }
+2025-11-28T21:17:02.607746803Z [err]    length: 88,
+2025-11-28T21:17:02.607751605Z [err]    severity: 'ERROR',
+2025-11-28T21:17:02.607756153Z [err]    code: 'XX000',
+2025-11-28T21:17:02.607762876Z [err]    detail: undefined,
+2025-11-28T21:17:02.607767352Z [err]    hint: undefined,
+2025-11-28T21:17:02.607771223Z [err]    position: undefined,
+2025-11-28T21:17:02.607776750Z [err]    internalPosition: undefined,
+2025-11-28T21:17:02.607780366Z [err]    internalQuery: undefined,
+2025-11-28T21:17:02.607784273Z [err]    where: undefined,
+2025-11-28T21:17:02.607788343Z [err]    schema: undefined,
+2025-11-28T21:17:02.607792518Z [err]    table: undefined,
+2025-11-28T21:17:02.607796608Z [err]    column: undefined,
+2025-11-28T21:17:02.607800908Z [err]    dataType: undefined,
+2025-11-28T21:17:02.607805793Z [err]    constraint: undefined,
+2025-11-28T21:17:02.607809889Z [err]    file: undefined,
+2025-11-28T21:17:02.607813474Z [err]    line: undefined,
+2025-11-28T21:32:14.858099688Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T21:32:14.858112593Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T21:32:14.858121998Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T21:32:14.858128988Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T21:32:14.858136063Z [err]    length: 88,
+2025-11-28T21:32:14.858144164Z [err]    severity: 'ERROR',
+2025-11-28T21:32:14.858151055Z [err]    code: 'XX000',
+2025-11-28T21:32:14.858157702Z [err]    detail: undefined,
+2025-11-28T21:32:14.858166580Z [err]    hint: undefined,
+2025-11-28T21:32:14.858174353Z [err]    position: undefined,
+2025-11-28T21:32:14.858181781Z [err]    internalPosition: undefined,
+2025-11-28T21:32:14.858188752Z [err]    internalQuery: undefined,
+2025-11-28T21:32:14.858195836Z [err]    where: undefined,
+2025-11-28T21:32:14.858202405Z [err]    schema: undefined,
+2025-11-28T21:32:14.858209369Z [err]    table: undefined,
+2025-11-28T21:32:14.858216251Z [err]    column: undefined,
+2025-11-28T21:32:14.858225458Z [err]    dataType: undefined,
+2025-11-28T21:32:14.858237508Z [err]    constraint: undefined,
+2025-11-28T21:32:14.858244709Z [err]    file: undefined,
+2025-11-28T21:32:14.858251423Z [err]    line: undefined,
+2025-11-28T21:32:14.858258512Z [err]    routine: undefined
+2025-11-28T21:32:14.858265232Z [err]  }
+2025-11-28T21:53:28.345551594Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T21:53:28.345561527Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T21:53:28.345569011Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T21:53:28.345576106Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T21:53:28.345582243Z [err]    length: 88,
+2025-11-28T21:53:28.345641883Z [err]    severity: 'ERROR',
+2025-11-28T21:53:28.345659594Z [err]    where: undefined,
+2025-11-28T21:53:28.345670948Z [err]    schema: undefined,
+2025-11-28T21:53:28.345690274Z [err]    code: 'XX000',
+2025-11-28T21:53:28.345707174Z [err]    detail: undefined,
+2025-11-28T21:53:28.345720723Z [err]    hint: undefined,
+2025-11-28T21:53:28.345729710Z [err]    position: undefined,
+2025-11-28T21:53:28.345737502Z [err]    internalPosition: undefined,
+2025-11-28T21:53:28.345745256Z [err]    internalQuery: undefined,
+2025-11-28T21:53:28.345904817Z [err]    table: undefined,
+2025-11-28T21:53:28.345917864Z [err]    column: undefined,
+2025-11-28T21:53:28.345928683Z [err]    dataType: undefined,
+2025-11-28T21:53:28.345939820Z [err]    constraint: undefined,
+2025-11-28T21:53:28.345947115Z [err]    file: undefined,
+2025-11-28T21:53:28.345955507Z [err]    line: undefined,
+2025-11-28T21:53:28.345963937Z [err]    routine: undefined
+2025-11-28T21:53:28.345971693Z [err]  }
+2025-11-28T22:01:18.521010486Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T22:01:18.521018020Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T22:01:18.521023696Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T22:01:18.521023877Z [err]    schema: undefined,
+2025-11-28T22:01:18.521033223Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T22:01:18.521038820Z [err]    length: 88,
+2025-11-28T22:01:18.521039475Z [err]    table: undefined,
+2025-11-28T22:01:18.521044740Z [err]    severity: 'ERROR',
+2025-11-28T22:01:18.521049635Z [err]    column: undefined,
+2025-11-28T22:01:18.521050131Z [err]    code: 'XX000',
+2025-11-28T22:01:18.521054978Z [err]    detail: undefined,
+2025-11-28T22:01:18.521059554Z [err]    dataType: undefined,
+2025-11-28T22:01:18.521060378Z [err]    hint: undefined,
+2025-11-28T22:01:18.521065705Z [err]    position: undefined,
+2025-11-28T22:01:18.521069390Z [err]    constraint: undefined,
+2025-11-28T22:01:18.521071560Z [err]    internalPosition: undefined,
+2025-11-28T22:01:18.521077021Z [err]    internalQuery: undefined,
+2025-11-28T22:01:18.521079464Z [err]    file: undefined,
+2025-11-28T22:01:18.521082204Z [err]    where: undefined,
+2025-11-28T22:01:18.521085845Z [err]    line: undefined,
+2025-11-28T22:01:18.521090336Z [err]    routine: undefined
+2025-11-28T22:01:18.521094700Z [err]  }
+2025-11-28T22:14:49.758506060Z [err]    internalQuery: undefined,
+2025-11-28T22:14:49.758506717Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T22:14:49.758517634Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T22:14:49.758521659Z [err]    where: undefined,
+2025-11-28T22:14:49.758524700Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T22:14:49.758531267Z [err]    schema: undefined,
+2025-11-28T22:14:49.758533077Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T22:14:49.758539791Z [err]    table: undefined,
+2025-11-28T22:14:49.758542232Z [err]    length: 88,
+2025-11-28T22:14:49.758548130Z [err]    column: undefined,
+2025-11-28T22:14:49.758552231Z [err]    severity: 'ERROR',
+2025-11-28T22:14:49.758557307Z [err]    dataType: undefined,
+2025-11-28T22:14:49.758558741Z [err]    code: 'XX000',
+2025-11-28T22:14:49.758565363Z [err]    detail: undefined,
+2025-11-28T22:14:49.758566617Z [err]    constraint: undefined,
+2025-11-28T22:14:49.758570424Z [err]    hint: undefined,
+2025-11-28T22:14:49.758574868Z [err]    file: undefined,
+2025-11-28T22:14:49.758577466Z [err]    position: undefined,
+2025-11-28T22:14:49.758583233Z [err]    internalPosition: undefined,
+2025-11-28T22:14:49.758583792Z [err]    line: undefined,
+2025-11-28T22:14:49.758591589Z [err]    routine: undefined
+2025-11-28T22:14:49.758598006Z [err]  }
+2025-11-28T22:27:11.265985039Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T22:27:11.265997984Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T22:27:11.266005895Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T22:27:11.266011505Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T22:27:11.266018114Z [err]    length: 88,
+2025-11-28T22:27:11.266024779Z [err]    severity: 'ERROR',
+2025-11-28T22:27:11.266031724Z [err]    code: 'XX000',
+2025-11-28T22:27:11.266039787Z [err]    detail: undefined,
+2025-11-28T22:27:11.266050526Z [err]    hint: undefined,
+2025-11-28T22:27:11.266053530Z [err]    where: undefined,
+2025-11-28T22:27:11.266065000Z [err]    position: undefined,
+2025-11-28T22:27:11.266072234Z [err]    schema: undefined,
+2025-11-28T22:27:11.266079183Z [err]    internalPosition: undefined,
+2025-11-28T22:27:11.266089687Z [err]    table: undefined,
+2025-11-28T22:27:11.266092599Z [err]    routine: undefined
+2025-11-28T22:27:11.266093582Z [err]    internalQuery: undefined,
+2025-11-28T22:27:11.266105124Z [err]    column: undefined,
+2025-11-28T22:27:11.266107838Z [err]  }
+2025-11-28T22:27:11.266115110Z [err]    dataType: undefined,
+2025-11-28T22:27:11.266125729Z [err]    constraint: undefined,
+2025-11-28T22:27:11.266136099Z [err]    file: undefined,
+2025-11-28T22:27:11.266146042Z [err]    line: undefined,
+2025-11-28T22:39:53.797000178Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T22:39:53.797011402Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T22:39:53.797018175Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T22:39:53.797024185Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T22:39:53.797029544Z [err]    length: 88,
+2025-11-28T22:39:53.797035568Z [err]    severity: 'ERROR',
+2025-11-28T22:39:53.797044388Z [err]    code: 'XX000',
+2025-11-28T22:39:53.797050276Z [err]    detail: undefined,
+2025-11-28T22:39:53.797056594Z [err]    hint: undefined,
+2025-11-28T22:39:53.797065171Z [err]    position: undefined,
+2025-11-28T22:39:53.797071562Z [err]    internalPosition: undefined,
+2025-11-28T22:39:53.797077290Z [err]    internalQuery: undefined,
+2025-11-28T22:39:53.797083350Z [err]    where: undefined,
+2025-11-28T22:39:53.797088878Z [err]    schema: undefined,
+2025-11-28T22:39:53.797094496Z [err]    table: undefined,
+2025-11-28T22:39:53.797100040Z [err]    column: undefined,
+2025-11-28T22:39:53.797106986Z [err]    dataType: undefined,
+2025-11-28T22:39:53.797115205Z [err]    constraint: undefined,
+2025-11-28T22:39:53.797122982Z [err]    file: undefined,
+2025-11-28T22:39:53.797131116Z [err]    line: undefined,
+2025-11-28T22:39:53.797141826Z [err]    routine: undefined
+2025-11-28T22:39:53.797150913Z [err]  }
+2025-11-28T22:47:54.348814588Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T22:47:54.348824568Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T22:47:54.348831498Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T22:47:54.348838182Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T22:47:54.348844175Z [err]    length: 88,
+2025-11-28T22:47:54.348851098Z [err]    severity: 'ERROR',
+2025-11-28T22:47:54.348859613Z [err]    code: 'XX000',
+2025-11-28T22:47:54.348865855Z [err]    detail: undefined,
+2025-11-28T22:47:54.348871892Z [err]    hint: undefined,
+2025-11-28T22:47:54.348879187Z [err]    position: undefined,
+2025-11-28T22:47:54.348884816Z [err]    internalPosition: undefined,
+2025-11-28T22:47:54.348890469Z [err]    internalQuery: undefined,
+2025-11-28T22:47:54.348896071Z [err]    where: undefined,
+2025-11-28T22:47:54.348902235Z [err]    schema: undefined,
+2025-11-28T22:47:54.348908898Z [err]    table: undefined,
+2025-11-28T22:47:54.348915427Z [err]    column: undefined,
+2025-11-28T22:47:54.348921284Z [err]    dataType: undefined,
+2025-11-28T22:47:54.348931063Z [err]    constraint: undefined,
+2025-11-28T22:47:54.348940115Z [err]    file: undefined,
+2025-11-28T22:47:54.348948320Z [err]    line: undefined,
+2025-11-28T22:47:54.348958295Z [err]    routine: undefined
+2025-11-28T22:47:54.348965125Z [err]  }
+2025-11-28T23:02:15.132222378Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T23:02:15.132236306Z [err]    severity: 'ERROR',
+2025-11-28T23:02:15.132240163Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T23:02:15.132252695Z [err]    code: 'XX000',
+2025-11-28T23:02:15.132257145Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T23:02:15.132257895Z [err]    column: undefined,
+2025-11-28T23:02:15.132264099Z [err]    detail: undefined,
+2025-11-28T23:02:15.132271301Z [err]    position: undefined,
+2025-11-28T23:02:15.132272299Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T23:02:15.132277749Z [err]    dataType: undefined,
+2025-11-28T23:02:15.132282272Z [err]    hint: undefined,
+2025-11-28T23:02:15.132283948Z [err]    internalPosition: undefined,
+2025-11-28T23:02:15.132286279Z [err]    length: 88,
+2025-11-28T23:02:15.132286867Z [err]    where: undefined,
+2025-11-28T23:02:15.132292865Z [err]    internalQuery: undefined,
+2025-11-28T23:02:15.132297303Z [err]    schema: undefined,
+2025-11-28T23:02:15.132305512Z [err]    table: undefined,
+2025-11-28T23:02:15.132312823Z [err]    constraint: undefined,
+2025-11-28T23:02:15.132320910Z [err]    line: undefined,
+2025-11-28T23:02:15.132324235Z [err]    routine: undefined
+2025-11-28T23:02:15.132326352Z [err]    file: undefined,
+2025-11-28T23:02:15.132339216Z [err]  }
+2025-11-28T23:21:28.277108955Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T23:21:28.277110821Z [err]  }
+2025-11-28T23:21:28.277111538Z [err]    dataType: undefined,
+2025-11-28T23:21:28.277119337Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T23:21:28.277122851Z [err]    constraint: undefined,
+2025-11-28T23:21:28.277126863Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T23:21:28.277134060Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T23:21:28.277135160Z [err]    file: undefined,
+2025-11-28T23:21:28.277141384Z [err]    length: 88,
+2025-11-28T23:21:28.277146028Z [err]    line: undefined,
+2025-11-28T23:21:28.277147640Z [err]    hint: undefined,
+2025-11-28T23:21:28.277150573Z [err]    severity: 'ERROR',
+2025-11-28T23:21:28.277156257Z [err]    routine: undefined
+2025-11-28T23:21:28.277160802Z [err]    code: 'XX000',
+2025-11-28T23:21:28.277166980Z [err]    detail: undefined,
+2025-11-28T23:21:28.277169396Z [err]    position: undefined,
+2025-11-28T23:21:28.277178468Z [err]    internalPosition: undefined,
+2025-11-28T23:21:28.277187129Z [err]    internalQuery: undefined,
+2025-11-28T23:21:28.277197333Z [err]    where: undefined,
+2025-11-28T23:21:28.277207436Z [err]    schema: undefined,
+2025-11-28T23:21:28.277217301Z [err]    table: undefined,
+2025-11-28T23:21:28.277229953Z [err]    column: undefined,
+2025-11-28T23:43:11.642169029Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T23:43:11.642179121Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T23:43:11.642185307Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T23:43:11.642191800Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T23:43:11.642192344Z [err]    constraint: undefined,
+2025-11-28T23:43:11.642198927Z [err]    length: 88,
+2025-11-28T23:43:11.642201671Z [err]    file: undefined,
+2025-11-28T23:43:11.642204866Z [err]    severity: 'ERROR',
+2025-11-28T23:43:11.642209416Z [err]    line: undefined,
+2025-11-28T23:43:11.642214091Z [err]    code: 'XX000',
+2025-11-28T23:43:11.642215421Z [err]    routine: undefined
+2025-11-28T23:43:11.642221323Z [err]  }
+2025-11-28T23:43:11.642222608Z [err]    detail: undefined,
+2025-11-28T23:43:11.642227570Z [err]    hint: undefined,
+2025-11-28T23:43:11.642233723Z [err]    position: undefined,
+2025-11-28T23:43:11.642238687Z [err]    internalPosition: undefined,
+2025-11-28T23:43:11.642244320Z [err]    internalQuery: undefined,
+2025-11-28T23:43:11.642248845Z [err]    where: undefined,
+2025-11-28T23:43:11.642253510Z [err]    schema: undefined,
+2025-11-28T23:43:11.642258156Z [err]    table: undefined,
+2025-11-28T23:43:11.642262948Z [err]    column: undefined,
+2025-11-28T23:43:11.642268315Z [err]    dataType: undefined,
+2025-11-28T23:51:52.023459904Z [err]    schema: undefined,
+2025-11-28T23:51:52.023466891Z [err]    table: undefined,
+2025-11-28T23:51:52.023471277Z [err]    column: undefined,
+2025-11-28T23:51:52.023476883Z [err]    dataType: undefined,
+2025-11-28T23:51:52.023482568Z [err]    constraint: undefined,
+2025-11-28T23:51:52.023487018Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-28T23:51:52.023488894Z [err]    file: undefined,
+2025-11-28T23:51:52.023493973Z [err]    line: undefined,
+2025-11-28T23:51:52.023499233Z [err]    routine: undefined
+2025-11-28T23:51:52.023503039Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-28T23:51:52.023505323Z [err]  }
+2025-11-28T23:51:52.023516091Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-28T23:51:52.023523923Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-28T23:51:52.023533287Z [err]    length: 88,
+2025-11-28T23:51:52.023541826Z [err]    severity: 'ERROR',
+2025-11-28T23:51:52.023549605Z [err]    code: 'XX000',
+2025-11-28T23:51:52.023557678Z [err]    detail: undefined,
+2025-11-28T23:51:52.023565423Z [err]    hint: undefined,
+2025-11-28T23:51:52.023573635Z [err]    position: undefined,
+2025-11-28T23:51:52.023584890Z [err]    internalPosition: undefined,
+2025-11-28T23:51:52.023593752Z [err]    internalQuery: undefined,
+2025-11-28T23:51:52.023601984Z [err]    where: undefined,
+2025-11-29T00:11:34.486291318Z [err]    schema: undefined,
+2025-11-29T00:11:34.486307303Z [err]    table: undefined,
+2025-11-29T00:11:34.486319040Z [err]    column: undefined,
+2025-11-29T00:11:34.486327490Z [err]  }
+2025-11-29T00:11:34.486330356Z [err]    dataType: undefined,
+2025-11-29T00:11:34.486339471Z [err]    constraint: undefined,
+2025-11-29T00:11:34.486348721Z [err]    file: undefined,
+2025-11-29T00:11:34.486364657Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T00:11:34.486371855Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T00:11:34.486379550Z [err]    line: undefined,
+2025-11-29T00:11:34.486379815Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T00:11:34.486389718Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T00:11:34.486392165Z [err]    routine: undefined
+2025-11-29T00:11:34.486397868Z [err]    length: 88,
+2025-11-29T00:11:34.486404091Z [err]    severity: 'ERROR',
+2025-11-29T00:11:34.486411536Z [err]    code: 'XX000',
+2025-11-29T00:11:34.486418633Z [err]    detail: undefined,
+2025-11-29T00:11:34.486425054Z [err]    hint: undefined,
+2025-11-29T00:11:34.486431868Z [err]    position: undefined,
+2025-11-29T00:11:34.486438678Z [err]    internalPosition: undefined,
+2025-11-29T00:11:34.486446353Z [err]    internalQuery: undefined,
+2025-11-29T00:11:34.486452622Z [err]    where: undefined,
+2025-11-29T00:25:05.757152605Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T00:25:05.757159925Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T00:25:05.757165534Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T00:25:05.757168431Z [err]    routine: undefined
+2025-11-29T00:25:05.757170084Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T00:25:05.757174166Z [err]    length: 88,
+2025-11-29T00:25:05.757179599Z [err]    severity: 'ERROR',
+2025-11-29T00:25:05.757182884Z [err]  }
+2025-11-29T00:25:05.757185127Z [err]    code: 'XX000',
+2025-11-29T00:25:05.757189500Z [err]    detail: undefined,
+2025-11-29T00:25:05.757193947Z [err]    hint: undefined,
+2025-11-29T00:25:05.757197881Z [err]    position: undefined,
+2025-11-29T00:25:05.757202370Z [err]    internalPosition: undefined,
+2025-11-29T00:25:05.757206417Z [err]    internalQuery: undefined,
+2025-11-29T00:25:05.757210792Z [err]    where: undefined,
+2025-11-29T00:25:05.757215636Z [err]    schema: undefined,
+2025-11-29T00:25:05.757219699Z [err]    table: undefined,
+2025-11-29T00:25:05.757223650Z [err]    column: undefined,
+2025-11-29T00:25:05.757228587Z [err]    dataType: undefined,
+2025-11-29T00:25:05.757232761Z [err]    constraint: undefined,
+2025-11-29T00:25:05.757237087Z [err]    file: undefined,
+2025-11-29T00:25:05.757240689Z [err]    line: undefined,
+2025-11-29T00:44:37.812988527Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T00:44:37.812995630Z [err]    dataType: undefined,
+2025-11-29T00:44:37.812999336Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T00:44:37.813006118Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T00:44:37.813009968Z [err]    constraint: undefined,
+2025-11-29T00:44:37.813013988Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T00:44:37.813019669Z [err]    file: undefined,
+2025-11-29T00:44:37.813022738Z [err]    length: 88,
+2025-11-29T00:44:37.813028444Z [err]    severity: 'ERROR',
+2025-11-29T00:44:37.813028930Z [err]    line: undefined,
+2025-11-29T00:44:37.813033051Z [err]    code: 'XX000',
+2025-11-29T00:44:37.813037770Z [err]    routine: undefined
+2025-11-29T00:44:37.813039421Z [err]    detail: undefined,
+2025-11-29T00:44:37.813045473Z [err]    hint: undefined,
+2025-11-29T00:44:37.813048864Z [err]  }
+2025-11-29T00:44:37.813051536Z [err]    position: undefined,
+2025-11-29T00:44:37.813055799Z [err]    internalPosition: undefined,
+2025-11-29T00:44:37.813059848Z [err]    internalQuery: undefined,
+2025-11-29T00:44:37.813065273Z [err]    where: undefined,
+2025-11-29T00:44:37.813069979Z [err]    schema: undefined,
+2025-11-29T00:44:37.813074385Z [err]    table: undefined,
+2025-11-29T00:44:37.813078348Z [err]    column: undefined,
+2025-11-29T01:05:10.887736988Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T01:05:10.887746028Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T01:05:10.887751296Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T01:05:10.887756697Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T01:05:10.887763205Z [err]    length: 88,
+2025-11-29T01:05:10.887769401Z [err]    severity: 'ERROR',
+2025-11-29T01:05:10.887777131Z [err]    routine: undefined
+2025-11-29T01:05:10.887777763Z [err]    code: 'XX000',
+2025-11-29T01:05:10.887785256Z [err]    detail: undefined,
+2025-11-29T01:05:10.887791858Z [err]  }
+2025-11-29T01:05:10.887794721Z [err]    hint: undefined,
+2025-11-29T01:05:10.887800615Z [err]    position: undefined,
+2025-11-29T01:05:10.887807519Z [err]    internalPosition: undefined,
+2025-11-29T01:05:10.887812174Z [err]    internalQuery: undefined,
+2025-11-29T01:05:10.887817878Z [err]    where: undefined,
+2025-11-29T01:05:10.887823158Z [err]    schema: undefined,
+2025-11-29T01:05:10.887828979Z [err]    table: undefined,
+2025-11-29T01:05:10.887833996Z [err]    column: undefined,
+2025-11-29T01:05:10.887839118Z [err]    dataType: undefined,
+2025-11-29T01:05:10.887844366Z [err]    constraint: undefined,
+2025-11-29T01:05:10.887849197Z [err]    file: undefined,
+2025-11-29T01:05:10.887854403Z [err]    line: undefined,
+2025-11-29T01:20:33.285799658Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T01:20:33.285809332Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T01:20:33.285815499Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T01:20:33.285822193Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T01:20:33.285828410Z [err]    length: 88,
+2025-11-29T01:20:33.285834940Z [err]    severity: 'ERROR',
+2025-11-29T01:20:33.285842753Z [err]    code: 'XX000',
+2025-11-29T01:20:33.285847626Z [err]    detail: undefined,
+2025-11-29T01:20:33.285851861Z [err]    hint: undefined,
+2025-11-29T01:20:33.285856869Z [err]    position: undefined,
+2025-11-29T01:20:33.285861137Z [err]    internalPosition: undefined,
+2025-11-29T01:20:33.285865291Z [err]    internalQuery: undefined,
+2025-11-29T01:20:33.285870263Z [err]    where: undefined,
+2025-11-29T01:20:33.285875641Z [err]    schema: undefined,
+2025-11-29T01:20:33.285880298Z [err]    table: undefined,
+2025-11-29T01:20:33.285884454Z [err]    column: undefined,
+2025-11-29T01:20:33.285888294Z [err]    dataType: undefined,
+2025-11-29T01:20:33.285892044Z [err]    constraint: undefined,
+2025-11-29T01:20:33.285895881Z [err]    file: undefined,
+2025-11-29T01:20:33.285899789Z [err]    line: undefined,
+2025-11-29T01:20:33.285904022Z [err]    routine: undefined
+2025-11-29T01:20:33.285907712Z [err]  }
+2025-11-29T01:40:16.128177893Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T01:40:16.128186895Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T01:40:16.128193952Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T01:40:16.128200094Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T01:40:16.128206926Z [err]    length: 88,
+2025-11-29T01:40:16.128213436Z [err]    severity: 'ERROR',
+2025-11-29T01:40:16.128220018Z [err]    code: 'XX000',
+2025-11-29T01:40:16.128227398Z [err]    detail: undefined,
+2025-11-29T01:40:16.128233738Z [err]    hint: undefined,
+2025-11-29T01:40:16.128241652Z [err]    position: undefined,
+2025-11-29T01:40:16.128248343Z [err]    internalPosition: undefined,
+2025-11-29T01:40:16.128255023Z [err]    internalQuery: undefined,
+2025-11-29T01:40:16.128262269Z [err]    where: undefined,
+2025-11-29T01:40:16.128268755Z [err]    schema: undefined,
+2025-11-29T01:40:16.128275603Z [err]    table: undefined,
+2025-11-29T01:40:16.128281803Z [err]    column: undefined,
+2025-11-29T01:40:16.128287947Z [err]    dataType: undefined,
+2025-11-29T01:40:16.128294408Z [err]    constraint: undefined,
+2025-11-29T01:40:16.128300605Z [err]    file: undefined,
+2025-11-29T01:40:16.128307380Z [err]    line: undefined,
+2025-11-29T01:40:16.128314002Z [err]    routine: undefined
+2025-11-29T01:40:16.128319852Z [err]  }
+2025-11-29T01:49:46.924282032Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T01:49:46.924293450Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T01:49:46.924300585Z [err]    internalQuery: undefined,
+2025-11-29T01:49:46.924302732Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T01:49:46.924309995Z [err]    where: undefined,
+2025-11-29T01:49:46.924315939Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T01:49:46.924318420Z [err]    schema: undefined,
+2025-11-29T01:49:46.924323840Z [err]    table: undefined,
+2025-11-29T01:49:46.924325784Z [err]    length: 88,
+2025-11-29T01:49:46.924332191Z [err]    column: undefined,
+2025-11-29T01:49:46.924336410Z [err]    severity: 'ERROR',
+2025-11-29T01:49:46.924339379Z [err]    dataType: undefined,
+2025-11-29T01:49:46.924344890Z [err]    constraint: undefined,
+2025-11-29T01:49:46.924346280Z [err]    code: 'XX000',
+2025-11-29T01:49:46.924349841Z [err]    file: undefined,
+2025-11-29T01:49:46.924354736Z [err]    line: undefined,
+2025-11-29T01:49:46.924357260Z [err]    detail: undefined,
+2025-11-29T01:49:46.924360613Z [err]    routine: undefined
+2025-11-29T01:49:46.924366606Z [err]  }
+2025-11-29T01:49:46.924367307Z [err]    hint: undefined,
+2025-11-29T01:49:46.924374941Z [err]    position: undefined,
+2025-11-29T01:49:46.924381325Z [err]    internalPosition: undefined,
+2025-11-29T02:02:28.790536065Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:02:28.790547172Z [err]    column: undefined,
+2025-11-29T02:02:28.790549380Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:02:28.790558566Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:02:28.790560008Z [err]    dataType: undefined,
+2025-11-29T02:02:28.790566791Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T02:02:28.790570198Z [err]    constraint: undefined,
+2025-11-29T02:02:28.790576175Z [err]    length: 88,
+2025-11-29T02:02:28.790578021Z [err]    file: undefined,
+2025-11-29T02:02:28.790585216Z [err]    line: undefined,
+2025-11-29T02:02:28.790586290Z [err]    severity: 'ERROR',
+2025-11-29T02:02:28.790593208Z [err]    routine: undefined
+2025-11-29T02:02:28.790595303Z [err]    code: 'XX000',
+2025-11-29T02:02:28.790601423Z [err]  }
+2025-11-29T02:02:28.790604108Z [err]    detail: undefined,
+2025-11-29T02:02:28.790616899Z [err]    hint: undefined,
+2025-11-29T02:02:28.790627090Z [err]    position: undefined,
+2025-11-29T02:02:28.790635684Z [err]    internalPosition: undefined,
+2025-11-29T02:02:28.790643364Z [err]    internalQuery: undefined,
+2025-11-29T02:02:28.790650836Z [err]    where: undefined,
+2025-11-29T02:02:28.790658246Z [err]    schema: undefined,
+2025-11-29T02:02:28.790665521Z [err]    table: undefined,
+2025-11-29T02:11:29.402000166Z [err]    dataType: undefined,
+2025-11-29T02:11:29.402003549Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:11:29.402007702Z [err]    constraint: undefined,
+2025-11-29T02:11:29.402012650Z [err]    file: undefined,
+2025-11-29T02:11:29.402016918Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:11:29.402019499Z [err]    line: undefined,
+2025-11-29T02:11:29.402024564Z [err]    routine: undefined
+2025-11-29T02:11:29.402025251Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:11:29.402030239Z [err]  }
+2025-11-29T02:11:29.402032689Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T02:11:29.402039039Z [err]    length: 88,
+2025-11-29T02:11:29.402046402Z [err]    severity: 'ERROR',
+2025-11-29T02:11:29.402055196Z [err]    code: 'XX000',
+2025-11-29T02:11:29.402064939Z [err]    detail: undefined,
+2025-11-29T02:11:29.402072149Z [err]    hint: undefined,
+2025-11-29T02:11:29.402078974Z [err]    position: undefined,
+2025-11-29T02:11:29.402085849Z [err]    internalPosition: undefined,
+2025-11-29T02:11:29.402092581Z [err]    internalQuery: undefined,
+2025-11-29T02:11:29.402099023Z [err]    where: undefined,
+2025-11-29T02:11:29.402106801Z [err]    schema: undefined,
+2025-11-29T02:11:29.402113701Z [err]    table: undefined,
+2025-11-29T02:11:29.402120444Z [err]    column: undefined,
+2025-11-29T02:30:11.404425283Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:30:11.404443478Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:30:11.404448214Z [err]    column: undefined,
+2025-11-29T02:30:11.404456438Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:30:11.404467271Z [err]    dataType: undefined,
+2025-11-29T02:30:11.404469973Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T02:30:11.404479119Z [err]    length: 88,
+2025-11-29T02:30:11.404481776Z [err]    constraint: undefined,
+2025-11-29T02:30:11.404489536Z [err]    severity: 'ERROR',
+2025-11-29T02:30:11.404493466Z [err]    file: undefined,
+2025-11-29T02:30:11.404498368Z [err]    code: 'XX000',
+2025-11-29T02:30:11.404506626Z [err]    line: undefined,
+2025-11-29T02:30:11.404507165Z [err]    detail: undefined,
+2025-11-29T02:30:11.404515892Z [err]    hint: undefined,
+2025-11-29T02:30:11.404523716Z [err]    routine: undefined
+2025-11-29T02:30:11.404526007Z [err]    position: undefined,
+2025-11-29T02:30:11.404535007Z [err]    internalPosition: undefined,
+2025-11-29T02:30:11.404535549Z [err]  }
+2025-11-29T02:30:11.404548183Z [err]    internalQuery: undefined,
+2025-11-29T02:30:11.404555681Z [err]    where: undefined,
+2025-11-29T02:30:11.404564621Z [err]    schema: undefined,
+2025-11-29T02:30:11.404571712Z [err]    table: undefined,
+2025-11-29T02:38:41.866268390Z [err]  Failed to prune sessions: error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:38:41.866276864Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:38:41.866283380Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:38:41.866289367Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21) {
+2025-11-29T02:38:41.866295961Z [err]    length: 88,
+2025-11-29T02:38:41.866302710Z [err]    severity: 'ERROR',
+2025-11-29T02:38:41.866307196Z [err]    code: 'XX000',
+2025-11-29T02:38:41.866311093Z [err]    detail: undefined,
+2025-11-29T02:38:41.866314860Z [err]    hint: undefined,
+2025-11-29T02:38:41.866318504Z [err]    position: undefined,
+2025-11-29T02:38:41.866322499Z [err]    internalPosition: undefined,
+2025-11-29T02:38:41.866326377Z [err]    internalQuery: undefined,
+2025-11-29T02:38:41.866333145Z [err]    where: undefined,
+2025-11-29T02:38:41.866338735Z [err]    schema: undefined,
+2025-11-29T02:38:41.866343323Z [err]    table: undefined,
+2025-11-29T02:38:41.866347220Z [err]    column: undefined,
+2025-11-29T02:38:41.866350956Z [err]    dataType: undefined,
+2025-11-29T02:38:41.866355276Z [err]    constraint: undefined,
+2025-11-29T02:38:41.866359250Z [err]    file: undefined,
+2025-11-29T02:38:41.866363116Z [err]    line: undefined,
+2025-11-29T02:38:41.866366945Z [err]    routine: undefined
+2025-11-29T02:38:41.866371602Z [err]  }
+2025-11-29T02:49:43.322174963Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:49:43.322184878Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:49:43.322191807Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:49:43.322196819Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:49:43.322202076Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:49:43.322206994Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:49:43.322210822Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:49:43.322214794Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:49:43.322218667Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:49:43.322222821Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:49:43.322226921Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:49:43.322230704Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:49:43.322235070Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:49:43.322238611Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:49:43.322242562Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:49:43.322246211Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:49:49.519165805Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:49:49.519170620Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:49:49.519174911Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:49:49.519178972Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:49:50.339974946Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:49:50.339983910Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:49:50.339990469Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:49:50.339997151Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:10.338815669Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:10.338829301Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:10.338839796Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:10.338848977Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:10.338857762Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:10.338865955Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:10.338872237Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:10.338880419Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:10.338885599Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:10.338890128Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:10.338894359Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:10.338899242Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:10.338903398Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:10.338907617Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:10.338912265Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:10.338917738Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:16.509405264Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:16.509412897Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:16.509420846Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:16.509427244Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:17.346355524Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:17.346364642Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:17.346371767Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:17.346378101Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:19.552237073Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:19.552247173Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:19.552253780Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:19.552260222Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:20.542822985Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:20.542834125Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:20.542842643Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:20.542850665Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:22.456729371Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:22.456735125Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:22.456738956Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:22.456743802Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:23.218834807Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:23.218843299Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:23.218848369Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:23.218852940Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:43.219491205Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:43.219495083Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:43.219501927Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:43.219510316Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:43.219517472Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:43.219523694Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:43.219529951Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:43.219544472Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:43.219551539Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:43.219558698Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:43.219565425Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:43.219572023Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:43.219580821Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:43.219588449Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:43.219594154Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:43.219600141Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:43.219605768Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:43.219981229Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:43.219989055Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:43.219995848Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:43.220001967Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:43.220008410Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:43.220014561Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:43.220020472Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:48.094656934Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:48.094666153Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:48.094673714Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:48.094680975Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T02:50:48.902535760Z [err]  error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-29T02:50:48.902541391Z [err]      at file:///app/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2025-11-29T02:50:48.902546123Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T02:50:48.902550104Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)

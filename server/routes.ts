@@ -313,11 +313,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/check-ip", async (req: Request, res: Response) => {
-    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
-    const allUsers = await storage.getAllUsers();
-    const isBanned = allUsers.some(u => u.isSuspended && u.ip === clientIp);
-    
-    res.json({ ip: clientIp, isBanned });
+    try {
+      const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+      const allUsers = await storage.getAllUsers();
+      const isBanned = allUsers.some(u => u.isSuspended && u.ip === clientIp);
+      
+      res.json({ ip: clientIp, isBanned });
+    } catch (error: any) {
+      console.error("Check IP error:", error);
+      // Return not banned if database is unavailable, don't crash
+      const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+      res.json({ ip: clientIp, isBanned: false });
+    }
   });
 
   // Discord OAuth login - start the OAuth flow
@@ -1921,8 +1928,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           caseReleaseEnabled: false,
           banLogsChannelId: null,
           banLogsEnabled: false,
-          childServerBanEnabled: false,
-          childServerBanChannels: {},
         });
       }
 
@@ -1952,8 +1957,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseReleaseEnabled,
         banLogsChannelId,
         banLogsEnabled,
-        childServerBanEnabled,
-        childServerBanChannels,
       } = req.body;
 
       console.log("Updating webhook config with:", {
@@ -1973,8 +1976,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         caseReleaseEnabled,
         banLogsChannelId: banLogsEnabled ? banLogsChannelId : null,
         banLogsEnabled,
-        childServerBanEnabled,
-        childServerBanChannels: childServerBanChannels || {},
       });
 
       console.log("Webhook config updated successfully:", config);
