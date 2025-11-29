@@ -1,0 +1,21 @@
+2025-11-29T03:22:54.000000000Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/609ce0fb-8d88-45c2-a389-8e7e9f800c5a/vol_yvge81z8gd00s2gk
+2025-11-29T03:22:55.000000000Z [inf]  Starting Container
+2025-11-29T03:22:55.782483429Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-29T03:22:55.782494070Z [inf]  
+2025-11-29T03:22:55.782503077Z [inf]  > rest-express@1.0.0 start
+2025-11-29T03:22:55.782512253Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-29T03:22:55.782521754Z [inf]  
+2025-11-29T03:22:56.343069534Z [inf]  Registering Discord bot commands...
+2025-11-29T03:22:56.363306020Z [inf]  3:22:56 AM [express] serving on port 8080
+2025-11-29T03:22:56.841322787Z [inf]  Discord bot commands registered successfully
+2025-11-29T03:22:57.007477266Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-29T03:22:57.007481964Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-29T03:22:57.007486307Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-29T03:29:08.139101348Z [err]  error: relation "session" does not exist
+2025-11-29T03:29:08.139110807Z [err]      at /app/node_modules/pg-pool/index.js:45:11
+2025-11-29T03:29:08.139117694Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T03:29:08.139134505Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)
+2025-11-29T03:29:08.139140163Z [err]  error: relation "session" does not exist
+2025-11-29T03:29:08.139145295Z [err]      at /app/node_modules/pg-pool/index.js:45:11
+2025-11-29T03:29:08.139217106Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-29T03:29:08.139228008Z [err]      at async PGStore._asyncQuery (/app/node_modules/connect-pg-simple/index.js:322:21)

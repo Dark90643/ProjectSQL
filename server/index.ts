@@ -5,6 +5,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDiscordBot } from "./discord-bot";
 import { pool } from "./db";
+import { initializeDatabase } from "./db-init";
 
 const app = express();
 
@@ -89,6 +90,9 @@ app.use((req, res, next) => {
     console.error("Please set the DATABASE_URL variable in Railway with your PostgreSQL connection string.");
     process.exit(1);
   }
+
+  // Initialize database schema
+  await initializeDatabase();
 
   const server = await registerRoutes(app);
 
