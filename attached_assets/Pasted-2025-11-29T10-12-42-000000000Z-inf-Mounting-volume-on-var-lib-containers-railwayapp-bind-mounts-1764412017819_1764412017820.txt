@@ -1,0 +1,608 @@
+2025-11-29T10:12:42.000000000Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/e4c64a04-3b45-4651-aa4b-f0f7ed80fe42/vol_yvge81z8gd00s2gk
+2025-11-29T10:12:43.000000000Z [inf]  Starting Container
+2025-11-29T10:12:44.220815418Z [inf]  > NODE_ENV=production node dist/index.js
+2025-11-29T10:12:44.220828288Z [inf]  
+2025-11-29T10:12:44.220904706Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-29T10:12:44.220909499Z [inf]  
+2025-11-29T10:12:44.220914611Z [inf]  > rest-express@1.0.0 start
+2025-11-29T10:12:44.756523804Z [inf]  Database initialized successfully
+2025-11-29T10:12:44.788416404Z [inf]  Registering Discord bot commands...
+2025-11-29T10:12:44.828919949Z [inf]  10:12:44 AM [express] serving on port 8080
+2025-11-29T10:12:45.240522751Z [inf]  Discord bot commands registered successfully
+2025-11-29T10:12:45.309936570Z [inf]  Discord bot logged in as ᴀᴇɢɪꜱ ᴛᴇᴄʜ#4171
+2025-11-29T10:12:45.311501229Z [err]  (node:20) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+2025-11-29T10:12:45.311505543Z [err]  (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-11-29T10:14:05.514565342Z [inf]      _expires: 2025-12-29T10:14:01.679Z,
+2025-11-29T10:14:05.514576604Z [inf]      originalMaxAge: 2592000000,
+2025-11-29T10:14:05.514584246Z [inf]      httpOnly: true,
+2025-11-29T10:14:05.514591330Z [inf]      secure: false,
+2025-11-29T10:14:05.514597324Z [inf]      sameSite: 'lax'
+2025-11-29T10:14:05.514629037Z [inf]  10:14:01 AM [express] GET /api/auth/check-ip 304 in 21ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-29T10:14:05.514633727Z [inf]  Auth: No user found. Session: Session {
+2025-11-29T10:14:05.514638423Z [inf]    cookie: {
+2025-11-29T10:14:05.514643771Z [inf]      path: '/',
+2025-11-29T10:14:05.514667000Z [inf]    }
+2025-11-29T10:14:05.514673845Z [inf]  }
+2025-11-29T10:14:05.514679723Z [inf]  10:14:01 AM [express] GET /api/auth/me 401 in 2ms :: {"error":"Unauthorized"}
+2025-11-29T10:14:05.514685241Z [inf]  Discord login - API_URL: https://projectsql-production.up.railway.app
+2025-11-29T10:14:05.514691099Z [inf]  Discord login - redirectUri: https://projectsql-production.up.railway.app/api/auth/discord/callback
+2025-11-29T10:14:05.514709612Z [inf]  Discord login - clientId: 1442053672694714529
+2025-11-29T10:14:05.514726660Z [inf]  10:14:03 AM [express] GET /api/auth/discord/login 304 in 2ms :: {"authUrl":"https://discord.com/api/o…
+2025-11-29T10:14:55.249652716Z [inf]  Creating workspace for guild: 165029423840493568 RAGE Plugin Hook
+2025-11-29T10:14:55.249656343Z [inf]  === Discord OAuth Callback Started ===
+2025-11-29T10:14:55.249663605Z [inf]  Discord callback - clientId exists: true
+2025-11-29T10:14:55.249664056Z [inf]  Creating member for guild: 165029423840493568 isOwner: false isAdmin: false
+2025-11-29T10:14:55.249669907Z [inf]  Discord callback - clientSecret exists: true
+2025-11-29T10:14:55.249670597Z [inf]  Creating workspace for guild: 223070469148901376 Creators Area
+2025-11-29T10:14:55.249675229Z [inf]  Discord callback - code: 3G3bri6SsdEViUrqJkHRoZQVByTJnO
+2025-11-29T10:14:55.249677143Z [inf]  Creating member for guild: 223070469148901376 isOwner: false isAdmin: false
+2025-11-29T10:14:55.249680653Z [inf]  Discord callback - redirectUri: https://projectsql-production.up.railway.app/api/auth/discord/callback
+2025-11-29T10:14:55.249682914Z [inf]  Creating workspace for guild: 356833056562348042 Destiny 2 LFG
+2025-11-29T10:14:55.249687431Z [inf]  Exchanging code for token...
+2025-11-29T10:14:55.249689076Z [inf]  Creating member for guild: 356833056562348042 isOwner: false isAdmin: false
+2025-11-29T10:14:55.249692942Z [inf]  Token obtained successfully
+2025-11-29T10:14:55.249694731Z [inf]  Creating workspace for guild: 539419918043709450 WrenchStudios A&E
+2025-11-29T10:14:55.249698282Z [inf]  Fetching user info...
+2025-11-29T10:14:55.249702721Z [inf]  User info obtained: 579180906833641474 sea8484
+2025-11-29T10:14:55.249707197Z [inf]  Fetching user guilds...
+2025-11-29T10:14:55.249711424Z [inf]  User has 98 guilds
+2025-11-29T10:14:55.249716511Z [inf]  Getting or creating Discord account...
+2025-11-29T10:14:55.249720669Z [inf]  Creating new Discord account
+2025-11-29T10:14:55.249724748Z [inf]  Discord account created successfully
+2025-11-29T10:14:55.249730390Z [inf]  Creating server workspaces and memberships...
+2025-11-29T10:14:55.251306886Z [inf]  Creating member for guild: 539419918043709450 isOwner: false isAdmin: false
+2025-11-29T10:14:55.257433575Z [inf]  Creating workspace for guild: 543652415870730240 Cyber Info
+2025-11-29T10:14:55.257451903Z [inf]  Creating member for guild: 543652415870730240 isOwner: false isAdmin: false
+2025-11-29T10:14:55.259212118Z [inf]  Creating workspace for guild: 613425648685547541 Discord Developers
+2025-11-29T10:14:55.261958244Z [inf]  Creating member for guild: 613425648685547541 isOwner: false isAdmin: false
+2025-11-29T10:14:55.268219681Z [inf]  Creating workspace for guild: 631970473529573386 [🏆] Grand Army of the Republic
+2025-11-29T10:14:55.268225396Z [inf]  Creating member for guild: 631970473529573386 isOwner: false isAdmin: false
+2025-11-29T10:14:55.274407094Z [inf]  Creating workspace for guild: 632872861773856787 Polarstar Studios
+2025-11-29T10:14:55.274410989Z [inf]  Creating member for guild: 632872861773856787 isOwner: false isAdmin: false
+2025-11-29T10:14:55.277324549Z [inf]  Creating workspace for guild: 676873234548785173 United States Secret Service
+2025-11-29T10:14:55.283533664Z [inf]  Creating member for guild: 676873234548785173 isOwner: false isAdmin: false
+2025-11-29T10:14:55.283540177Z [inf]  Creating workspace for guild: 679004503906844672 Project Flight
+2025-11-29T10:14:55.289483018Z [inf]  Creating member for guild: 679004503906844672 isOwner: false isAdmin: false
+2025-11-29T10:14:55.289489913Z [inf]  Creating workspace for guild: 687883462287425546 BLUEPRINT®
+2025-11-29T10:14:55.295522018Z [inf]  Creating member for guild: 687883462287425546 isOwner: false isAdmin: false
+2025-11-29T10:14:55.295527492Z [inf]  Creating workspace for guild: 697148846958051339 𝐄𝐌𝐏𝐈𝐑𝐄 𝐑𝐎𝐋𝐄𝐏𝐋𝐀𝐘
+2025-11-29T10:14:55.296924505Z [inf]  Creating member for guild: 697148846958051339 isOwner: false isAdmin: false
+2025-11-29T10:14:55.299919697Z [inf]  Creating workspace for guild: 710871326557995079 Nico's Safe Space
+2025-11-29T10:14:55.305911854Z [inf]  Creating member for guild: 710871326557995079 isOwner: false isAdmin: false
+2025-11-29T10:14:55.305923366Z [inf]  Creating workspace for guild: 714382577280090122 UBA | British Army
+2025-11-29T10:14:55.308962560Z [inf]  Creating member for guild: 714382577280090122 isOwner: false isAdmin: false
+2025-11-29T10:14:55.315094820Z [inf]  Creating workspace for guild: 728020123868463134 ACSM: Community
+2025-11-29T10:14:55.315100843Z [inf]  Creating member for guild: 728020123868463134 isOwner: false isAdmin: false
+2025-11-29T10:14:55.318055105Z [inf]  Creating workspace for guild: 777881374555897886 Cyber Jobs Hunting
+2025-11-29T10:14:55.324818160Z [inf]  Creating member for guild: 777881374555897886 isOwner: false isAdmin: false
+2025-11-29T10:14:55.324826444Z [inf]  Creating workspace for guild: 822426820447567872 BotGhost 👻
+2025-11-29T10:14:55.327681187Z [inf]  Creating member for guild: 822426820447567872 isOwner: false isAdmin: false
+2025-11-29T10:14:55.329125506Z [inf]  Creating workspace for guild: 828717138167595008 | Havoc Studios |
+2025-11-29T10:14:55.336010637Z [inf]  Creating member for guild: 828717138167595008 isOwner: false isAdmin: false
+2025-11-29T10:14:55.336015884Z [inf]  Creating workspace for guild: 840703960310743110 DELUXE TECH
+2025-11-29T10:14:55.338558478Z [inf]  Creating member for guild: 840703960310743110 isOwner: false isAdmin: false
+2025-11-29T10:14:55.345004566Z [inf]  Creating workspace for guild: 845148082873565194 東卍
+2025-11-29T10:14:55.345010746Z [inf]  Creating member for guild: 845148082873565194 isOwner: false isAdmin: false
+2025-11-29T10:14:55.346634948Z [inf]  Creating workspace for guild: 855568116288847872 Shadows of Cat Girls
+2025-11-29T10:14:55.353036471Z [inf]  Creating member for guild: 855568116288847872 isOwner: false isAdmin: false
+2025-11-29T10:14:55.354405650Z [inf]  Creating workspace for guild: 856404260421369866 Wolf Hub
+2025-11-29T10:14:55.360811405Z [inf]  Creating member for guild: 856404260421369866 isOwner: false isAdmin: false
+2025-11-29T10:14:55.360818323Z [inf]  Creating workspace for guild: 918617694281015296 Tridon
+2025-11-29T10:14:55.366802343Z [inf]  Creating member for guild: 918617694281015296 isOwner: false isAdmin: false
+2025-11-29T10:14:55.372961709Z [inf]  Creating workspace for guild: 938783416034414682 Calvin's Hotel x Calvin's Cafe
+2025-11-29T10:14:55.372969452Z [inf]  Creating member for guild: 938783416034414682 isOwner: true isAdmin: true
+2025-11-29T10:14:55.374362035Z [inf]  Creating workspace for guild: 970493030119391313 Community & Asset Defense Service (CADS)
+2025-11-29T10:14:55.380867645Z [inf]  Creating member for guild: 970493030119391313 isOwner: false isAdmin: false
+2025-11-29T10:14:55.382553219Z [inf]  Creating workspace for guild: 980206068628074566 RankBlox Support Center
+2025-11-29T10:14:55.692061237Z [inf]  Creating workspace for guild: 1035306790222561414 AoT Revolution
+2025-11-29T10:14:55.692074811Z [inf]  Creating member for guild: 1035306790222561414 isOwner: false isAdmin: false
+2025-11-29T10:14:55.692083514Z [inf]  Creating workspace for guild: 1048356367322329188 Kingdom of France [ARCHIVED]
+2025-11-29T10:14:55.692091498Z [inf]  Creating member for guild: 1048356367322329188 isOwner: false isAdmin: false
+2025-11-29T10:14:55.692100944Z [inf]  Creating workspace for guild: 1067415182537666560 Pixel World Company
+2025-11-29T10:14:55.692110432Z [inf]  Creating member for guild: 1067415182537666560 isOwner: true isAdmin: true
+2025-11-29T10:14:55.692118105Z [inf]  Creating workspace for guild: 1076126378598076467 Asahi Tech
+2025-11-29T10:14:55.692196921Z [inf]  Creating member for guild: 980206068628074566 isOwner: false isAdmin: false
+2025-11-29T10:14:55.692203137Z [inf]  Creating workspace for guild: 991977964080214016 Music
+2025-11-29T10:14:55.692208760Z [inf]  Creating member for guild: 991977964080214016 isOwner: true isAdmin: true
+2025-11-29T10:14:55.692216314Z [inf]  Creating workspace for guild: 992835743540072498 UXPLIMA
+2025-11-29T10:14:55.692221463Z [inf]  Creating member for guild: 992835743540072498 isOwner: false isAdmin: false
+2025-11-29T10:14:55.692226560Z [inf]  Creating workspace for guild: 1023210390886297610 ZO ぞ || BLOOD BIRD
+2025-11-29T10:14:55.692230632Z [inf]  Creating member for guild: 1023210390886297610 isOwner: true isAdmin: true
+2025-11-29T10:14:55.692235623Z [inf]  Creating workspace for guild: 1023708676239917116 Excore
+2025-11-29T10:14:55.692240741Z [inf]  Creating member for guild: 1023708676239917116 isOwner: false isAdmin: false
+2025-11-29T10:14:55.692245305Z [inf]  Creating workspace for guild: 1031185323843133450 Breezy Tech
+2025-11-29T10:14:55.692249998Z [inf]  Creating member for guild: 1031185323843133450 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694437593Z [inf]  Creating member for guild: 1076126378598076467 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694444124Z [inf]  Creating workspace for guild: 1077410005738860654 [𝐇𝐑𝐄/𝐊𝐎𝐅] 𝐃𝐞𝐩𝐚𝐫𝐭𝐦𝐞𝐧𝐭 𝐨𝐟  𝐄𝐦𝐩𝐢𝐫𝐞 𝐑𝐨𝐥𝐞𝐩𝐥𝐚𝐲 𝐌𝐞𝐝𝐢𝐚
+2025-11-29T10:14:55.694453458Z [inf]  Creating member for guild: 1077410005738860654 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694460443Z [inf]  Creating workspace for guild: 1088674015259938830 Anime Last Stand
+2025-11-29T10:14:55.694466541Z [inf]  Creating member for guild: 1088674015259938830 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694473252Z [inf]  Creating workspace for guild: 1127749277637148786 【⟨𝐀𝐏𝐌 ⟩】 𝐀 𝐏𝐑𝐄𝐒𝐒𝐔𝐑𝐄 𝐌𝐎𝐌𝐄𝐍𝐓
+2025-11-29T10:14:55.694480168Z [inf]  Creating member for guild: 1127749277637148786 isOwner: true isAdmin: true
+2025-11-29T10:14:55.694488038Z [inf]  Creating workspace for guild: 1133696365923414026 XB2
+2025-11-29T10:14:55.694495002Z [inf]  Creating member for guild: 1133696365923414026 isOwner: true isAdmin: true
+2025-11-29T10:14:55.694502839Z [inf]  Creating workspace for guild: 1158998250217558038 UltraX
+2025-11-29T10:14:55.694509369Z [inf]  Creating member for guild: 1158998250217558038 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694515916Z [inf]  Creating workspace for guild: 1168509305285251214 [ITF] Public Relations
+2025-11-29T10:14:55.694523472Z [inf]  Creating member for guild: 1168509305285251214 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694544000Z [inf]  Creating workspace for guild: 1175550519247384787 Relxvnt's Portfolio
+2025-11-29T10:14:55.694550047Z [inf]  Creating member for guild: 1175550519247384787 isOwner: false isAdmin: false
+2025-11-29T10:14:55.694555894Z [inf]  Creating workspace for guild: 1181043590189813770 Roblox Criminal Records
+2025-11-29T10:14:55.695007167Z [inf]  Creating member for guild: 1181043590189813770 isOwner: false isAdmin: false
+2025-11-29T10:14:55.695013192Z [inf]  Creating workspace for guild: 1192741632873869321 XB2 | Death Scythe's
+2025-11-29T10:14:55.695018239Z [inf]  Creating member for guild: 1192741632873869321 isOwner: false isAdmin: false
+2025-11-29T10:14:55.695022679Z [inf]  Creating workspace for guild: 1198511541377577041 Hardware Innovations
+2025-11-29T10:14:55.695026985Z [inf]  Creating member for guild: 1198511541377577041 isOwner: false isAdmin: false
+2025-11-29T10:14:55.695030989Z [inf]  Creating workspace for guild: 1205546848035799081 Anime Vanguards
+2025-11-29T10:14:55.695034605Z [inf]  Creating member for guild: 1205546848035799081 isOwner: false isAdmin: false
+2025-11-29T10:14:55.695039633Z [inf]  Creating workspace for guild: 1224960945118253126 𝕊𝕜𝕦𝕝𝕝 𝕊𝕥𝕦𝕕𝕚𝕠
+2025-11-29T10:14:55.695043415Z [inf]  Creating member for guild: 1224960945118253126 isOwner: true isAdmin: true
+2025-11-29T10:14:55.695048194Z [inf]  Creating workspace for guild: 1231185909844545566 |BA| British Army
+2025-11-29T10:14:55.695052386Z [inf]  Creating member for guild: 1231185909844545566 isOwner: true isAdmin: true
+2025-11-29T10:14:55.695056203Z [inf]  Creating workspace for guild: 1242210590798250016 BAA | Public Divisions
+2025-11-29T10:14:55.695060355Z [inf]  Creating member for guild: 1242210590798250016 isOwner: false isAdmin: false
+2025-11-29T10:14:55.695064476Z [inf]  Creating workspace for guild: 1242823495088476200 BAA | The Government
+2025-11-29T10:14:55.695069123Z [inf]  Creating member for guild: 1242823495088476200 isOwner: false isAdmin: false
+2025-11-29T10:14:55.695072918Z [inf]  Creating workspace for guild: 1247252653365526678 [RMP] ECR | Not in use!
+2025-11-29T10:14:55.695077464Z [inf]  Creating member for guild: 1247252653365526678 isOwner: false isAdmin: true
+2025-11-29T10:14:55.695081650Z [inf]  Creating workspace for guild: 1248639755378229389 | Order of Divinity |
+2025-11-29T10:14:55.696467930Z [inf]  Creating member for guild: 1248639755378229389 isOwner: true isAdmin: true
+2025-11-29T10:14:55.696473480Z [inf]  Creating workspace for guild: 1255116744301744189 [MBA] | British Army
+2025-11-29T10:14:55.696478046Z [inf]  Creating member for guild: 1255116744301744189 isOwner: false isAdmin: false
+2025-11-29T10:14:55.696482442Z [inf]  Creating workspace for guild: 1289995954308644916 MXFIAZONE Graphics
+2025-11-29T10:14:55.696492004Z [inf]  Creating member for guild: 1289995954308644916 isOwner: false isAdmin: false
+2025-11-29T10:14:55.696496527Z [inf]  Creating workspace for guild: 1294194011879379025 [USA] 🌍 United States of America - Emergency Hamburg Roleplay Server
+2025-11-29T10:14:55.696501152Z [inf]  Creating member for guild: 1294194011879379025 isOwner: true isAdmin: true
+2025-11-29T10:14:55.696506150Z [inf]  Creating workspace for guild: 1308761613851168788 server 1 client
+2025-11-29T10:14:55.696511374Z [inf]  Creating member for guild: 1308761613851168788 isOwner: true isAdmin: true
+2025-11-29T10:14:55.696515587Z [inf]  Creating workspace for guild: 1308761673221537852 server 2 client
+2025-11-29T10:14:55.696520402Z [inf]  Creating member for guild: 1308761673221537852 isOwner: true isAdmin: true
+2025-11-29T10:14:55.696527035Z [inf]  Creating workspace for guild: 1309949111910273044 RIC | Data Storage
+2025-11-29T10:14:55.696532147Z [inf]  Creating member for guild: 1309949111910273044 isOwner: true isAdmin: true
+2025-11-29T10:14:55.696536875Z [inf]  Creating workspace for guild: 1330129155739750480 「BAF」British Army Facility
+2025-11-29T10:14:55.696541540Z [inf]  Creating member for guild: 1330129155739750480 isOwner: false isAdmin: false
+2025-11-29T10:14:55.696545810Z [inf]  Creating workspace for guild: 1332706256426893342 |BA| Moderation Department ¤
+2025-11-29T10:14:55.696550437Z [inf]  Creating member for guild: 1332706256426893342 isOwner: false isAdmin: false
+2025-11-29T10:14:55.697749574Z [inf]  Creating workspace for guild: 1338248061897412709 BA | Royal Navy
+2025-11-29T10:14:55.697755655Z [inf]  Creating member for guild: 1338248061897412709 isOwner: false isAdmin: true
+2025-11-29T10:14:55.697762795Z [inf]  Creating workspace for guild: 1342355108683317330 Veto Clan Official
+2025-11-29T10:14:55.697767286Z [inf]  Creating member for guild: 1342355108683317330 isOwner: false isAdmin: false
+2025-11-29T10:14:55.697771716Z [inf]  Creating workspace for guild: 1345055323203047515 [SCPF] INTELLIGENCE AGENCY PUBLIC AFFAIRS
+2025-11-29T10:14:55.697776493Z [inf]  Creating member for guild: 1345055323203047515 isOwner: false isAdmin: true
+2025-11-29T10:14:55.697781529Z [inf]  Creating workspace for guild: 1345489284034990090 BAA | British Army Academy
+2025-11-29T10:14:55.697785769Z [inf]  Creating member for guild: 1345489284034990090 isOwner: false isAdmin: false
+2025-11-29T10:14:55.697790846Z [inf]  Creating workspace for guild: 1346446330200854529 Operation: Crimson Eagle
+2025-11-29T10:14:55.697804257Z [inf]  Creating member for guild: 1346446330200854529 isOwner: false isAdmin: true
+2025-11-29T10:14:55.697809603Z [inf]  Creating workspace for guild: 1347816149290717235 ..
+2025-11-29T10:14:55.697814283Z [inf]  Creating member for guild: 1347816149290717235 isOwner: true isAdmin: true
+2025-11-29T10:14:55.697818454Z [inf]  Creating workspace for guild: 1349433781559234654 BAA Generals
+2025-11-29T10:14:55.697822511Z [inf]  Creating member for guild: 1349433781559234654 isOwner: false isAdmin: true
+2025-11-29T10:14:55.697826612Z [inf]  Creating workspace for guild: 1357787807237800158 Military Roleplay Community
+2025-11-29T10:14:55.697831079Z [inf]  Creating member for guild: 1357787807237800158 isOwner: false isAdmin: false
+2025-11-29T10:14:55.697834929Z [inf]  Creating workspace for guild: 1362325306899300383 BAA || Content Creations
+2025-11-29T10:14:55.697838702Z [inf]  Creating member for guild: 1362325306899300383 isOwner: true isAdmin: true
+2025-11-29T10:14:55.699021315Z [inf]  Creating workspace for guild: 1365762962018533538 CBA | Co's British Army
+2025-11-29T10:14:55.699029830Z [inf]  Creating member for guild: 1365762962018533538 isOwner: false isAdmin: false
+2025-11-29T10:14:55.699035448Z [inf]  Creating workspace for guild: 1367737954184724482 BA | Education & Training Services
+2025-11-29T10:14:55.699040368Z [inf]  Creating member for guild: 1367737954184724482 isOwner: true isAdmin: true
+2025-11-29T10:14:55.699045176Z [inf]  Creating workspace for guild: 1367738194959007776 [.]
+2025-11-29T10:14:55.699050263Z [inf]  Creating member for guild: 1367738194959007776 isOwner: true isAdmin: true
+2025-11-29T10:14:55.699054958Z [inf]  Creating workspace for guild: 1376606830263926865 [DHIA] Public Affairs and Joint Operations
+2025-11-29T10:14:55.699058967Z [inf]  Creating member for guild: 1376606830263926865 isOwner: false isAdmin: true
+2025-11-29T10:14:55.699063350Z [inf]  Creating workspace for guild: 1380474061582241902 Roblox Auction Club
+2025-11-29T10:14:55.699070534Z [inf]  Creating member for guild: 1380474061582241902 isOwner: false isAdmin: false
+2025-11-29T10:14:55.699074854Z [inf]  Creating workspace for guild: 1384542151727251508 Hunted
+2025-11-29T10:14:55.699079091Z [inf]  Creating member for guild: 1384542151727251508 isOwner: false isAdmin: false
+2025-11-29T10:14:55.699083418Z [inf]  Creating workspace for guild: 1387163457656324206 MI6 | Sentry Task Force
+2025-11-29T10:14:55.699087477Z [inf]  Creating member for guild: 1387163457656324206 isOwner: false isAdmin: true
+2025-11-29T10:14:55.699091578Z [inf]  Creating workspace for guild: 1387246462815047760 [CBA] Air Assault Brigade
+2025-11-29T10:14:55.699096046Z [inf]  Creating member for guild: 1387246462815047760 isOwner: true isAdmin: true
+2025-11-29T10:14:55.699100636Z [inf]  Creating workspace for guild: 1388979535361474691 [CED] Donator's Zone
+2025-11-29T10:14:55.699105442Z [inf]  Creating member for guild: 1388979535361474691 isOwner: false isAdmin: false
+2025-11-29T10:14:55.700048682Z [inf]  Creating workspace for guild: 1396520668933390399 BAA | Government
+2025-11-29T10:14:55.702361888Z [inf]  Creating member for guild: 1396520668933390399 isOwner: true isAdmin: true
+2025-11-29T10:14:55.709849461Z [inf]  Creating workspace for guild: 1396836588482334750 BAA | 1st Infantry Forces Division
+2025-11-29T10:14:55.709853749Z [inf]  Creating member for guild: 1396836588482334750 isOwner: false isAdmin: true
+2025-11-29T10:14:55.711193005Z [inf]  Creating workspace for guild: 1403483057729831003 CBA | Support Server
+2025-11-29T10:14:55.715804357Z [inf]  Creating member for guild: 1403483057729831003 isOwner: false isAdmin: true
+2025-11-29T10:14:55.722227969Z [inf]  Creating workspace for guild: 1403830912361431262 Engineering Department
+2025-11-29T10:14:55.728459979Z [inf]  Creating member for guild: 1403830912361431262 isOwner: false isAdmin: true
+2025-11-29T10:14:55.728467568Z [inf]  Creating workspace for guild: 1404258825900527706 BG Linking Server
+2025-11-29T10:14:55.734238213Z [inf]  Creating member for guild: 1404258825900527706 isOwner: false isAdmin: false
+2025-11-29T10:14:55.735467527Z [inf]  Creating workspace for guild: 1404409075294535750 CBA | United Kingdom Special Forces
+2025-11-29T10:14:55.741839308Z [inf]  Creating member for guild: 1404409075294535750 isOwner: false isAdmin: true
+2025-11-29T10:14:55.741848566Z [inf]  Creating workspace for guild: 1408403392824479845 CBA | Royal Military Police
+2025-11-29T10:14:55.749304983Z [inf]  Creating member for guild: 1408403392824479845 isOwner: false isAdmin: true
+2025-11-29T10:14:55.750886702Z [inf]  Creating workspace for guild: 1408952236905730170 CBA | Royal Grenadier Guards
+2025-11-29T10:14:55.757633992Z [inf]  Creating member for guild: 1408952236905730170 isOwner: false isAdmin: true
+2025-11-29T10:14:55.757642732Z [inf]  Creating workspace for guild: 1408952503118073869 CBA | 16th Air Assault Battalion
+2025-11-29T10:14:55.758923883Z [inf]  Creating member for guild: 1408952503118073869 isOwner: false isAdmin: true
+2025-11-29T10:14:55.765441707Z [inf]  Creating workspace for guild: 1408952756068421744 CBA | Infantry Forces Division
+2025-11-29T10:14:55.765454985Z [inf]  Creating member for guild: 1408952756068421744 isOwner: false isAdmin: true
+2025-11-29T10:14:55.766809112Z [inf]  Creating workspace for guild: 1408956545118507081 CBA | Raider Insurgency
+2025-11-29T10:14:55.773332623Z [inf]  Creating member for guild: 1408956545118507081 isOwner: false isAdmin: true
+2025-11-29T10:14:55.779599980Z [inf]  Creating workspace for guild: 1408956842503180340 CBA | Educational & Training Services
+2025-11-29T10:14:55.779618739Z [inf]  Creating member for guild: 1408956842503180340 isOwner: false isAdmin: true
+2025-11-29T10:14:55.780888176Z [inf]  Creating workspace for guild: 1408973005945704530 CBA | Army Air Corps
+2025-11-29T10:14:55.787237900Z [inf]  Creating member for guild: 1408973005945704530 isOwner: false isAdmin: false
+2025-11-29T10:14:55.787242790Z [inf]  Creating workspace for guild: 1408974295408840839 CBA | Royal Tank Regiment
+2025-11-29T10:14:55.793149894Z [inf]  Creating member for guild: 1408974295408840839 isOwner: false isAdmin: false
+2025-11-29T10:14:55.793156512Z [inf]  Creating workspace for guild: 1434093786945949779 BAA | Royal Navy
+2025-11-29T10:14:55.794431572Z [inf]  Creating member for guild: 1434093786945949779 isOwner: false isAdmin: true
+2025-11-29T10:14:55.799175192Z [inf]  Creating workspace for guild: 1434270472152940594 Undead's British Army
+2025-11-29T10:14:55.799183825Z [inf]  Creating member for guild: 1434270472152940594 isOwner: false isAdmin: false
+2025-11-29T10:14:55.801880890Z [inf]  Creating workspace for guild: 1434637594205094013 RIC | Public Affairs
+2025-11-29T10:14:55.808300028Z [inf]  Creating member for guild: 1434637594205094013 isOwner: false isAdmin: false
+2025-11-29T10:14:55.808309861Z [inf]  Creating workspace for guild: 1436681942723592224 BAA | Royal Military Police
+2025-11-29T10:14:55.814666145Z [inf]  Creating member for guild: 1436681942723592224 isOwner: false isAdmin: false
+2025-11-29T10:14:55.815992004Z [inf]  Creating workspace for guild: 1440717833540730882 BAA | Royal Air Force
+2025-11-29T10:14:55.822091344Z [inf]  Creating member for guild: 1440717833540730882 isOwner: false isAdmin: false
+2025-11-29T10:14:55.822097252Z [inf]  Creating workspace for guild: 1441447050024714252 ᴀᴇɢɪꜱ_ɴᴇᴛ
+2025-11-29T10:14:55.829304090Z [inf]  Creating member for guild: 1441447050024714252 isOwner: true isAdmin: true
+2025-11-29T10:14:55.829312312Z [inf]  Redirecting to: https://projectsql-production.up.railway.app/discord-auth?discordId=579180906833641474&username=sea8484
+2025-11-29T10:14:55.829318059Z [inf]  10:14:55 AM [express] GET /api/auth/discord/callback 302 in 1917ms
+2025-11-29T10:14:58.214375473Z [inf]  10:14:58 AM [express] GET /api/auth/check-ip 304 in 2ms :: {"ip":"100.64.0.2","isBanned":false}
+2025-11-29T10:15:04.708565879Z [inf]      sameSite: 'lax'
+2025-11-29T10:15:04.708573920Z [inf]    }
+2025-11-29T10:15:04.708579530Z [inf]  }
+2025-11-29T10:15:04.708585060Z [inf]  10:15:04 AM [express] GET /api/auth/me 401 in 2ms :: {"error":"Unauthorized"}
+2025-11-29T10:15:04.708606254Z [inf]  Auth: No user found. Session: Session {
+2025-11-29T10:15:04.708616907Z [inf]    cookie: {
+2025-11-29T10:15:04.708623285Z [inf]      path: '/',
+2025-11-29T10:15:04.708628055Z [inf]      _expires: 2025-12-29T10:15:04.445Z,
+2025-11-29T10:15:04.708632586Z [inf]      originalMaxAge: 2592000000,
+2025-11-29T10:15:04.708637355Z [inf]      httpOnly: true,
+2025-11-29T10:15:04.708642329Z [inf]      secure: false,
+2025-11-29T10:15:07.737213088Z [inf]  Discord POST callback - received: {"accessToken":"","user":{"id":"579180906833641474","username":"sea8484"}}
+2025-11-29T10:15:07.737220443Z [inf]  Discord POST callback - user: 579180906833641474 sea8484
+2025-11-29T10:15:07.737225495Z [inf]  Discord account found, establishing session
+2025-11-29T10:15:07.747156968Z [inf]  10:15:07 AM [express] POST /api/auth/discord/callback 200 in 11ms :: {"discordId":"579180906833641474…
+2025-11-29T10:15:08.327315747Z [inf]  10:15:08 AM [express] GET /api/auth/check-support-team 304 in 4ms :: {"isSupportTeam":true}
+2025-11-29T10:15:08.699478494Z [inf]  Discord POST callback - user: 579180906833641474 sea8484
+2025-11-29T10:15:08.699486838Z [inf]  Discord account found, establishing session
+2025-11-29T10:15:08.699492126Z [inf]  10:15:08 AM [express] POST /api/auth/discord/callback 200 in 8ms :: {"discordId":"579180906833641474"…
+2025-11-29T10:15:08.699588581Z [inf]  Discord POST callback - received: {"accessToken":"","user":{"id":"579180906833641474","username":"sea8484"}}
+2025-11-29T10:15:09.146696611Z [inf]  10:15:09 AM [express] GET /api/auth/discord/servers 200 in 149ms :: [{"id":"49cd9d6b-b990-4327-9e12-5…
+2025-11-29T10:15:09.178375977Z [inf]  10:15:09 AM [express] GET /api/auth/check-support-team 304 in 5ms :: {"isSupportTeam":true}
+2025-11-29T10:15:09.731005421Z [inf]  10:15:09 AM [express] GET /api/auth/discord/servers 304 in 138ms :: [{"id":"49cd9d6b-b990-4327-9e12-5…
+2025-11-29T10:16:50.035586418Z [inf]  10:16:45 AM [express] GET /api/auth/discord/check-bot 304 in 3ms :: {"hasBotInServer":true}
+2025-11-29T10:16:50.035598747Z [inf]  Updating server member with Discord username: {
+2025-11-29T10:16:50.035604951Z [inf]    discordUsername: 'sea8484',
+2025-11-29T10:16:50.035607661Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:16:50.035616629Z [inf]    isOwner: true,
+2025-11-29T10:16:50.035617655Z [inf]    discordId: '579180906833641474',
+2025-11-29T10:16:50.035623015Z [inf]    isAdmin: true
+2025-11-29T10:16:50.035625751Z [inf]    discordUsername: 'sea8484'
+2025-11-29T10:16:50.035629762Z [inf]  }
+2025-11-29T10:16:50.035633604Z [inf]  }
+2025-11-29T10:16:50.035636397Z [inf]  User role assignment: {
+2025-11-29T10:16:50.035641038Z [inf]  Updated member result: {
+2025-11-29T10:16:50.035643773Z [inf]    discordId: '579180906833641474',
+2025-11-29T10:16:50.035649834Z [inf]    id: 'b39aed1b-9f17-471b-80dd-724d790795f1',
+2025-11-29T10:16:50.035650153Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:16:50.035658476Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:16:50.035658592Z [inf]    role: 'Overseer',
+2025-11-29T10:16:50.035663973Z [inf]    isOwner: true,
+2025-11-29T10:16:50.035666326Z [inf]    discordUserId: '579180906833641474',
+2025-11-29T10:16:50.035671714Z [inf]    isAdmin: true
+2025-11-29T10:16:50.035674264Z [inf]    discordUsername: 'sea8484',
+2025-11-29T10:16:50.035680567Z [inf]    roles: [],
+2025-11-29T10:16:50.035686510Z [inf]    isOwner: true,
+2025-11-29T10:16:50.035692528Z [inf]    isAdmin: true,
+2025-11-29T10:16:50.035698175Z [inf]    joinedAt: 2025-11-29T10:14:55.827Z
+2025-11-29T10:16:50.035704387Z [inf]  }
+2025-11-29T10:16:50.035710961Z [inf]  Server member found: {
+2025-11-29T10:16:50.035718466Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:16:50.035724667Z [inf]    discordId: '579180906833641474',
+2025-11-29T10:16:50.036756863Z [inf]  }
+2025-11-29T10:16:50.036766238Z [inf]  Discord user session established: {
+2025-11-29T10:16:50.036771767Z [inf]  10:16:46 AM [express] GET /api/cases 304 in 5ms :: []
+2025-11-29T10:16:50.036774876Z [inf]  10:16:45 AM [express] POST /api/auth/discord/select-server 200 in 11ms :: {"id":"579180906833641474:1…
+2025-11-29T10:16:50.036779436Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:16:50.036785599Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:16:50.036785689Z [inf]  10:16:46 AM [express] GET /api/users 200 in 3ms :: []
+2025-11-29T10:16:50.036794658Z [inf]  10:16:45 AM [express] GET /api/logs 200 in 4ms :: []
+2025-11-29T10:16:50.036795370Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:16:50.036803551Z [inf]  10:16:46 AM [express] GET /api/logs 304 in 3ms :: []
+2025-11-29T10:16:50.036803590Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:16:50.036806646Z [inf]    id: '579180906833641474:1441447050024714252',
+2025-11-29T10:16:50.036808869Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:16:50.036811392Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:16:50.036812517Z [inf]  10:16:46 AM [express] GET /api/auth/discord/servers 400 in 1ms :: {"error":"Discord ID required"}
+2025-11-29T10:16:50.036816506Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:16:50.036823673Z [inf]    role: 'Overseer',
+2025-11-29T10:16:50.036830810Z [inf]    discordUsername: 'sea8484',
+2025-11-29T10:16:50.036837445Z [inf]    avatar: undefined
+2025-11-29T10:16:50.036844260Z [inf]  }
+2025-11-29T10:16:50.037865002Z [inf]  10:16:46 AM [express] GET /api/users 304 in 4ms :: []
+2025-11-29T10:16:50.037874135Z [inf]  10:16:46 AM [express] GET /api/cases 304 in 16ms :: []
+2025-11-29T10:17:29.766394201Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:17:29.766404022Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:17:29.766404120Z [err]  }
+2025-11-29T10:17:29.766411173Z [inf]  10:17:25 AM [express] GET /api/webhook/config 500 in 5ms :: {"error":"Failed to get webhook config"}
+2025-11-29T10:17:29.766413612Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:17:29.766418730Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:17:29.766424375Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:17:29.766424694Z [err]    severity: 'ERROR',
+2025-11-29T10:17:29.766429792Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:17:29.766434481Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:17:29.766435884Z [err]    code: '42703',
+2025-11-29T10:17:29.766440344Z [err]    severity_local: 'ERROR',
+2025-11-29T10:17:29.766442328Z [err]    position: '27',
+2025-11-29T10:17:29.766447689Z [err]    file: 'parse_relation.c',
+2025-11-29T10:17:29.766452529Z [err]    line: '3716',
+2025-11-29T10:17:29.766471489Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.766475704Z [inf]  10:17:21 AM [express] GET /api/recovery/deleted-cases 200 in 7ms :: []
+2025-11-29T10:17:29.766480061Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.766484313Z [err]  Get webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:17:29.766488551Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:17:29.766492928Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:17:29.767323114Z [inf]  10:17:27 AM [express] GET /api/logs 304 in 4ms :: []
+2025-11-29T10:17:29.767335048Z [inf]  10:17:27 AM [express] GET /api/server-members 304 in 5ms :: [{"id":"579180906833641474","username":"5…
+2025-11-29T10:17:29.767340303Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767346218Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767352740Z [inf]  10:17:26 AM [express] GET /api/webhook/linked-servers 200 in 6ms :: {"servers":[]}
+2025-11-29T10:17:29.767356342Z [inf]  10:17:27 AM [express] GET /api/cases/encrypted/list 304 in 4ms :: []
+2025-11-29T10:17:29.767361345Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767365931Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767369046Z [inf]  10:17:26 AM [express] GET /api/webhook/channels 304 in 4ms :: {"channels":[{"id":"1442051711769251880…
+2025-11-29T10:17:29.767373288Z [inf]  10:17:27 AM [express] GET /api/recovery/deleted-cases 304 in 3ms :: []
+2025-11-29T10:17:29.767379275Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767386142Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767392891Z [inf]  10:17:26 AM [express] GET /api/users 304 in 3ms :: []
+2025-11-29T10:17:29.767400425Z [inf]  10:17:26 AM [express] GET /api/cases 304 in 5ms :: []
+2025-11-29T10:17:29.767407124Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.767413544Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.768628436Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.768636466Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.768640620Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.768644906Z [err]  Get webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:17:29.768651313Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:17:29.768657940Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:17:29.768659187Z [err]    severity: 'ERROR',
+2025-11-29T10:17:29.768664189Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:17:29.768668650Z [err]    code: '42703',
+2025-11-29T10:17:29.768673048Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:17:29.768679392Z [err]    position: '27',
+2025-11-29T10:17:29.768679799Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:17:29.768687743Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:17:29.768688985Z [err]    file: 'parse_relation.c',
+2025-11-29T10:17:29.768695995Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:17:29.768699351Z [err]    line: '3716',
+2025-11-29T10:17:29.768704465Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:17:29.768710641Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:17:29.768713271Z [err]    severity_local: 'ERROR',
+2025-11-29T10:17:29.768722135Z [err]  }
+2025-11-29T10:17:29.768728042Z [inf]  10:17:27 AM [express] GET /api/webhook/channels 304 in 2ms :: {"channels":[{"id":"1442051711769251880…
+2025-11-29T10:17:29.769637091Z [inf]  10:17:27 AM [express] GET /api/webhook/config 500 in 5ms :: {"error":"Failed to get webhook config"}
+2025-11-29T10:17:29.769648618Z [inf]  10:17:27 AM [express] GET /api/webhook/linked-servers 304 in 5ms :: {"servers":[]}
+2025-11-29T10:17:29.769656146Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.769667791Z [inf]  10:17:27 AM [express] GET /api/cases 304 in 5ms :: []
+2025-11-29T10:17:29.769675385Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.769683094Z [inf]  10:17:28 AM [express] GET /api/users 304 in 3ms :: []
+2025-11-29T10:17:29.769689737Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:29.769696896Z [inf]  10:17:28 AM [express] GET /api/logs 304 in 3ms :: []
+2025-11-29T10:17:31.213853130Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:31.213858150Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:31.214986898Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:31.217781135Z [inf]  10:17:31 AM [express] GET /api/users 304 in 4ms :: []
+2025-11-29T10:17:31.224740020Z [inf]  10:17:31 AM [express] GET /api/cases/encrypted/list 304 in 7ms :: []
+2025-11-29T10:17:31.279507138Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:31.279512718Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:31.282304554Z [inf]  10:17:31 AM [express] GET /api/logs 304 in 3ms :: []
+2025-11-29T10:17:31.283980947Z [inf]  10:17:31 AM [express] GET /api/server-members 304 in 69ms :: [{"id":"579180906833641474","username":"…
+2025-11-29T10:17:31.285097115Z [inf]  10:17:31 AM [express] GET /api/cases 304 in 7ms :: []
+2025-11-29T10:17:33.543288246Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:33.548905284Z [inf]  10:17:33 AM [express] GET /api/users 304 in 5ms :: []
+2025-11-29T10:17:33.621736484Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:33.621743125Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:33.625493955Z [inf]  10:17:33 AM [express] GET /api/logs 304 in 4ms :: []
+2025-11-29T10:17:33.630840699Z [inf]  10:17:33 AM [express] GET /api/cases 304 in 6ms :: []
+2025-11-29T10:17:39.465993079Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:39.466001352Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:39.466006608Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:39.466012503Z [inf]  10:17:39 AM [express] GET /api/logs 304 in 3ms :: []
+2025-11-29T10:17:39.466018128Z [inf]  10:17:39 AM [express] GET /api/users 304 in 3ms :: []
+2025-11-29T10:17:39.469124693Z [inf]  10:17:39 AM [express] GET /api/cases 304 in 6ms :: []
+2025-11-29T10:17:39.702993374Z [inf]  10:17:39 AM [express] GET /api/auth/discord/servers 400 in 2ms :: {"error":"Discord ID required"}
+2025-11-29T10:17:44.569352204Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:17:44.569360340Z [inf]    userId: '579180906833641474:1441447050024714252'
+2025-11-29T10:17:44.569365315Z [inf]  }
+2025-11-29T10:17:44.569412596Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:44.569419220Z [inf]  Creating case with data: {
+2025-11-29T10:17:44.569424220Z [inf]    title: 'test',
+2025-11-29T10:17:44.572272773Z [inf]  10:17:44 AM [express] GET /api/auth/discord/servers 400 in 2ms :: {"error":"Discord ID required"}
+2025-11-29T10:17:44.572280525Z [inf]  ✓ Case created successfully: CASE-2025-990
+2025-11-29T10:17:44.578573941Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:17:44.578581291Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:17:44.578582369Z [err]  Failed to send case post message: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:17:44.578589893Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:17:44.578595538Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:17:44.578599882Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:17:44.578604842Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:17:44.578609398Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:17:44.578613858Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:17:44.578619841Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:17:44.578623863Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:17:44.578629075Z [err]    severity_local: 'ERROR',
+2025-11-29T10:17:44.578633505Z [err]    severity: 'ERROR',
+2025-11-29T10:17:44.578637844Z [err]    code: '42703',
+2025-11-29T10:17:44.578641820Z [err]    position: '27',
+2025-11-29T10:17:44.578645791Z [err]    file: 'parse_relation.c',
+2025-11-29T10:17:44.578651307Z [err]    line: '3716',
+2025-11-29T10:17:44.578655631Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:17:44.578660159Z [err]  }
+2025-11-29T10:17:44.578664164Z [inf]  10:17:44 AM [express] POST /api/cases 200 in 6ms :: {"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:44.578669246Z [inf]  ✓ Log created for case: CASE-2025-990
+2025-11-29T10:17:44.578674633Z [err]  Failed to send audit trail message: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:17:44.580083077Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:17:44.580090845Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:17:44.580096387Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:17:44.580101487Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:17:44.580106733Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:17:44.580127652Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:17:44.580133128Z [err]    severity_local: 'ERROR',
+2025-11-29T10:17:44.580138391Z [err]    severity: 'ERROR',
+2025-11-29T10:17:44.580144074Z [err]    code: '42703',
+2025-11-29T10:17:44.580149807Z [err]    position: '27',
+2025-11-29T10:17:44.580155396Z [err]    file: 'parse_relation.c',
+2025-11-29T10:17:44.580161102Z [err]    line: '3716',
+2025-11-29T10:17:44.580166515Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:17:44.580170616Z [err]  }
+2025-11-29T10:17:45.791904465Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:45.797962075Z [inf]  10:17:45 AM [express] GET /api/auth/me 200 in 2ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T10:17:46.202464263Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.202473501Z [inf]  10:17:45 AM [express] GET /api/webhook/linked-servers 304 in 4ms :: {"servers":[]}
+2025-11-29T10:17:46.202480768Z [err]  Get webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:17:46.202483476Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.202497354Z [err]    severity: 'ERROR',
+2025-11-29T10:17:46.202498877Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:17:46.202502007Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:17:46.202502266Z [err]    file: 'parse_relation.c',
+2025-11-29T10:17:46.202506951Z [inf]  10:17:46 AM [express] GET /api/webhook/config 500 in 5ms :: {"error":"Failed to get webhook config"}
+2025-11-29T10:17:46.202509140Z [err]  }
+2025-11-29T10:17:46.202511386Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:17:46.202512574Z [err]    code: '42703',
+2025-11-29T10:17:46.202512914Z [err]    line: '3716',
+2025-11-29T10:17:46.202520273Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:17:46.202521792Z [err]    position: '27',
+2025-11-29T10:17:46.202552300Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:17:46.202553102Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:17:46.202553342Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:17:46.202560892Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:17:46.202560934Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:17:46.202562861Z [err]    severity_local: 'ERROR',
+2025-11-29T10:17:46.203361276Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.203370003Z [inf]  10:17:46 AM [express] GET /api/webhook/channels 304 in 2ms :: {"channels":[{"id":"1442051711769251880…
+2025-11-29T10:17:46.325423617Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.328098224Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.328107300Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.329440426Z [inf]  10:17:46 AM [express] GET /api/cases/encrypted/list 304 in 5ms :: []
+2025-11-29T10:17:46.336915014Z [inf]  10:17:46 AM [express] GET /api/server-members 304 in 6ms :: [{"id":"579180906833641474","username":"5…
+2025-11-29T10:17:46.336924955Z [inf]  10:17:46 AM [express] GET /api/cases 200 in 6ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:46.351732313Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.358380075Z [inf]  10:17:46 AM [express] GET /api/users 304 in 3ms :: []
+2025-11-29T10:17:46.564599016Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.564607640Z [inf]  10:17:46 AM [express] GET /api/logs 200 in 3ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T10:17:46.685875793Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.692794856Z [inf]  10:17:46 AM [express] GET /api/cases 304 in 6ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:46.722499602Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:46.724485170Z [inf]  10:17:46 AM [express] GET /api/users 304 in 3ms :: []
+2025-11-29T10:17:47.174886635Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.174893136Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.174900146Z [inf]  10:17:47 AM [express] GET /api/logs 304 in 4ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T10:17:47.174906504Z [inf]  10:17:47 AM [express] GET /api/cases 304 in 4ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:47.344678937Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.344684642Z [inf]  10:17:47 AM [express] GET /api/users 304 in 3ms :: []
+2025-11-29T10:17:47.511937717Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.521514038Z [inf]  10:17:47 AM [express] GET /api/logs 304 in 4ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T10:17:47.521529193Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.522742533Z [inf]  10:17:47 AM [express] GET /api/cases 304 in 4ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:47.728159863Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.731907329Z [inf]  10:17:47 AM [express] GET /api/users 304 in 2ms :: []
+2025-11-29T10:17:47.866749389Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.866760688Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:47.870386382Z [inf]  10:17:47 AM [express] GET /api/logs 304 in 3ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T10:17:47.871444880Z [inf]  10:17:47 AM [express] GET /api/cases 304 in 5ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:48.156942846Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:48.159840020Z [inf]  10:17:48 AM [express] GET /api/users 304 in 2ms :: []
+2025-11-29T10:17:48.280475134Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:48.280485313Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:48.283781502Z [inf]  10:17:48 AM [express] GET /api/logs 304 in 3ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T10:17:48.285376302Z [inf]  10:17:48 AM [express] GET /api/cases 304 in 4ms :: [{"id":"CASE-2025-990","serverId":"144144705002471…
+2025-11-29T10:17:48.455131596Z [inf]  10:17:48 AM [express] GET /api/auth/discord/servers 400 in 2ms :: {"error":"Discord ID required"}
+2025-11-29T10:17:48.551571491Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:48.554328712Z [inf]  10:17:48 AM [express] GET /api/users 304 in 4ms :: []
+2025-11-29T10:17:48.688917525Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:17:48.692049025Z [inf]  10:17:48 AM [express] GET /api/logs 304 in 4ms :: [{"id":"fa4d4434-dd7a-456c-a4e0-95d9f37dcfe0","serv…
+2025-11-29T10:18:18.702287603Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:18:18.702302803Z [err]  Get webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:18:18.702309345Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:18:18.702315130Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:18:18.702320943Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:18:18.702406765Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:18:18.702412352Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:18:18.702418482Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:18:18.702439361Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:18:18.702444114Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:18:18.702448286Z [err]    severity_local: 'ERROR',
+2025-11-29T10:18:18.702452095Z [err]    severity: 'ERROR',
+2025-11-29T10:18:18.702455609Z [err]    code: '42703',
+2025-11-29T10:18:18.702459540Z [err]    position: '27',
+2025-11-29T10:18:18.702464904Z [err]    file: 'parse_relation.c',
+2025-11-29T10:18:18.702468622Z [err]    line: '3716',
+2025-11-29T10:18:18.702472088Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:18:18.702476077Z [err]  }
+2025-11-29T10:18:18.702479731Z [inf]  10:18:18 AM [express] GET /api/webhook/config 500 in 4ms :: {"error":"Failed to get webhook config"}
+2025-11-29T10:18:18.702483666Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:18:18.702488785Z [inf]  10:18:18 AM [express] GET /api/webhook/linked-servers 304 in 4ms :: {"servers":[]}
+2025-11-29T10:18:18.704007671Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:18:18.704015466Z [inf]  10:18:18 AM [express] GET /api/webhook/channels 304 in 2ms :: {"channels":[{"id":"1442051711769251880…
+2025-11-29T10:18:58.709448337Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:18:58.709456672Z [inf]  10:18:49 AM [express] GET /api/auth/me 304 in 2ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T10:20:18.731086046Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:20:18.731093842Z [inf]  10:20:09 AM [express] GET /api/auth/me 304 in 3ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T10:20:21.321486069Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:20:21.321495072Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:20:21.321501560Z [err]    severity_local: 'ERROR',
+2025-11-29T10:20:21.321507357Z [err]    severity: 'ERROR',
+2025-11-29T10:20:21.321520696Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:20:21.321529643Z [inf]  Update webhook config - User: {
+2025-11-29T10:20:21.321536146Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-29T10:20:21.321541099Z [inf]    role: 'Overseer',
+2025-11-29T10:20:21.321545865Z [inf]    serverId: '1441447050024714252'
+2025-11-29T10:20:21.321550668Z [inf]  }
+2025-11-29T10:20:21.321555530Z [inf]  Updating webhook config with: {
+2025-11-29T10:20:21.321559783Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:20:21.321563816Z [inf]    auditTrailEnabled: true,
+2025-11-29T10:20:21.321568064Z [inf]    casePostEnabled: false,
+2025-11-29T10:20:21.321572820Z [inf]    caseReleaseEnabled: false
+2025-11-29T10:20:21.321577327Z [inf]  }
+2025-11-29T10:20:21.321581230Z [err]  Update webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:20:21.321586501Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:20:21.321590697Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:20:21.321594690Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:20:21.321599553Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:20:21.321603916Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:20:21.321607941Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:20:21.323670047Z [err]    code: '42703',
+2025-11-29T10:20:21.323678238Z [err]    position: '27',
+2025-11-29T10:20:21.323682919Z [err]    file: 'parse_relation.c',
+2025-11-29T10:20:21.323687405Z [err]    line: '3716',
+2025-11-29T10:20:21.323691335Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:20:21.323695313Z [err]  }
+2025-11-29T10:20:21.323699032Z [inf]  10:20:21 AM [express] POST /api/webhook/config 500 in 4ms :: {"error":"Failed to update webhook confi…
+2025-11-29T10:20:27.039256687Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:20:27.039260838Z [inf]  Update webhook config - User: {
+2025-11-29T10:20:27.039265490Z [inf]    userId: '579180906833641474:1441447050024714252',
+2025-11-29T10:20:27.039271762Z [inf]    role: 'Overseer',
+2025-11-29T10:20:27.039275897Z [inf]    serverId: '1441447050024714252'
+2025-11-29T10:20:27.039280561Z [inf]  }
+2025-11-29T10:20:27.039284485Z [inf]  Updating webhook config with: {
+2025-11-29T10:20:27.039288917Z [inf]    serverId: '1441447050024714252',
+2025-11-29T10:20:27.039293281Z [inf]    auditTrailEnabled: true,
+2025-11-29T10:20:27.039297652Z [inf]    casePostEnabled: false,
+2025-11-29T10:20:27.039302251Z [inf]    caseReleaseEnabled: false
+2025-11-29T10:20:27.039306860Z [inf]  }
+2025-11-29T10:20:27.040832383Z [err]  Update webhook config error: PostgresError: column "audit_trail_channel_id" does not exist
+2025-11-29T10:20:27.040838908Z [err]    position: '27',
+2025-11-29T10:20:27.040842159Z [err]      at ErrorResponse (file:///app/node_modules/postgres/src/connection.js:794:26)
+2025-11-29T10:20:27.040847976Z [err]      at handle (file:///app/node_modules/postgres/src/connection.js:480:6)
+2025-11-29T10:20:27.040854216Z [err]      at Socket.data (file:///app/node_modules/postgres/src/connection.js:315:9)
+2025-11-29T10:20:27.040855029Z [err]    file: 'parse_relation.c',
+2025-11-29T10:20:27.040861414Z [err]    line: '3716',
+2025-11-29T10:20:27.040865754Z [err]      at Socket.emit (node:events:519:28)
+2025-11-29T10:20:27.040868579Z [err]    routine: 'errorMissingColumn'
+2025-11-29T10:20:27.040874069Z [err]      at addChunk (node:internal/streams/readable:561:12)
+2025-11-29T10:20:27.040877173Z [err]  }
+2025-11-29T10:20:27.040881133Z [err]      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+2025-11-29T10:20:27.040886989Z [err]      at Readable.push (node:internal/streams/readable:392:5)
+2025-11-29T10:20:27.040892347Z [err]      at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+2025-11-29T10:20:27.040897736Z [err]    severity_local: 'ERROR',
+2025-11-29T10:20:27.040903509Z [err]    severity: 'ERROR',
+2025-11-29T10:20:27.040909114Z [err]    code: '42703',
+2025-11-29T10:20:27.045294974Z [inf]  10:20:27 AM [express] POST /api/webhook/config 500 in 5ms :: {"error":"Failed to update webhook confi…
+2025-11-29T10:20:57.045136258Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:20:57.045141095Z [inf]  10:20:48 AM [express] GET /api/auth/me 304 in 2ms :: {"id":"579180906833641474:1441447050024714252","…
+2025-11-29T10:21:47.053583072Z [inf]  Auth: User from session (Discord): { id: '579180906833641474:1441447050024714252', role: 'Overseer' }
+2025-11-29T10:21:47.053592796Z [inf]  10:21:46 AM [express] GET /api/auth/me 304 in 1ms :: {"id":"579180906833641474:1441447050024714252","…

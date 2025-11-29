@@ -158,10 +158,17 @@ export async function initializeDatabase() {
 
       CREATE TABLE IF NOT EXISTS "webhook_configs" (
         "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-        "server_id" text NOT NULL,
-        "case_log_webhook_url" text,
-        "mod_log_webhook_url" text,
-        "case_publish_webhook_url" text,
+        "server_id" text NOT NULL UNIQUE,
+        "audit_trail_channel_id" text,
+        "audit_trail_enabled" boolean NOT NULL DEFAULT false,
+        "case_post_channel_id" text,
+        "case_post_enabled" boolean NOT NULL DEFAULT false,
+        "case_release_channel_id" text,
+        "case_release_enabled" boolean NOT NULL DEFAULT false,
+        "ban_logs_channel_id" text,
+        "ban_logs_enabled" boolean NOT NULL DEFAULT false,
+        "child_server_ban_channel_id" text,
+        "child_server_ban_enabled" boolean NOT NULL DEFAULT false,
         "created_at" timestamp NOT NULL DEFAULT now(),
         "updated_at" timestamp NOT NULL DEFAULT now()
       );
