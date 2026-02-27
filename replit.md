@@ -194,6 +194,21 @@ Preferred communication style: Simple, everyday language.
 
 **Database Service**: Supabase PostgreSQL with connection pooling. Configuration includes SSL requirement and disabled prepared statements for compatibility with Supabase's transaction mode.
 
+# Deployment (Vercel)
+
+**Setup**:
+1. Connect your GitHub repository to Vercel.
+2. Add the following environment variables in Vercel:
+   - `DATABASE_URL`: Your Supabase connection string.
+   - `DISCORD_BOT_TOKEN`: Your Discord bot token.
+   - `DISCORD_CLIENT_ID`: Your Discord client ID.
+   - `DISCORD_CLIENT_SECRET`: Your Discord client secret.
+   - `SESSION_SECRET`: A random secure string.
+   - `API_URL`: Your Vercel deployment URL (e.g., `https://your-app.vercel.app`).
+3. Set the build command to `npm run build` and output directory to `dist`.
+
+**Note**: Vercel is serverless, so the Discord bot will only respond when an API endpoint is hit. For a 24/7 bot, Railway is recommended.
+
 **Third-party Services**:
 - Google Docs integration (optional URL field on cases)
 - Discord webhooks for audit trail and case publication notifications
