@@ -192,7 +192,7 @@ Preferred communication style: Simple, everyday language.
 - Account age verification and join rate limiting for raid detection
 - Comprehensive moderation logging and audit trails
 
-**Database Service**: Neon PostgreSQL serverless with connection pooling through @neondatabase/serverless.
+**Database Service**: Supabase PostgreSQL with connection pooling. Configuration includes SSL requirement and disabled prepared statements for compatibility with Supabase's transaction mode.
 
 **Third-party Services**:
 - Google Docs integration (optional URL field on cases)

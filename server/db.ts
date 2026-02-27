@@ -7,11 +7,19 @@ if (!dbUrl) {
   console.error("WARNING: DATABASE_URL not set. Using dummy connection for build.");
 }
 
-const client = postgres(dbUrl || "postgres://localhost/dummy");
+// Supabase optimization: use connection pooling if available in the URL, 
+// but postgres-js handles basic connectivity well.
+const client = postgres(dbUrl || "postgres://localhost/dummy", {
+  ssl: "require",
+  prepare: false, // Recommended for Supabase/PgBouncer
+});
 export const db = drizzle({ client, schema });
 
 // For session store compatibility
 import { Pool } from "pg";
 export const pool = new Pool({ 
-  connectionString: dbUrl || "postgres://localhost/dummy" 
+  connectionString: dbUrl || "postgres://localhost/dummy",
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
