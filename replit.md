@@ -194,6 +194,14 @@ Preferred communication style: Simple, everyday language.
 
 **Database Service**: Supabase PostgreSQL with connection pooling. Configuration includes SSL requirement and disabled prepared statements for compatibility with Supabase's transaction mode.
 
+# Deployment (Replit)
+
+**Setup**:
+1. Open the "Deployments" tab in Replit.
+2. Select "Autoscale" or "Static" as your deployment type.
+3. Your `DATABASE_URL` is already managed automatically by Replit. You do not need to manually enter it.
+4. Ensure your other secrets (`DISCORD_BOT_TOKEN`, `DISCORD_CLIENT_ID`, etc.) are also set in the Deployments tab.
+
 # Deployment (Vercel)
 
 **Setup**:
